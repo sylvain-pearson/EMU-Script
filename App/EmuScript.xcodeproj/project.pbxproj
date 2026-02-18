@@ -8,19 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		E409EFE42F1FC09200F00B8D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E409EFE32F1FC09200F00B8D /* Localizable.xcstrings */; };
-		E409EFE62F200DF300F00B8D /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = E409EFE52F200DF300F00B8D /* LICENSE.md */; };
 		E409EFE82F200E8E00F00B8D /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = E409EFE72F200E8E00F00B8D /* README.md */; };
 		E41266D72F26A17400197CE1 /* User-Manual.md in Resources */ = {isa = PBXBuildFile; fileRef = E41266D62F26A17400197CE1 /* User-Manual.md */; };
 		E42B0A552F0FF8750069CF10 /* emu.icon in Resources */ = {isa = PBXBuildFile; fileRef = E42B0A542F0FF8750069CF10 /* emu.icon */; };
+		E42F6D1B2F461AA30020EC9F /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = E42F6D1A2F461AA30020EC9F /* LICENSE */; };
 		E43062A92F0EDE6D00015A3D /* MIDIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E43062A82F0EDE6D00015A3D /* MIDIKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		E409EFE32F1FC09200F00B8D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		E409EFE52F200DF300F00B8D /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = SOURCE_ROOT; };
 		E409EFE72F200E8E00F00B8D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = SOURCE_ROOT; };
 		E41266D62F26A17400197CE1 /* User-Manual.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = "User-Manual.md"; path = "../Doc/User-Manual.md"; sourceTree = SOURCE_ROOT; };
 		E42B0A542F0FF8750069CF10 /* emu.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = emu.icon; sourceTree = "<group>"; };
+		E42F6D1A2F461AA30020EC9F /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = SOURCE_ROOT; };
 		E430626F2F0ED45E00015A3D /* EMU-Script.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "EMU-Script.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -52,8 +52,8 @@
 				E42B0A542F0FF8750069CF10 /* emu.icon */,
 				E409EFE32F1FC09200F00B8D /* Localizable.xcstrings */,
 				E409EFE72F200E8E00F00B8D /* README.md */,
-				E409EFE52F200DF300F00B8D /* LICENSE.md */,
 				E41266D62F26A17400197CE1 /* User-Manual.md */,
+				E42F6D1A2F461AA30020EC9F /* LICENSE */,
 			);
 			sourceTree = "<group>";
 		};
@@ -134,10 +134,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				E409EFE42F1FC09200F00B8D /* Localizable.xcstrings in Resources */,
-				E409EFE62F200DF300F00B8D /* LICENSE.md in Resources */,
 				E41266D72F26A17400197CE1 /* User-Manual.md in Resources */,
 				E409EFE82F200E8E00F00B8D /* README.md in Resources */,
 				E42B0A552F0FF8750069CF10 /* emu.icon in Resources */,
+				E42F6D1B2F461AA30020EC9F /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
