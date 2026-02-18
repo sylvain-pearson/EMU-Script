@@ -1,7 +1,6 @@
-
-# User Manual
 ![emu-icon](assets/emu-icon.png) 
 
+# User Manual
 EMU-Script is a programmable MIDI sequencer and music sheet viewer. It proposes an innovative approach to electronic music creation. I hope you will enjoy using it!
 
 EMU-Script will communicate with your virtual instruments using virtual MIDI ports. Those can be added using the MIDI Studio configuration tool:

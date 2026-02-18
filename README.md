@@ -1,9 +1,8 @@
-# EMU Script
-An electronic music script editor and MIDI sequencer for MacOS.
 
 ![emu-icon](Images/emu-icon.png)
 
-EMU-Script is not a DAW. It proposes a different approach to electronic music creation:
+# EMU Script
+An electronic music script editor and MIDI sequencer for MacOS. EMU-Script is not a DAW. It proposes a different approach to electronic music creation:
 - Programmable multi-track MIDI sequencer.
 - Music sheet viewer that automatically scrolls during playback.
 - Built-in script editor with syntax highlighting and error checking.
@@ -14,7 +13,7 @@ EMU-Script is not a DAW. It proposes a different approach to electronic music cr
 - User-definable sounds (hard-coded MIDI note or sample file).
 
 ## Documentation
-- The user manual can be found [here](https://github.com/sylvain-pearson/EMU-Script/Doc/User-Manual.md)
+- The user manual can be found [here](https://sylvain-pearson.github.io/EMU-Script/Doc/User-Manual.html)
 - The `Scripts` directory contains many examples of EMU scripts.
 
 ## Requirements
