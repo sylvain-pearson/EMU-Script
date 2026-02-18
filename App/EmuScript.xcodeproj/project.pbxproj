@@ -6,27 +6,28 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E409EFE42F1FC09200F00B8D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E409EFE32F1FC09200F00B8D /* Localizable.xcstrings */; };
+		E409EFE62F200DF300F00B8D /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = E409EFE52F200DF300F00B8D /* LICENSE.md */; };
+		E409EFE82F200E8E00F00B8D /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = E409EFE72F200E8E00F00B8D /* README.md */; };
+		E41266D72F26A17400197CE1 /* User-Manual.md in Resources */ = {isa = PBXBuildFile; fileRef = E41266D62F26A17400197CE1 /* User-Manual.md */; };
+		E42B0A552F0FF8750069CF10 /* emu.icon in Resources */ = {isa = PBXBuildFile; fileRef = E42B0A542F0FF8750069CF10 /* emu.icon */; };
+		E43062A92F0EDE6D00015A3D /* MIDIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E43062A82F0EDE6D00015A3D /* MIDIKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		E430626F2F0ED45E00015A3D /* EmuScript.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EmuScript.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E409EFE32F1FC09200F00B8D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		E409EFE52F200DF300F00B8D /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = SOURCE_ROOT; };
+		E409EFE72F200E8E00F00B8D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = SOURCE_ROOT; };
+		E41266D62F26A17400197CE1 /* User-Manual.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = "User-Manual.md"; path = "../Doc/User-Manual.md"; sourceTree = SOURCE_ROOT; };
+		E42B0A542F0FF8750069CF10 /* emu.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = emu.icon; sourceTree = "<group>"; };
+		E430626F2F0ED45E00015A3D /* EMU-Script.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "EMU-Script.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		E430627B2F0ED45F00015A3D /* Exceptions for "EmuScript" folder in "EmuScript" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = E430626E2F0ED45E00015A3D /* EmuScript */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		E43062712F0ED45E00015A3D /* EmuScript */ = {
+		E43062712F0ED45E00015A3D /* Sources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				E430627B2F0ED45F00015A3D /* Exceptions for "EmuScript" folder in "EmuScript" target */,
-			);
-			path = EmuScript;
+			path = Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -36,6 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E43062A92F0EDE6D00015A3D /* MIDIKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,15 +47,20 @@
 		E43062662F0ED45E00015A3D = {
 			isa = PBXGroup;
 			children = (
-				E43062712F0ED45E00015A3D /* EmuScript */,
+				E43062712F0ED45E00015A3D /* Sources */,
 				E43062702F0ED45E00015A3D /* Products */,
+				E42B0A542F0FF8750069CF10 /* emu.icon */,
+				E409EFE32F1FC09200F00B8D /* Localizable.xcstrings */,
+				E409EFE72F200E8E00F00B8D /* README.md */,
+				E409EFE52F200DF300F00B8D /* LICENSE.md */,
+				E41266D62F26A17400197CE1 /* User-Manual.md */,
 			);
 			sourceTree = "<group>";
 		};
 		E43062702F0ED45E00015A3D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E430626F2F0ED45E00015A3D /* EmuScript.app */,
+				E430626F2F0ED45E00015A3D /* EMU-Script.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -61,9 +68,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E430626E2F0ED45E00015A3D /* EmuScript */ = {
+		E430626E2F0ED45E00015A3D /* EMU-Script */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E430627C2F0ED45F00015A3D /* Build configuration list for PBXNativeTarget "EmuScript" */;
+			buildConfigurationList = E430627C2F0ED45F00015A3D /* Build configuration list for PBXNativeTarget "EMU-Script" */;
 			buildPhases = (
 				E430626B2F0ED45E00015A3D /* Sources */,
 				E430626C2F0ED45E00015A3D /* Frameworks */,
@@ -74,13 +81,14 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				E43062712F0ED45E00015A3D /* EmuScript */,
+				E43062712F0ED45E00015A3D /* Sources */,
 			);
-			name = EmuScript;
+			name = "EMU-Script";
 			packageProductDependencies = (
+				E43062A82F0EDE6D00015A3D /* MIDIKit */,
 			);
 			productName = EmuScript;
-			productReference = E430626F2F0ED45E00015A3D /* EmuScript.app */;
+			productReference = E430626F2F0ED45E00015A3D /* EMU-Script.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -107,12 +115,15 @@
 			);
 			mainGroup = E43062662F0ED45E00015A3D;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				E43062A72F0EDE6D00015A3D /* XCRemoteSwiftPackageReference "MIDIKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E43062702F0ED45E00015A3D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E430626E2F0ED45E00015A3D /* EmuScript */,
+				E430626E2F0ED45E00015A3D /* EMU-Script */,
 			);
 		};
 /* End PBXProject section */
@@ -122,6 +133,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E409EFE42F1FC09200F00B8D /* Localizable.xcstrings in Resources */,
+				E409EFE62F200DF300F00B8D /* LICENSE.md in Resources */,
+				E41266D72F26A17400197CE1 /* User-Manual.md in Resources */,
+				E409EFE82F200E8E00F00B8D /* README.md in Resources */,
+				E42B0A552F0FF8750069CF10 /* emu.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,24 +157,38 @@
 		E430627D2F0ED45F00015A3D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = emu;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = V5A437P5HJ;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_FILE_ACCESS_MUSIC_FOLDER = readonly;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = EmuScript/Info.plist;
+				INFOPLIST_FILE = ./Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "EMU-Script";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = spearson.EmuScript;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -174,24 +204,38 @@
 		E430627E2F0ED45F00015A3D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = emu;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = V5A437P5HJ;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_FILE_ACCESS_MUSIC_FOLDER = readonly;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = EmuScript/Info.plist;
+				INFOPLIST_FILE = ./Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "EMU-Script";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = spearson.EmuScript;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -264,6 +308,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -321,6 +366,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 			};
 			name = Release;
 		};
@@ -336,7 +382,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E430627C2F0ED45F00015A3D /* Build configuration list for PBXNativeTarget "EmuScript" */ = {
+		E430627C2F0ED45F00015A3D /* Build configuration list for PBXNativeTarget "EMU-Script" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E430627D2F0ED45F00015A3D /* Debug */,
@@ -346,6 +392,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E43062A72F0EDE6D00015A3D /* XCRemoteSwiftPackageReference "MIDIKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/orchetect/MIDIKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.10.7;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E43062A82F0EDE6D00015A3D /* MIDIKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E43062A72F0EDE6D00015A3D /* XCRemoteSwiftPackageReference "MIDIKit" */;
+			productName = MIDIKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E43062672F0ED45E00015A3D /* Project object */;
 }

@@ -1,0 +1,32 @@
+[composition]
+title: "Scales"
+by: "Sylvain Pearson"
+time: 4/4
+BPM: 100
+transposition: 0
+playlist: major, minor, mixolydian, chromatic
+
+[instruments]
+piano: "piano", channel=4, octave=3, velocity=80
+bass: "piano", channel=3, octave=2, velocity=80
+
+[major]
+piano:  1 2 3 4 | 5 6 7 1'
+bass: 1 2 3 4 | 5 6 7 1'
+text: "C D E F | G A B C"
+
+[minor]
+piano:  '6 '7 1 2 | 3 4 5 6
+bass: '6 '7 1 2 | 3 4 5 6
+text: "A B C D | E F G A"
+
+[mixolydian]
+piano:  5 6 7 1' | 2' 3' 4' 5'
+bass: 5 6 7 1' | 2' 3' 4' 5'
+text: "G A B C | D E F G"
+
+[chromatic]
+piano:  1 #1 2 #2 | 3 4 #4 5 | #5 6 #6 7
+bass: 1 #1 2 #2 | 3 4 #4 5 | #5 6 #6 7
+
+

@@ -1,0 +1,16 @@
+[composition]
+title: "Time Signature 3/4"
+by: "Sylvain Pearson"
+time: 3/4
+BPM: 100
+transposition: +2
+playlist: example
+
+[instruments]
+piano: "piano", channel=4, octave=3, velocity=80
+
+[example]
+piano: 1 | 2 - 3 | - 5 6 | 7- (1' 2' 3')  | 3' 2' 1' 7 6 5 4 3 2 1 2 3 | [4 5 6] [5 4 3] (4 5) 
+text: "whole-note | half-note - half-note | - quarter-notes -"
+text: "dotted-quarter-note- eighth-notes- | sixteenth-notes | triplet triplet eighth-notes"
+ 

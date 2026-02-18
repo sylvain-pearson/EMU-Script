@@ -2,7 +2,8 @@
 //  EmuScriptApp.swift
 //  EmuScript
 //
-//  Created by Sylvain Pearson on 2026-01-07.
+//  Copyright (c) 2026 Sylvain Pearson - Licensed under the MIT license
+//  Source code repository: https://github.com/sylvain-pearson/EMU-Script
 //
 
 import SwiftUI
@@ -14,4 +15,5 @@ struct EmuScriptApp: App {
             ContentView(document: file.$document)
         }
     }
+        
 }

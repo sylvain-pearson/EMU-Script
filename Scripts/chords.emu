@@ -1,0 +1,14 @@
+[composition]
+title: "Chords"
+by: "Sylvain Pearson"
+time: 3/4
+BPM: 100
+transposition: 0
+playlist: example
+
+[instruments]
+synth: "MIDI Input", channel=1, octave=3, velocity=80
+
+[example]
+synth: 4M 3m 5D7 | 2M 1m 25
+text: "FM Em G7 | DM Cm interval"

@@ -1,0 +1,24 @@
+[composition]
+title: "Sequences"
+by: "Sylvain Pearson"
+time: 4/4
+BPM: 100
+transposition: +4
+playlist: example
+
+[instruments]
+bass: "bass", channel=11, octave=2, velocity=80
+drum: "drum", channel=12, velocity=90
+
+[sequences]
+b1: $1 - $1 $2 $1 $1 - $2 
+b2: $1 - . $1 $1 - . $2   
+ds: Bh h sh h Bh h sh h | Bh h sh h Bh h sh $1       
+
+[example]
+bass: b1('6 1) | b2(2 4) | b1(5 7) | 1 .
+drum: ds(o) | ds(c)
+
+
+
+

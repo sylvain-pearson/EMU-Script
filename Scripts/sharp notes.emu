@@ -1,0 +1,14 @@
+[composition]
+title: "Sharp Notes"
+by: "Sylvain Pearson"
+time: 6/8
+BPM: 100
+transposition: -2
+playlist: example
+
+[instruments]
+piano: "piano", channel=4, octave=3, velocity=80
+
+[example]
+piano: #'5 #'6 #1 #2 #4 #5 | #6 #1' #2' #4' #5' #6'
+text: "#G #A #C #D #F #G | #A #C #D #F #G #A"

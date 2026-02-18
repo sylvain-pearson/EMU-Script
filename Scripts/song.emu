@@ -1,0 +1,65 @@
+[composition]
+title: "Noël Blanc"
+by: "Irving Berlin"
+BPM: 110
+time: 4/4
+playlist: A1, B, A2, C
+
+[instruments]
+lead: "piano", channel=1, octave=3, velocity=95, info="Japanese Home Clean piano with reverb"      
+bass: "bass", channel=11, octave=2, velocity=85, info="Electric bass guitar played with fingers"
+drum: "drum", channel=12, velocity=90, info="Studio drum"
+
+[sequences]
+ds: h - h o  h - h- (h) 
+
+[A]
+lead: 3 | 4 3 #2 3 | 4 | #4 5 - - | . 6 7 1' | 2' 1' 7 6 | 5 | . . 1 2 | 3 3 
+bass: 1 5 | 1 - '7 1 | 2 6 | #2 3 - 5 | 4 | - | 3 - 4 #4 | 5 | 1 - 1' 7 
+drum: ds | ... 
+
+[A1]
+text: "Oh | quand j'en tends chan | ter | No ël - - | . J'aime a re | voir mes joies d'en | fant | . . Le sa | pin sin"
+
+[A2]
+text: "Oh | quand j'en tends so | nner | au ciel - - | . L'heure où le  | bon vieill ard des | cend | . . Je re | vois tes"
+
+[B]
+lead: 3 6 - 5 | 1 1 | 1 5 - 4 | 3 | 4 3 2 #1 | 2 | -
+text: "ti llant -  la | nei ge | d'ar gent - No | ël | mon beau rê ve | blanc"
+bass: #6 | 6 | #5 | 5 1 | #1 - - . | . 2 3 4 | 5 '7
+drum: ds | ...
+
+[C]
+lead:  3 6 - 5 | 1' | 41 - 1 2 | 3 3 | 6- ('7) '7 '7 | 1 | -
+text: "yeux clairs - ma | man | . . Et  je | songe à | d'autres - No ëls | blancs"
+bass: #6 | 6 - 5 4 | #5 | 5 | 4 5 | . 1 | -
+drum: ds | ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

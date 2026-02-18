@@ -1,0 +1,17 @@
+[composition]
+title: "Intervals"
+by: "Sylvain Pearson"
+time: 3/4
+BPM: 60
+transposition: 0
+playlist: example
+
+[instruments]
+piano: "piano", channel=1, octave=3, velocity=80
+
+[example]
+piano:  13  35  57 | 14  25  36 | 15  26  37 | 11 22 '66
+text: "major-third minor-third major-third | perfect-fourths | perfect-fifths | octaves"
+
+
+

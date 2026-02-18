@@ -1,0 +1,18 @@
+[composition]
+title: "Arpeggio"
+by: "Sylvain Pearson"
+time: 4/4
+BPM: 110
+transposition: -2
+playlist: example
+
+[instruments]
+gtr: "guitar", channel=4, octave=3, velocity=60
+
+[sounds]
+arp1: arp(1 1 1 2), step=3, duration=3
+arp2: arp(1 2 3 4 3 2), step=4, duration=7
+
+[example]
+gtr:  arp1/37 | - . arp2/1357 - | - | - 135
+

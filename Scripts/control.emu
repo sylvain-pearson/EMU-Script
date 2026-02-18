@@ -1,0 +1,28 @@
+[composition]
+title: "MIDI messages control"
+by: "Sylvain Pearson"
+time: 4/4
+BPM: 100
+transposition: 0
+CC: modw=1
+playlist: example
+
+[instruments]
+synth: "MIDI Input", channel=4, octave=3, velocity=80
+drum: "drum", channel=10, velocity=80
+
+[sounds]
+kick: midi(36), volume=100
+hh: midi(42), volume=100
+toc: midi(37), volume=100
+
+[control]
+/synth/program: 8.8
+/synth/example/1/cc: modw=9.5
+/synth/example/4/cc: modw=1.5
+/drum/example/1/velocity: -40
+/drum/example/2..5/velocity: +20
+
+[example]
+synth: . |  1 1' | 1 3 5 - | 1 1' | 1 3 5 -
+drum: toc toc toc toc | kick/hh (hh hh) kick (hh hh) | * | * | * 

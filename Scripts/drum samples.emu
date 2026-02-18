@@ -1,0 +1,19 @@
+[composition]
+title: "Drum Samples"
+by: "Sylvain Pearson"
+time: 4/4
+BPM: 120
+playlist: example
+
+[instruments]
+drum: sample, velocity=70
+
+[sounds]
+kick: sample("samples/TR-707/kick.wav"), volume=60
+hh: sample("samples/TR-707/hi-hat.wav"), volume=70
+sn: sample("samples/TR-707/snare.wav"), volume=50
+crash: sample("samples/TR-707/crash.wav"), volume=50  
+
+[example]
+drum: kick (hh hh) kick hh | kick (hh hh) kick/sn hh | kick (hh hh) kick crash
+ 

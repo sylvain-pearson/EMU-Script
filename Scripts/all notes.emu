@@ -1,0 +1,32 @@
+[composition]
+title: "All Notes"
+by: "Sylvain Pearson"
+time: 7/8
+BPM: 100
+transposition: 0
+playlist: diatonic, chromatic
+
+[instruments]
+piano-4: "piano", channel=4, octave=4, velocity=80
+piano-3: "piano", channel=4, octave=3, velocity=80
+piano-2: "piano", channel=4, octave=2, velocity=80
+piano-1: "piano", channel=4, octave=1, velocity=80
+
+[sequences]
+low: . . . . '5 '6 '7
+mid: 1 2 3 4 5 6 7
+high: 1' 2' 3' 4' 5' 6' .
+chromatic: . '#5 '#6 #1 #2 #4 #5 | #6 #1' #2' #4' #5' #6' -
+
+[diatonic]
+piano-4: . | . | .  | low | mid | high
+piano-3: . | . | low | mid | high
+piano-2: . | low | mid | high
+piano-1: low | mid | high 
+
+[chromatic]
+piano-4: chromatic
+piano-3: chromatic
+piano-2: chromatic
+piano-1: chromatic
+

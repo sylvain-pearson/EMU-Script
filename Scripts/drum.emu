@@ -1,0 +1,18 @@
+[composition]
+title: "Drum Notes"
+by: "Sylvain Pearson"
+time: 4/4
+BPM: 120
+transposition: 0
+playlist: all, example
+
+[instruments]
+synth: "-", channel=4, octave=3, velocity=80
+drum: "drum", channel=1, velocity=90
+
+[all]
+drum: i i i i | B B h h | S S o o | 1 1 2 2 | 3 3 4 4 | r r c c | Bh S h h Bh S h h
+text: "drum-stick | bass-drum closed-hi-hat | snare-drum open-hi-hat | floor-toms | tom-toms | ryde-cymbal crash-symbal"
+
+[example] 
+drum: Bh h  Sh h  h h  Sh h | (Bh h h h) (Sh h h h) (s s s -) (s s s s) 

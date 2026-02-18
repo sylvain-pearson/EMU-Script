@@ -1,0 +1,15 @@
+[composition]
+title: "Time Signature 6/8"
+by: "Sylvain Pearson"
+time: 6/8
+BPM: 120
+transposition: 1
+playlist: example
+
+[instruments]
+piano: "piano", channel=4, octave=3, velocity=80
+
+[example]
+piano: 1 | 2- 3- | 2 3 4 | (1 2) (3 4) [3 2 1] | 1 2 3 4 5 6 7 1' 2' 3' 4' 5'
+text: "whole-note | dotted-quarter-notes | quarter-notes | eighth-notes - triplet | sixteenth-notes"
+ 
