@@ -1,5 +1,6 @@
 
 ![emu-icon](Images/emu-icon.png)
+
 EMU-Script is a text-based, electronic music composition software for MacOS. 
 
 - Built-in script editor with syntax highlighting and error checking.
