@@ -1,11 +1,10 @@
 
 ![emu-icon](Images/emu-icon.png)
+EMU-Script is a text-based, electronic music composition software for MacOS. 
 
-EMU-Script is an electronic music script editor and MIDI sequencer for MacOS. 
-
-- Programmable multi-track MIDI sequencer.
-- Music sheet viewer that automatically scrolls during playback.
 - Built-in script editor with syntax highlighting and error checking.
+- Multi-track MIDI sequencer.
+- Music sheet viewer that automatically scrolls during playback.
 - Control your virtual instruments and external synthesizer using MIDI messages (MIDI note, control change, and program change).
 - Structure your composition using musical sections and sequencing functions.
 - Use chord progressions, strum chords, and play arpeggios.
