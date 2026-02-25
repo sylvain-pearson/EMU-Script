@@ -11,9 +11,9 @@ bass: "bass", channel=11, octave=2, velocity=80
 drum: "drum", channel=12, velocity=90
 
 [sequences]
-b1: $1 - $1 $2 $1 $1 - $2 
-b2: $1 - . $1 $1 - . $2   
-ds: Bh h sh h Bh h sh h | Bh h sh h Bh h sh $1       
+b1: arg(1) - arg(1) arg(2) arg(1) arg(1) - arg(2) 
+b2: arg(1) - . arg(1) arg(1) - . arg(2)   
+ds: Bh h sh h Bh h sh h | Bh h sh h Bh h sh arg(1)      
 
 [example]
 bass: b1('6 1) | b2(2 4) | b1(5 7) | 1 .

@@ -9,45 +9,42 @@ playlist: diatonic, major, minor, diatonic-7th, dominant-7th, minor-7th, major-7
 [instruments]
 piano: "piano", octave=3, velocity=75 
 
-[sequences]
-x8: $1 | $1 | $1 | $1 | $1 | $1 | $1 
-
 [diatonic]
-piano: x8(@3)
+piano: chord | ...
 chord: 6m | 7d | 1M | 2m | 3m | 4M | 5M  
 
 [major]
-piano: x8(@3)
+piano: chord | ...
 chord: 6M | 7M | 1M | 2M | 3M | 4M | 5M 
 
 [minor]
-piano: x8(@3)
+piano: chord | ...
 chord: 6M | 7M | 1M | 2M | 3M | 4M | 5M 
 
 [diatonic-7th]
-piano: x8(@4)
+piano: chord | ...
 chord: 6m7 | 7d7 | 1M7 | 2m7 | 3m7 | 4M7 | 5D7 
 
 [dominant-7th]
-piano: x8(@4)
+piano: chord | ...
 chord: 6D7 | 7D7 | 1D7 | 2D7 | 3D7 | 4D7 | 5D7 
 
 [minor-7th]
-piano: x8(@4)
+piano: chord | ...
 chord: 6m7 | 7m7 | 1m7 | 2m7 | 3m7 | 4m7 | 5m7 
 
 [major-7th]
-piano: x8(@4)
+piano: chord | ...
 chord: 6M7 | 7M7 | 1M7 | 2M7 | 3M7 | 4M7 | 5M7 
 
 [diminished]
-piano: x8(@3)
+piano: chord | ...
 chord: 6d | 7d | 1d | 2d | 3d | 4d | 5d
 
 [diminished-7th]
-piano: x8(@4)
+piano: chord | ...
 chord: 6d7 | 7d7 | 1d7 | 2d7 | 3d7 | 4d7 | 5d7 
 
 [augmented]
-piano: x8(@3)
+piano: chord | ...
 chord: 6a | 7a | 1a | 2a | 3a | 4a | 5a

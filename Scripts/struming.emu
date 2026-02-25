@@ -14,12 +14,12 @@ dw: strum(5 4 3 2 1), msec=5, vdec=3
 up: strum(1 2 3 4 5), msec=6, vdec=5
 
 [sequences]
-r1: dw/@5 - - up/@3 dw/@5 - - -
-r2: up/@5 - - dw/@3 up/@5 - - -
-r3: dw/@5 - - - - - up/@3 -
+r1: dw/chord(5) - - up/chord(3) dw/chord(5) - - -
+r2: up/chord(5) - - dw/chord(3) up/chord(5) - - -
+r3: dw/chord(5) - - - - - up/chord(3) -
 
 [example]
-guitar: r1 | r2 | r1 | r3 | r1 | r2 | r1 | up/@5
+guitar: r1 | r2 | r1 | r3 | r1 | r2 | r1 | up/chord(5)
 chord: 6m | 2m | '5M | 1M | 4M | 7d | 3m | 6m
 
 

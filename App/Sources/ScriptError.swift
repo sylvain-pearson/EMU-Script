@@ -23,6 +23,8 @@ enum ScriptErrorCode {
     case noteIsTooLow
     case noteIsTooHigh
     case unsupportedTimeSignature
+    case parenthesisMismatch
+    case squareBracketMismatch
     case syntaxError
     case ccSyntaxError
     case unexpectedKeyword
@@ -104,7 +106,11 @@ struct ScriptError : Identifiable {
         case .invalidChord:
             message = String(localized: "Invalid chord: '\(info)'")
         case .syntaxError:
-            message = String(localized: "Syntax error at: '\(info)'")
+            message = String(localized: "Syntax error: '\(info)'")
+        case .parenthesisMismatch:
+            message = String(localized: "Parenthesis mismatch")
+        case .squareBracketMismatch:
+            message = String(localized: "Square bracket mismatch")
         case .ccSyntaxError:
             message = String(localized: "Expected a CC name=number pair")
         default :

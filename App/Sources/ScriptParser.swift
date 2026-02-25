@@ -47,6 +47,40 @@ public class TextLine {
             // regex verification failed
             self.error = ScriptError(code: .invalidKey, info: self.key, lineNumber: self.lineNumber)
         }
+        
+        if (self.error.isOk()) {
+            var parenthesisCount = 0
+            var squareBracketCount = 0
+            
+            for c in self.value {
+                if (c == "(") {
+                    parenthesisCount += 1
+                }
+                else if (c == "[") {
+                    squareBracketCount += 1
+                }
+                else if (c == ")") {
+                    parenthesisCount -= 1
+                }
+                else if (c == "]") {
+                    squareBracketCount -= 1
+                }
+                
+                if (parenthesisCount < 0) {
+                    self.error = ScriptError(code: .parenthesisMismatch, info: "", lineNumber: self.lineNumber)
+                }
+                else if (squareBracketCount < 0) {
+                    self.error = ScriptError(code: .squareBracketMismatch, info: "", lineNumber: self.lineNumber)
+                }
+            }
+            
+            if (parenthesisCount != 0) {
+                self.error = ScriptError(code: .parenthesisMismatch, info: "", lineNumber: self.lineNumber)
+            }
+            else if (squareBracketCount != 0) {
+                self.error = ScriptError(code: .squareBracketMismatch, info: "", lineNumber: self.lineNumber)
+            }
+        }
     }
     
     //-------------------------------------
@@ -303,20 +337,31 @@ public class ScriptParser {
         
         var textList: [String] = []
         var token = ""
+        var inFunction = false
         
         for char in text {
             if (char.isWhitespace) {
                 if (!token.isEmpty) {
                     textList.append(token)
                     token = ""
+                    inFunction = false
                 }
             }
-            else if (char == "(" || char == ")" || char == "[" || char == "]" || char == "{" || char == "}") {
+            else if (!token.isEmpty && !token.first!.isSymbol &&  char == "(") {
+                inFunction = true
+                token.append(String(char))
+            }
+            else if (inFunction && char == ")") {
+                inFunction = false
+                token.append(String(char))
+            }
+            else if (char == "(" || char == ")" || char == "[" || char == "]") {
                 if (!token.isEmpty) {
                     textList.append(token)
                 }
                 textList.append(String(char))
                 token = ""
+                inFunction = false
             }
             else {
                 token.append(String(char))

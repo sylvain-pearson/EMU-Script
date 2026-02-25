@@ -2,13 +2,14 @@
 
 ## TODO
 - [x] Complete the user manual 
-- [ ] Migrate and test all partitions
-- [ ] Code clean-up
-- [ ] Add to GitHub
+- [x] Migrate and test scripts
+- [x] Code clean-up
+- [x] Add to GitHub
+- [ ] Migrate all partitions
 - [ ] Create package
 
 ## Issues
-- [ ] Cannot combine chords replacement (@) with measure repetition (* ...)
+- [ ] Cannot combine chords replacement (@) with measure repetition (...)
 - [ ] Sequencer accuracy can be improved
 - [ ] Number of measures should not be limited to 100 in the Music Sheet view
 - [ ] The document state is almost always "Edited"

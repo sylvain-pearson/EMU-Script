@@ -3,9 +3,6 @@
 # User Manual
 EMU-Script is a programmable MIDI sequencer and music sheet viewer. It proposes an innovative approach to electronic music creation. I hope you will enjoy using it!
 
-EMU-Script will communicate with your virtual instruments using virtual MIDI ports. Those can be added using the MIDI Studio configuration tool:
-
- ![virtual-ports](assets/virtual-ports.png)
 
 ## 1. The User Interface
 EMU-Script is a document-based application. Upon starting, you will be prompted to either open an existing EMU script document or to create a new one. 
@@ -226,14 +223,22 @@ All lyrics must be quoted, and lyric lines must be prefixed by `text:`. The same
 A chord progression defines the harmonic structure of a composition. You can add a chord progression using lines that are prefixed by `chord:`. Here is an example:
 ```
     [verse]
-    synth: @ | @3 | @3 | @2 @ | @4
-    chord: 1M | 6m | '4M | '5M | 1M
+    chord: 1M | 6m | '4M '5M | 1M
 ``` 
-The at sign `@` is used to access the chord notes. If used alone, it is replaced by the chord's root. If it is suffixed by a number, the number indicates the number of notes to be inserted. Here is a musical section that is equivalent to the previous example:
+Once a chord progression has been defined, it is possible to access the notes of the current chord using three built-in functions:
+- **`root`**: returns the current root note.
+- **`chord`**: returns the current chord.
+- **`chord(n)`**: returns the first 'n' notes of the current chord. When `n` is higher than the chord notes count, the chord is extended.
+
+Here is an example of use:
 ```
     [verse]
-    synth: 1 | '613 | 146 | 25 5 | 1351
+    chord:   6m  |  2m'    5M     |   1M 
+    synth1: root | chord chord(2) | chord(4)  
+    synth2:  '6  |  462    57     |  1351 
+     
 ``` 
+*In the example, the synth1 and synth2 instruments play exactly the same notes.*
 
 #### 3.3.7 Repetition
 Sometimes, in a composition, measures of music are repeated. Two built-in functions are provided to avoid repetition in a script:
@@ -254,19 +259,18 @@ Here is a musical section that is equivalent to the previous example:
 ```
 
 ### 3.4 The sequences section
-The `[sequence]` section lists the sequences that can be inserted in musical sections. A sequence defines a few measures of music that can be parameterized and that is not bound to a specific instrument. The parameters of a sequence have hard-coded names: `$1` (first parameter), `$2` (second parameter), etc. Here is an example:
+The `[sequence]` section lists the sequences that can be inserted in musical sections. A sequence defines a few measures of music that can be parameterized and that is not bound to a specific instrument. The parameters of a sequence can be accessed using the `arg(n)` and `args`, build-in functions. Here is an example:
 ```
 [sequences]
-s1: $1 $3 $2 $1 $3 $2 $1 $3
-s2: 2 - 3 4 | 5 - (7 6) #5 | 5- (4) 3 - | $1
-m1: 4 6 | 3 - - . | 2 5 | 4 5 6 -
-d1: h . h h o . h h | h . h h o . h $1
+seq1: arg(1) arg(3) arg(2) arg(1)
+seq2: 2 - 3 4 | 5- (4) 3 - | args
+seq3: . 3 4 5 | 4 3 36 -
 
 [intro1]
-piano: s1(3 5 7) | m1
+piano: seq1(3 5 7) | seq2(2 1) | seq3
 
 [intro2]
-piano: 3 7 5 3 7 5 3 7 | 4 6 | 3 - - . | 2 5 | 4 5 6 -
+piano: 3 7 5 3 | 2 - 3 4 | 5- (4) 3 - | 2 1 | . 3 4 5 | 4 3 36 -
 ```
 In this example, the `[intro1]` and `[intro2]` musical sections are equivalent.
 

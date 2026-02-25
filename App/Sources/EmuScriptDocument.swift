@@ -42,7 +42,7 @@ final public class EmuScriptDocument: FileDocument  {
     var parser : ScriptParser
     var instruments: [MusicalInstrument] = []
     var playlist: [PlaylistItem] = []
-    var templates: [String : String] = [:]
+    var sequences: [String : String] = [:]
     var midiNotes: [String : MidiNote] = [:]
     var ccNumbers: [String : Int] = [:]
     var sampleFiles: [String : Sample] = [:]
@@ -341,7 +341,7 @@ final public class EmuScriptDocument: FileDocument  {
     func loadSequencesSection()  {
         if let section = parser.getSection(name: "sequences") {
             for line in section.textLines {
-                templates[line.key] = line.value
+                sequences[line.key] = line.value
             }
         }
     }
@@ -583,87 +583,65 @@ final public class EmuScriptDocument: FileDocument  {
             let instrumentName = line.key
             var measures: [Measure]  = []
             
-            let text = replaceTemplates(line.value).trimmingCharacters(in: ["\""])
-            let phrases = text.split(separator: "|")
+            let text = preProcess(line.value, measureCount: musicalSection.getLength())
+            var phrases = text.split(separator: "|")
             var measureNumber = 0
             
             let octave = getInstrumentOctave(name: instrumentName)
             
             for phrase in phrases {
-                var measure = Measure()
+                let measure = Measure()
                 var measureStepsLength = 0
 
                 measureNumber += 1
                 let tokens = parser.tokenise(text: String(phrase))
                 var defaultStepLength = getMeasureStepLength(tokens)
                    
-                if (tokens.count == 1 && tokens[0] == "*" && measures.count > 0) {
-                    // Repeat the last measure
-                    measure = measures.last!.clone()
-                    measureStepsLength = composition.beatsPerMeasure * composition.stepsPerBeat
-                }
-                else if (tokens.count == 1 && tokens[0] == "..." && measures.count > 0) {
-                    // Repead first measures until the end of the section
-                    let repeatMeasure = measures
-                    let sectionLength = musicalSection.getLength()
-                    let measuresCountAfter3dots = phrases.count - measureNumber
-                    
-                    measures = []
-                    while (measures.count < sectionLength - measuresCountAfter3dots) {
-                        for measure in repeatMeasure {
-                            if (measures.count < sectionLength - measuresCountAfter3dots) {
-                                measures.append(measure.clone())
-                            }
+                for word in tokens {
+                    if (word == "-") {
+                        if (measure.steps.count > 0) {
+                            let lastStep = measure.steps.last!
+                            lastStep.length += defaultStepLength
+                            measureStepsLength += defaultStepLength
                         }
-                    }
-                }
-                else {
-                    for word in tokens {
-                        if (word == "-") {
-                            if (measure.steps.count > 0) {
-                                let lastStep = measure.steps.last!
-                                lastStep.length += defaultStepLength
-                                measureStepsLength += defaultStepLength
-                            }
-                            else if (measures.count > 0) {
-                                // Une note qui dure plus d'une mesure
-                                let lastStep = measures.last!.steps.last!
-                                lastStep.sustain = true
-                                
-                                let step = lastStep.clone()
-                                step.length = defaultStepLength
-                                step.sustained = true
-                                step.sustain = false
-                                measure.steps.append(step)
-                                measureStepsLength += step.length
-                            }
-                        }
-                        else if (word == ")") {
-                            defaultStepLength *= 2
-                        }
-                        else if (word == "(") {
-                            defaultStepLength /= 2
-                        }
-                        else if (word == "]") {
-                            defaultStepLength *= 3
-                        }
-                        else if (word == "[") {
-                            defaultStepLength /= 3
-                        }
-                        else {
-                            let chord = musicalSection.getChordAt(measureNumber: measureNumber, position: measureStepsLength)
-                            let step = parseStep(text: String(word), octave: octave, instrumentName: instrumentName, chord: chord, length: defaultStepLength)
+                        else if (measures.count > 0) {
+                            // Une note qui dure plus d'une mesure
+                            let lastStep = measures.last!.steps.last!
+                            lastStep.sustain = true
+                            
+                            let step = lastStep.clone()
+                            step.length = defaultStepLength
+                            step.sustained = true
+                            step.sustain = false
                             measure.steps.append(step)
                             measureStepsLength += step.length
-                            
-                            if (step.isError()) {
-                                parser.error(step.error, info: step.text, at: line.lineNumber)
-                            }
+                        }
+                    }
+                    else if (word == ")") {
+                        defaultStepLength *= 2
+                    }
+                    else if (word == "(") {
+                        defaultStepLength /= 2
+                    }
+                    else if (word == "]") {
+                        defaultStepLength *= 3
+                    }
+                    else if (word == "[") {
+                        defaultStepLength /= 3
+                    }
+                    else {
+                        let chord = musicalSection.getChordAt(measureNumber: measureNumber, position: measureStepsLength)
+                        let step = parseStep(text: String(word), octave: octave, instrumentName: instrumentName, chord: chord, length: defaultStepLength)
+                        measure.steps.append(step)
+                        measureStepsLength += step.length
+                        
+                        if (step.isError()) {
+                            parser.error(step.error, info: step.text, at: line.lineNumber)
                         }
                     }
                 }
                 
-                if (tokens.count > 0 && tokens[0] != "...")
+                if (tokens.count > 0)
                 {
                     measures.append(measure)
                 }
@@ -765,12 +743,21 @@ final public class EmuScriptDocument: FileDocument  {
             }
             else {
                 var stepNotes = ""
-                if (note.starts(with: "@")) {
-                    var notesCount = -1
-                    if (note.count == 2) {
-                        notesCount = toNumber(String(note.suffix(1)))
+                if (note == "chord") {
+                    stepNotes = chords.find(name: chord)
+                }
+                else if (note.starts(with: "chord(") && note.hasSuffix(")")) {
+                    let args = parseFunction(text: note)
+                    let n = (args.count == 2) ? toNumber(args[1]) : 0
+                    if (n > 0) {
+                        stepNotes = chords.find(name: chord, notesCount: n)
                     }
-                    stepNotes = chords.find(name: chord, notesCount: notesCount)
+                    else {
+                        step.error = .syntaxError
+                    }
+                }
+                else if (note == "root") {
+                    stepNotes = chords.find(name: chord, notesCount: -1)
                 }
                 else {
                     stepNotes = chords.find(name: note)
@@ -787,13 +774,17 @@ final public class EmuScriptDocument: FileDocument  {
     }
     
     // --------------------------------------------------
-    // Do the template replacement
+    // Preprocess a music line :
+    //  - Do the text replacement of sequences
+    //  - Repeat measures (* and ...)
     // --------------------------------------------------
-    func replaceTemplates(_ text: String) -> String
+    func preProcess(_ text: String, measureCount: Int) -> String
     {
-        let phrases = text.split(separator: "|")
+        var phrases = text.split(separator: "|")
         var result = ""
+        var m = 1
         
+        // First, process the sequences
         for phrase in phrases {
             if (result != "") {
                 result += " | "
@@ -803,24 +794,84 @@ final public class EmuScriptDocument: FileDocument  {
             let words = phrase.split(separator: "(")
             let id = String(words[0]).trimmingCharacters(in: .whitespacesAndNewlines)
             
-            if (templates[id] != nil) {
-                // Found a template: do the replacement of $ parameters
-                newPhrase = templates[id]!
+            if (sequences[id] != nil) {
+                // Found a sequence do the replacement of arg(n) parameters
+                newPhrase = sequences[id]!
                 
                 var n = 0
                 for argValue in parseFunction(text: String(phrase)) {
-                    let argName = String("$\(n)")
+                    let argName = String("arg(\(n))")
                     newPhrase = newPhrase.replacingOccurrences(of: argName, with: argValue)
                     n = n + 1
+                }
+                
+                // Do the replacement of args parameter
+                if (words.count == 2) {
+                    let args = String(words[1]).trimmingCharacters(in: .whitespacesAndNewlines)
+                    if (args.hasSuffix(")")) {
+                        newPhrase = newPhrase.replacingOccurrences(of: "args", with: args.dropLast())
+                    }
                 }
             }
             
             result += newPhrase
+            m += 1
+        }
+    
+        phrases = result.split(separator: "|")
+        result = ""
+        m = 1
+        
+        // Now process the measures repetition
+        for phrase in phrases {
+            if (result != "") {
+                result += " | "
+            }
+            
+            var newPhrase = String(phrase)
+            let words = phrase.split(separator: "(")
+            let id = String(words[0]).trimmingCharacters(in: .whitespacesAndNewlines)
+
+            if (id == "*") {
+                if (m > 1) {
+                    newPhrase = String(phrases[m-2])
+                    phrases[m-1] = phrases[m-2]
+                }
+                else {
+                    newPhrase = "."
+                }
+            }
+            else if (id == "...") {
+                let measureCountBefore3dots = m - 1
+                let measureCountAfter3dots = phrases.count - m
+                var index = 0
+                newPhrase = ""
+                
+                while (m <= measureCount - measureCountAfter3dots) {
+                    if (!newPhrase.isEmpty) {
+                        newPhrase += " | "
+                    }
+                    newPhrase += phrases[index]
+                    m += 1
+                    index += 1
+                    
+                    if (index >= measureCountBefore3dots) {
+                        index = 0
+                    }
+                }
+                
+                if (measureCountBefore3dots == 0) {
+                    newPhrase = "."
+                }
+            }
+            
+            result += newPhrase
+            m += 1
         }
         
-        return result
+        return result.trimmingCharacters(in: ["\""])
     }
-    
+
     // ------------------------------------------------
     // Parse a function, such as "arp(1 2 3)"
     // ------------------------------------------------

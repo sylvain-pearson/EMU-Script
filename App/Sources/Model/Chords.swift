@@ -115,7 +115,7 @@ struct Chords {
         var chord = get(name: name)
         if (chord != "")
         {
-            if (notesCount == -1) {
+            if (notesCount < 1) {
                 // return the chord's root
                 chord = name
                 if (chord.hasPrefix("'")) {
@@ -125,6 +125,8 @@ struct Chords {
                 
             }
             else {
+                // Return the requested count of notes
+                
                 let notes = chord.split(separator: " ")
                 
                 if (notesCount == 1) {
@@ -139,7 +141,7 @@ struct Chords {
                 else if (notesCount == 4) {
                     chord = String(notes[0] + notes[1] + notes[2] + notes[notes.count == 4 ? 3 : 0])
                 }
-                else if (notesCount == 5) {
+                else if (notesCount >= 5) {
                     chord = String(notes[0] + notes[1] + notes[2] + notes[notes.count == 4 ? 3 : 0]  + notes[notes.count == 4 ? 0 : 1])
                 }
             }

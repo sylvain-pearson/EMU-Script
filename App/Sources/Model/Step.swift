@@ -263,8 +263,8 @@ class Step : Identifiable {
                 if (c == "#" || c == "#" || c.isNumber) {
                     self.error = .invalidNote
                 }
-                else if (c.isLetter) {
-                    self.error = .invalidKeyword
+                else {
+                    self.error = .syntaxError
                 }
             }
         }

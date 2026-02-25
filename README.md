@@ -19,5 +19,13 @@ EMU-Script is a text-based, electronic music composition software for MacOS.
 ## Requirements
 - Xcode version 26 or higher is required to build the application.
 - Minimum required MacOS version: 26
-- A synthesizer or virtual instrument (MIDI compatible; plugins are not supported).
+- A synthesizer or virtual instrument (MIDI compatible; plugins are not supported). 
 - If you want to record your music creation, you need an audio mixing application.
+
+## MIDI Setup
+EMU-Script will communicate with your MIDI instruments through MIDI ports. 
+- If you have a synthesizer connected to your computer, a MIDI port will automatically be created by the system (on my Mac: 'MIDI Input').  
+- If you have virtual instruments, you will need to add MIDI virtual ports to your MIDI configuration. This can be done using the **MIDI Studio / IAC Properties** window of the **Audio MIDI Setup** system application. You could, for instance, create a new virtual port called "*piano*".
+- In the setting window of your virtual instruments, you have to select the virtual MIDI port to be listened to. For instance, if you have a virtual piano instrument, you could assign it to the "*piano*" virtual MIDI port.
+
+![virtual-ports](Doc/assets/virtual-ports.png)
