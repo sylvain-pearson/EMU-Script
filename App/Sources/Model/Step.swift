@@ -183,7 +183,7 @@ class Step : Identifiable {
         }
 
         if (!self.isError()) {
-            properties.items.append(PropertyInfo(name: String(localized: "Duration"), value: String(Float(self.length)/4)))
+            properties.items.append(PropertyInfo(name: String(localized: "Duration"), value: String(Float(self.length)/12)))
             properties.items.append(PropertyInfo(name: String(localized: "Velocity"), value: String(self.velocity)))
             
             var value = ""

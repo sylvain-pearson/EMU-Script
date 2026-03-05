@@ -20,6 +20,7 @@ struct MusicalInstrument: Identifiable, Hashable {
     var octave: UInt8 = 0                   // The keyboard octave: 1, 2, 3 or 4
     var velocity: UInt8 = 100               // The MIDI velocity: 0-127
     var isSelected = true
+    var isMuted = false
     
     func isDrum() -> Bool {
         return (octave == 0 && !isSampler())

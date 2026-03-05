@@ -49,12 +49,11 @@ final public class EmuScriptDocument: FileDocument  {
     var strumOrArps: [String : StrumOrArp]  = [:]
     var chords = Chords()
     var documentEdited = false
-    
+    var reloadCounter = 0
     var composition: MusicalComposition
     var measuresCount = 8
     var positions : [NotePosition] = []
-    
-    var richText: AttributedString = AttributedString("")
+    var updatedDocument : String
     
     static public var readableContentTypes: [UTType] { [.emuscript] }
     
@@ -81,8 +80,8 @@ final public class EmuScriptDocument: FileDocument  {
         synth: 1 2 3 4 | 5 6 7 1'
         """
         
+        self.updatedDocument = self.textDocument
         loadDocument()
-        self.richText = parser.highlightText(self.textDocument)
     }
     
     // ----------------------------------------------------------------------
@@ -104,17 +103,18 @@ final public class EmuScriptDocument: FileDocument  {
         self.parser = ScriptParser()
         self.documentEdited = true
         
+        self.updatedDocument = self.textDocument
         loadDocument()
-        self.richText = parser.highlightText(self.textDocument)
     }
 
     // ----------------------------------------------------------------------------------------
     // This function is called when the user has selected or unselected a musical instrument
     // ----------------------------------------------------------------------------------------
-    public func onInstrumentSelection(id: UUID, isSelected : Bool) {
+    public func onInstrumentSelection(id: UUID, isSelected : Bool, isMuted : Bool) {
         for i in 0..<instruments.count {
             if (instruments[i].id == id) {
                 instruments[i].isSelected = isSelected
+                instruments[i].isMuted = isMuted
                 Global.instruments = instruments
                 break
             }
@@ -137,15 +137,16 @@ final public class EmuScriptDocument: FileDocument  {
     // -------------------------------------------------------------------
     // This function is called when the user update the script
     // -------------------------------------------------------------------
-    func onUpdate(_ text: AttributedString, reload : Bool = false) {
+    func onUpdate(_ text: String, reload : Bool = false) -> AttributedString {
         self.documentEdited = true
+        self.updatedDocument = text
+        
         if (reload) {
-            self.textDocument = String(richText.characters)
+            self.textDocument = text
             loadDocument()
         }
-        else {
-            self.richText = parser.highlightText(String(text.characters))
-        }
+    
+        return  parser.highlightText(text)
     }
     
     // -------------------------------------------------------------
@@ -216,6 +217,7 @@ final public class EmuScriptDocument: FileDocument  {
         for i in 0..<instruments.count {
             if (i < Global.instruments.count && instruments[i].name == Global.instruments[i].name) {
                 instruments[i].isSelected = Global.instruments[i].isSelected
+                instruments[i].isMuted = Global.instruments[i].isMuted
             }
         }
         // Restore the previous selection of playlist items, if any
@@ -225,8 +227,9 @@ final public class EmuScriptDocument: FileDocument  {
             }
         }
         
-        self.richText = parser.highlightText(self.textDocument)
         self.documentEdited = false
+        
+        reloadCounter += 1
     }
         
     // ------------------------------------
@@ -584,7 +587,7 @@ final public class EmuScriptDocument: FileDocument  {
             var measures: [Measure]  = []
             
             let text = preProcess(line.value, measureCount: musicalSection.getLength())
-            var phrases = text.split(separator: "|")
+            let phrases = text.split(separator: "|")
             var measureNumber = 0
             
             let octave = getInstrumentOctave(name: instrumentName)
@@ -950,11 +953,11 @@ final public class EmuScriptDocument: FileDocument  {
     public func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {   
 
         if (self.documentEdited) {
-            self.textDocument = String(richText.characters)
+            self.textDocument = self.updatedDocument
             loadDocument()
         }
         
-        let data = Data(richText.utf8)
-        return .init(regularFileWithContents: data)
+        let data = self.textDocument.data(using: .utf8)
+        return .init(regularFileWithContents: data!)
     }
 }

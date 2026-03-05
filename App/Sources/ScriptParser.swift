@@ -402,11 +402,11 @@ public class ScriptParser {
                 textLine += AttributedString(String(c))
                 wordType = .comment
             }
-            else if (((c == "$" || c == "@") && wordType == .undefined) || (c.isNumber && wordType == .reserved)) {
+            else if (wordType == .number && (c == "M" || c == "m" || c == "d" || c == "D" || c == "a")) {
                 word += String(c)
                 wordType = .reserved
             }
-            else if (wordType == .number && (c == "M" || c == "m" || c == "d" || c == "D" || c == "a")) {
+            else if (wordType == .reserved && word.count == 2 && c == "7") {
                 word += String(c)
                 wordType = .reserved
             }
@@ -431,7 +431,7 @@ public class ScriptParser {
                     else if (wordType == .number) {
                         highligthedWord.foregroundColor = Color(hue: 0.07, saturation: 1, brightness: 0.6)
                     }
-                    else if (wordType == .reserved) {
+                    else if (wordType == .reserved || word == "chord" || word == "root" || word == "arg") {
                         highligthedWord.foregroundColor = Color(hue: 0.3, saturation: 1, brightness: 0.5)
                     }
                     else {

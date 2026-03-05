@@ -21,7 +21,7 @@ struct MusicalComposition {
     var stepsPerBeat: Int
     var transposition: Int8
     var sections: [MusicalSection] = [ ]
-    
+  
     // -----------------------------------
     // The default structure initializer
     // -----------------------------------

@@ -10,9 +10,9 @@ import SwiftUI
 import Foundation
 
 // -----------------------------------------------------
-// A view with a check box and some text displayed
+// A playlist item row with a checkbox
 // -----------------------------------------------------
-struct CheckboxRow: View {
+struct PlaylistRow: View {
     
     let name: String
     let id : UUID
@@ -29,18 +29,58 @@ struct CheckboxRow: View {
                 onChange(id, isSelected)
                 refresh()
             }
-            .toggleStyle(.checkbox)
         }
     }
 }
 
+// ---------------------------------------------------------
+// A instrument item row with a checkbox and a mute button
+// ---------------------------------------------------------
+struct InstrumentRow: View {
+    
+    let name: String
+    let id : UUID
+    @State var isSelected : Bool
+    @State var isMuted : Bool
+    var onChange: (UUID, Bool, Bool) -> Void
+    var refresh: () -> Void
+                        
+    var body: some View {
+        HStack {
+               
+            Toggle(isOn: $isSelected) {
+                Text(name)
+            }
+            .onChange(of: isSelected) { oldValue, newValue in
+                onChange(id, isSelected, isMuted)
+                isMuted = !isSelected
+                refresh()
+            }
+            .onChange(of: isMuted) { oldValue, newValue in
+                onChange(id, isSelected, isMuted)
+                refresh()
+            }
+
+            Spacer()
+            
+            Toggle(isOn: $isMuted) {
+                if (isMuted) {
+                    Text("M")
+                }
+                else {
+                    Text("M").foregroundColor(.gray)
+                }
+            }.toggleStyle(.button).frame(width: 25)
+        }
+    }
+}
 
 // ------------------------------------
 // Definition of the side bar view
 // ------------------------------------
 struct Sidebar: View {
 
-    var document: EmuScriptDocument
+    @Binding var document: EmuScriptDocument
     let refreshCanvas: () -> Void
     var properties : Properties
     
@@ -52,13 +92,13 @@ struct Sidebar: View {
             // The playlist
             Section(header: Text("Playlist").font(.headline)) {
                 ForEach (document.playlist) {
-                    CheckboxRow(name: $0.name, id: $0.id, isSelected: $0.isSelected, onChange: document.onPlaylistSelection, refresh: refreshCanvas)
+                    PlaylistRow(name: $0.name, id: $0.id, isSelected: $0.isSelected, onChange: document.onPlaylistSelection, refresh: refreshCanvas)
                 }
             }
             // The list on instruments
             Section(header: Text("Instruments").font(.headline)) {
                 ForEach (document.instruments) {
-                    CheckboxRow(name: $0.name, id: $0.id, isSelected: $0.isSelected, onChange: document.onInstrumentSelection, refresh: refreshCanvas)
+                    InstrumentRow(name: $0.name, id: $0.id, isSelected: $0.isSelected, isMuted: $0.isMuted, onChange: document.onInstrumentSelection, refresh: refreshCanvas)
                 }
             }
         }.frame(minWidth: 250).listStyle(.sidebar)

@@ -101,9 +101,9 @@ class SequencerThread: Thread {
                 
                 let startTime = Date.now
                 
-                if (!isCancelled && events.count > 0) {
+                if (!isCancelled && stepCount % 6 == 0) {
                     scrollTo(stepCount)
-                    //Thread.sleep(forTimeInterval: 0.02)
+                    Thread.sleep(forTimeInterval: 0.01)
                 }
                 
                 var strumming = false
@@ -176,7 +176,7 @@ class SequencerThread: Thread {
         }
         
         for instrument in document.instruments {
-            if (instrument.isSelected) {
+            if (!instrument.isMuted) {
                 let section = document.composition.getSection(name: sectionName)
                 if let measures = section.measures[instrument.name] {
                     for n in 0..<measures.count {
