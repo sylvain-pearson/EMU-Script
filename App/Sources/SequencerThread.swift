@@ -9,6 +9,7 @@
 import Foundation
 import CoreMIDI
 import MIDIKitIO
+import IOKit.pwr_mgt
 
 struct Event {
     var midi: MIDIEvent? = nil
@@ -96,6 +97,8 @@ class SequencerThread: Thread {
         let time0 = Date.now
         var stepCount = 0
         
+        let noSleepId = disableSleep()
+        
         do {
             for events in sequence {
                 
@@ -143,6 +146,7 @@ class SequencerThread: Thread {
                 if (!isCancelled) {
                     let processingDuration = startTime.distance(to: Date.now)
                     Thread.sleep(forTimeInterval: TimeInterval(stepDuration-processingDuration))
+
                     stepCount += 1
                 }
             }
@@ -152,6 +156,8 @@ class SequencerThread: Thread {
         catch {
             print("Error while sending Event: \(error)")
         }
+        
+        enableSleep(id: noSleepId)
         
         let p = time0.distance(to: Date.now)
         print("Song duration: \(p) seconds")
@@ -301,6 +307,34 @@ class SequencerThread: Thread {
             }
             else if (scriptErroror.isOk()) {
                 scriptErroror = ScriptError(code: .fileNotFound, info: fileName)
+            }
+        }
+    }
+    
+
+    func disableSleep() -> IOPMAssertionID {
+        var assertionID: IOPMAssertionID = 0
+        let reasonForActivity = "EMU-Script sequencer active" as CFString
+        
+        let success = IOPMAssertionCreateWithName(
+            kIOPMAssertionTypeNoDisplaySleep as CFString, // Prevents display sleep
+            IOPMAssertionLevel(kIOPMAssertionLevelOn),
+            reasonForActivity,
+            &assertionID
+        )
+        
+        if success != kIOReturnSuccess {
+            print("Failed to disable sleep")
+        }
+        
+        return assertionID
+    }
+    
+    func enableSleep(id: IOPMAssertionID) {
+        if (id != 0) {
+            let success = IOPMAssertionRelease(id)
+            if success != kIOReturnSuccess {
+                print("Failed to enable sleep")
             }
         }
     }
