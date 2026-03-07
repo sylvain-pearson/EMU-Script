@@ -98,17 +98,17 @@ class SequencerThread: Thread {
         var stepCount = 0
         
         let noSleepId = disableSleep()
-        
+
         do {
+            Thread.sleep(forTimeInterval: 0.02)
+            let startTime = Date.now
+            
             for events in sequence {
-                
-                let startTime = Date.now
                 
                 if (!isCancelled && stepCount % 6 == 0) {
                     scrollTo(stepCount)
-                    Thread.sleep(forTimeInterval: 0.01)
                 }
-                
+      
                 var strumming = false
                 for event in events {
                     if let midiEvent = event.midi {
@@ -144,10 +144,16 @@ class SequencerThread: Thread {
                 }
          
                 if (!isCancelled) {
-                    let processingDuration = startTime.distance(to: Date.now)
-                    Thread.sleep(forTimeInterval: TimeInterval(stepDuration-processingDuration))
 
                     stepCount += 1
+                    
+                    let endSleepTime = startTime +  TimeInterval(Double(stepCount) * stepDuration)
+                    Thread.sleep(until: endSleepTime)
+                    
+                    let timeDiff = endSleepTime.distance(to: Date.now) * 1000
+                    if (timeDiff > 10 || timeDiff < -10) {
+                        print("Time drift of \(Int(timeDiff)) ms")
+                    }
                 }
             }
             

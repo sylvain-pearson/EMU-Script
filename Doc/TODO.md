@@ -10,7 +10,9 @@
 - [x] Cannot combine chords replacement (@) with measure repetition (...)
 - [x] Reduce CPU usage during playback
 - [x] Number of measures should not be limited to 100 in the Music Sheet view
-- [ ] Improve sequencer accuracy
+- [ ] Paste text and save document clears pasted text
+- [x] Improve sequencer accuracy
+- [x] Prevent system sleep during playback
 - [ ] The document state is almost always "Edited"
 - [ ] Undo function is buggy
 
