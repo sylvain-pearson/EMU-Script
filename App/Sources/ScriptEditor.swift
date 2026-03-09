@@ -30,11 +30,16 @@ struct ScriptEditor : View {
                 keyPressed = press.characters.first
                 return .ignored
             }
+
         )
         .onChange(of: text) { oldValue, newValue in
             if (keyPressed != nil) {
                 text = document.onUpdate(String(newValue.characters), reload: keyPressed! == "\r")
+                // onUpdate() triggers another call to onChange(). The next call will be ignored
                 keyPressed = nil
+            }
+            else {
+                keyPressed = " "
             }
         }
         .onChange(of: reload) {
