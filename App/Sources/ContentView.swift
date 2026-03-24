@@ -47,9 +47,12 @@ struct ContentView: View {
                         MusicSheetView(document: $document, selectedStep: $selectedStep, properties: $properties, refreshCounter: $refreshCounter)
                             .onTapGesture { location in selectStep(at: location) }
                 }
-                .opacity(showTextEditor ? 0 : 1).scrollPosition($scrollPosition)
+                .opacity(showTextEditor ? 0 : 1)
+                .scrollPosition($scrollPosition)
                 
-                ScriptEditor(document: $document, reload: $document.reloadCounter).opacity(showTextEditor ? 1 : 0)
+                ScriptEditor(document: $document, reload: $document.reloadCounter)
+                    .opacity(showTextEditor ? 1 : 0)
+                    .disabled(!showTextEditor)
             }
         }
         .alert(String(localized: "Runtime Error"), isPresented: $showError) { }  message: {
@@ -58,11 +61,13 @@ struct ContentView: View {
         
         // The toolbar
         .toolbar {
-            ToolbarItemGroup {
+            ToolbarItemGroup() {
                 HStack {
+    
                     Toggle(isOn: $showTextEditor){ Label("Text Editor", systemImage: "doc.text") }
                         .onChange(of: showTextEditor) {
                             if (showTextEditor) { clearSelection() }
+                            else { refreshCounter.toggle() }
                         }
                         .disabled((sequencer != nil && sequencer!.isExecuting))
                     
@@ -88,7 +93,7 @@ struct ContentView: View {
                                   (scrollPosition.x != nil && Int(scrollPosition.x!) > (document.measuresCount-3)*getMeasureWidth()))
                 }
             }
-        }.frame(minWidth: 1200, minHeight: 600)
+        }.frame(minWidth: 1200, minHeight: 700)
     }
 
     // ---------------------------------

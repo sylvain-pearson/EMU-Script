@@ -14,6 +14,12 @@ struct EmuScriptApp: App {
         DocumentGroup(newDocument: EmuScriptDocument()) { file in
             ContentView(document: file.$document)
         }
+        .commands {
+           CommandGroup(replacing: .undoRedo) {
+               // Replacement goes here.
+               EmptyView()
+           }
+       }
     }
         
 }
