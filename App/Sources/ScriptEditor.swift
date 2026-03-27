@@ -61,7 +61,7 @@ struct ScriptEditor : View {
             text = document.onUpdate(document.textDocument)
         }
         .toolbar {
-            ToolbarItemGroup(placement: .principal) {
+            ToolbarItemGroup(placement: .primaryAction) {
                 Spacer()
                 
                 Button { undo() }

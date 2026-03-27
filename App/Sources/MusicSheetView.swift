@@ -22,8 +22,8 @@ struct MusicSheetProgress : View {
             if (progress >= 0) {
                 var path = Path()
                 let width = document.composition.beatsPerMeasure * document.composition.stepsPerBeat * 10 * 3
-                let pos = (Double(width) * progress) + 40
-                path.addRect(CGRect(x: pos+5, y: 185, width: 40, height: 5))
+                let pos = (Double(width) * progress) + 50
+                path.addRect(CGRect(x: pos+5, y: 195, width: 40, height: 5))
                 context.fill(path, with: .color(.blue))
             }
         }.padding(.vertical, 25)
@@ -41,7 +41,7 @@ struct MusicSheetView : View {
     @Binding var refreshCounter : Bool
     
     let measureHeight = 190
-    let margin = 40
+    let margin = 50
     
     var body: some View { 
         Canvas(opaque: false, colorMode: .linear, rendersAsynchronously: false) { context, size in
@@ -89,11 +89,14 @@ struct MusicSheetView : View {
                         instrumentNumber += 1
                         
                         if (isDrum || isSampler) {
+                            drawInstrumentName(context: context, name: document.instruments[n].name, x0: x, y0: y-50)
                             drawCompactStaff(context: context, x0: x, y0: y-20, width: width)
                         }
                         else {
-                            drawStaff(context: context, x0: x, y0: y, width: width, octave: document.instruments[n].octave)
+                            drawInstrumentName(context: context, name: document.instruments[n].name, x0: x, y0: y)
+                            drawStaff(context: context, x0: x, y0: y, width: width)
                         }
+                        
                         
                         let instrumentName = document.instruments[n].name
                         if let measures = document.composition.getSection(name: item.name).measures[instrumentName] {
@@ -131,7 +134,7 @@ struct MusicSheetView : View {
     // ----------------------------------------------------------------------------
     // Draw a staff having 4 horizontal lines and one vertical line per measure
     // ----------------------------------------------------------------------------
-    func drawStaff(context: GraphicsContext, x0: Int, y0: Int, width: Int, octave: UInt8) {
+    func drawStaff(context: GraphicsContext, x0: Int, y0: Int, width: Int) {
 
         let beatsPerMeasure = document.composition.beatsPerMeasure
         let measureWidth = getMeasureWidth()
@@ -203,6 +206,20 @@ struct MusicSheetView : View {
             context.stroke(path, with: .color(.gray), lineWidth: 1)
 
             x = x + (measureWidth / beatsPerMeasure)
+        }
+    }
+    
+    // --------------------------------------------
+    // Draw the staff's instrument name vertically
+    // --------------------------------------------
+    func drawInstrumentName(context: GraphicsContext, name: String, x0: Int, y0: Int) {
+        if (x0 < 100) {
+            let dy = 16
+            var y = y0 + ((measureHeight - margin - 5 - (name.count * dy)) / 2)
+            for letter in name {
+                context.draw(Text(String(letter)).font(.title3), at: CGPoint(x: x0-20, y: y), anchor: .center)
+                y += dy
+            }
         }
     }
     

@@ -2,9 +2,11 @@
 
 ## TODO
 - [x] Add mute button to instrument list
+- [x] Add instrument names to Music Sheet view
 - [ ] Add song duration to composition information
-- [ ] Update user manual : error display and mute function
-- [ ] Create package
+- [ ] Bundle scripts with application package
+- [ ] Update user manual : error display, undo/redo and mute functions
+- [ ] Release application package (version 1.0)
 
 ## Issues
 - [x] Cannot combine chords replacement (@) with measure repetition (...)
@@ -13,17 +15,16 @@
 - [x] Paste text and save document clears pasted text
 - [x] Improve sequencer accuracy
 - [x] Prevent system sleep during playback
+- [x] Undo function is buggy
 - [ ] The document state is almost always "Edited"
-- [ ] Undo function is buggy
 
 ## Wishlist
 - [ ] Add menu items for toolbar functions
-- [ ] Add instrument names and octaves to Music Sheet view
 - [ ] Improve lyrics notation
-- [ ] Bundle scripts with application package
 - [ ] Find and replace function (script editor)
 - [ ] User-definable font size and color settings (script editor)
 - [ ] Export to MIDI file
 - [ ] Export to LilyPond
 - [ ] Practice mode (provide feedback for user's hits and misses)
 - [ ] Record mode (insert notes played by the user)
+- [ ] French language support
