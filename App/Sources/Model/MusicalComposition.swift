@@ -47,6 +47,17 @@ struct MusicalComposition {
         return 0
     }
     
+    // ----------------------------
+    // Return total measure count
+    // ----------------------------
+    func getMeasureCount() -> Int {
+        var count = 0
+        for section in self.sections {
+            count += section.getLength()
+        }
+        return count
+    }
+    
     // --------------------------------------
     // Return the requested musical section
     // --------------------------------------
@@ -102,11 +113,18 @@ struct MusicalComposition {
     func getProperties() -> Properties {
         var properties: Properties = Properties(text: String(localized: "Composition"))
         
+        var seconds = self.beatsPerMeasure * self.getMeasureCount() * Int(self.BPM) / 60
+        let minutes = seconds / 60
+        
+        seconds = seconds - (minutes * 60)
+        let duration = String(format: (seconds < 10) ? "%d:0%d" :"%d:%d", minutes, seconds)
+        
         properties.items.append(PropertyInfo(value: self.name))
         properties.items.append(PropertyInfo(value: String(localized: "by ") + self.autor))
         properties.items.append(PropertyInfo(name: String(localized: "BPM"), value: self.BPM.description))
         properties.items.append(PropertyInfo(name: String(localized: "Time Signature"), value: self.timeSignature))
         properties.items.append(PropertyInfo(name: String(localized: "Transposition"), value: self.transposition.description))
+        properties.items.append(PropertyInfo(name: String(localized: "Duration"), value: duration))
         
         return properties
     }

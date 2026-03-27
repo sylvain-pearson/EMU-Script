@@ -3,7 +3,7 @@
 ## TODO
 - [x] Add mute button to instrument list
 - [x] Add instrument names to Music Sheet view
-- [ ] Add song duration to composition information
+- [x] Add song duration to composition information
 - [ ] Bundle scripts with application package
 - [ ] Update user manual : error display, undo/redo and mute functions
 - [ ] Release application package (version 1.0)
@@ -16,6 +16,7 @@
 - [x] Improve sequencer accuracy
 - [x] Prevent system sleep during playback
 - [x] Undo function is buggy
+- [ ] Composition information view is not refreshed after a change
 - [ ] The document state is almost always "Edited"
 
 ## Wishlist
