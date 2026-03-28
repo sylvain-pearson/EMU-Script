@@ -17,10 +17,10 @@ class UndoManager
     func push(old: String, new: String) {
 
         if (undoStack.isEmpty) {
-            undoStack.append(old)
+            pushToUndoStack(old)
         }
-
-        undoStack.append(new)
+        
+        pushToUndoStack(new)
         redoStack.removeAll()
         
         if (undoStack.count > 20) {
@@ -33,8 +33,22 @@ class UndoManager
     //------------------------
     func push(old: String) {
         if (undoStack.isEmpty) {
-            undoStack.append(old)
+            pushToUndoStack(old)
         }
+    }
+    
+    //----------------------------------------------------------------------------------
+    // Check if the top of the undo stack (or redo stack) contains the provided string
+    //----------------------------------------------------------------------------------
+    func contains(_ text : String) -> Bool {
+        var contain = false
+        if (undoStack.isEmpty == false && undoStack.last! == text) {
+            contain = true
+        }
+        else if (redoStack.isEmpty == false && redoStack.last! == text) {
+            contain = true
+        }
+        return contain
     }
     
     //--------------------------------------------------------
@@ -60,7 +74,7 @@ class UndoManager
         if (undoStack.count > 0) {
             
             if (redoStack.count == 0) {
-                redoStack.append(currentText)
+                pushToRedoStack(currentText)
             }
             
             text = undoStack.removeLast()
@@ -69,7 +83,7 @@ class UndoManager
                 text = undoStack.removeLast()
             }
             
-            redoStack.append(text)
+            pushToRedoStack(text)
         }
 
         return text
@@ -84,7 +98,7 @@ class UndoManager
         if (redoStack.count > 0) {
             
             if (undoStack.count == 0) {
-                undoStack.append(currentText)
+                pushToUndoStack(currentText)
             }
             
             text = redoStack.removeLast()
@@ -93,9 +107,21 @@ class UndoManager
                 text = redoStack.removeLast()
             }
             
-            undoStack.append(text)
+            pushToUndoStack(text)
         }
 
         return text
+    }
+    
+    private func pushToUndoStack(_ text: String) {
+        if (undoStack.count == 0 || undoStack.last! != text) {
+            undoStack.append(text)
+        }
+    }
+    
+    private func pushToRedoStack(_ text: String) {
+        if (redoStack.count == 0 || redoStack.last! != text) {
+            redoStack.append(text)
+        }
     }
 }

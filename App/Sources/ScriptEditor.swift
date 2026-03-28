@@ -34,6 +34,7 @@ struct ScriptEditor : View {
             .onKeyPress(action: { press in
                 if (press.modifiers.isEmpty || press.modifiers == .shift) {
                     if (isEdited == false && undoManager.canUndo() == false) {
+                        // Push the initial text
                         undoManager.push(old: document.textDocument)
                     }
                     isEdited = true
@@ -54,6 +55,14 @@ struct ScriptEditor : View {
                     keyPressed = nil
                 }
                 else {
+                    let diff = (document.textDocument.count - newValue.characters.count)
+                    if (diff > 5 || diff < -5) {
+                        if (newValue != "" && undoManager.contains(String(newValue.characters)) == false) {
+                            // A cut or paste operation has been performed
+                            undoManager.push(old: String(oldValue.characters), new: String(newValue.characters))
+                            isEdited = true
+                        }
+                    }
                     text = document.onUpdate(String(newValue.characters))
                 }
         }

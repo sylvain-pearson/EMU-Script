@@ -17,6 +17,7 @@
 - [x] Prevent system sleep during playback
 - [x] Undo function is buggy
 - [ ] Composition information view is not refreshed after a change
+- [x] Cut and paste operations are not added to undo history
 - [ ] The document state is almost always "Edited"
 
 ## Wishlist

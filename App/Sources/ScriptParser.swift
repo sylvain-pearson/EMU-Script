@@ -387,6 +387,8 @@ public class ScriptParser {
         var textLine = AttributedString()
         var lineNumber : UInt16 = 1
         
+        let addedNewLine = (text.hasSuffix("\n") == false)
+        
         for c in text + (text.hasSuffix("\n") ? "" : "\n") {
             if (c == "\"" && wordType == .undefined) {
                 textLine += AttributedString(String(c))
@@ -466,6 +468,10 @@ public class ScriptParser {
                 lineNumber += 1
             }
             last = c
+        }
+        
+        if (addedNewLine) {
+            richText.characters.removeLast()
         }
         
         return richText
