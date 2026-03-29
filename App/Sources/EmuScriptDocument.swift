@@ -53,6 +53,7 @@ final public class EmuScriptDocument: FileDocument  {
     var composition: MusicalComposition
     var measuresCount = 8
     var positions : [NotePosition] = []
+    var properties : Properties = Properties()
     var updatedDocument : String
     
     static public var readableContentTypes: [UTType] { [.emuscript] }
@@ -228,7 +229,8 @@ final public class EmuScriptDocument: FileDocument  {
         }
         
         self.documentEdited = false
-        
+        self.properties = composition.getProperties()
+
         reloadCounter += 1
     }
         

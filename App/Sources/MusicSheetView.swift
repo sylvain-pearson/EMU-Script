@@ -37,7 +37,6 @@ struct MusicSheetView : View {
     
     @Binding var document: EmuScriptDocument
     @Binding var selectedStep : Step?
-    @Binding var properties : Properties
     @Binding var refreshCounter : Bool
     
     let measureHeight = 190
@@ -67,10 +66,6 @@ struct MusicSheetView : View {
         let measureWidth = getMeasureWidth()
         
         document.positions.removeAll()
-        
-        if (properties.items.isEmpty) {
-            properties = document.composition.getProperties()
-        }
         
         for item in document.playlist {
             let sectionLength = document.composition.getSectionLength(name: item.name)

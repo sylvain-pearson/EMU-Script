@@ -20,7 +20,6 @@ struct ContentView: View {
     @State var scrollPosition = ScrollPosition(edge: .top)
     @State var stepCountProgress = 0
     @State var selectedStep : Step?
-    @State var properties : Properties = Properties()
     @State var sequencer : SequencerThread?
     
     @State var showTextEditor : Bool = false
@@ -37,14 +36,14 @@ struct ContentView: View {
     var body: some View {
         
         NavigationSplitView {
-            Sidebar(document: $document, refreshCanvas: refresh, properties: properties)
+            Sidebar(document: $document, refresh: refresh)
         }
         detail: {
             ZStack {
                 MusicSheetProgress(document: $document, progress: $progress).opacity(showTextEditor ? 0 : 0.5)
 
                 ScrollView(.horizontal, showsIndicators: true) {
-                        MusicSheetView(document: $document, selectedStep: $selectedStep, properties: $properties, refreshCounter: $refreshCounter)
+                    MusicSheetView(document: $document, selectedStep: $selectedStep, refreshCounter: $refreshCounter)
                             .onTapGesture { location in selectStep(at: location) }
                 }
                 .opacity(showTextEditor ? 0 : 1)
@@ -93,7 +92,7 @@ struct ContentView: View {
                                   (scrollPosition.x != nil && Int(scrollPosition.x!) > (document.measuresCount-3)*getMeasureWidth()))
                 }
             }
-        }.frame(minWidth: 1200, minHeight: 700)
+        }.frame(minWidth: 1920 * 0.60, minHeight: 1080 * 0.60)
     }
 
     // ---------------------------------
@@ -191,8 +190,8 @@ struct ContentView: View {
 
                     if (Int(at.x) > pos.x - 10 && Int(at.x) < pos.x + pos.width && Int(at.y) > pos.y - 10 && Int(at.y) < pos.y + pos.height) {
                         selectedStep = pos.step
-                        properties =  selectedStep!.getProperties(transposition: document.composition.transposition)
-                        properties.isSelection = true
+                        document.properties =  selectedStep!.getProperties(transposition: document.composition.transposition)
+                        document.properties.isSelection = true
                         break
                     }
                     else {
@@ -207,8 +206,8 @@ struct ContentView: View {
     // Clears the currently selected step
     //-------------------------------------
     func clearSelection() {
-        properties = document.composition.getProperties()
-        properties.isSelection = false
+        document.properties = document.composition.getProperties()
+        document.properties.isSelection = false
         selectedStep = nil
     }
 }

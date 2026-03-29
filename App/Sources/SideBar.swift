@@ -18,7 +18,7 @@ struct PlaylistRow: View {
     let id : UUID
     @State var isSelected : Bool
     var onChange: (UUID, Bool) -> Void
-    var refresh: () -> Void
+    var refreshMusicSheet: () -> Void
                         
     var body: some View {
         HStack {
@@ -27,7 +27,7 @@ struct PlaylistRow: View {
             }
             .onChange(of: isSelected) { oldValue, newValue in
                 onChange(id, isSelected)
-                refresh()
+                refreshMusicSheet()
             }
         }
     }
@@ -43,7 +43,7 @@ struct InstrumentRow: View {
     @State var isSelected : Bool
     @State var isMuted : Bool
     var onChange: (UUID, Bool, Bool) -> Void
-    var refresh: () -> Void
+    var refreshMusicSheet: () -> Void
                         
     var body: some View {
         HStack {
@@ -54,11 +54,11 @@ struct InstrumentRow: View {
             .onChange(of: isSelected) { oldValue, newValue in
                 onChange(id, isSelected, isMuted)
                 isMuted = !isSelected
-                refresh()
+                refreshMusicSheet()
             }
             .onChange(of: isMuted) { oldValue, newValue in
                 onChange(id, isSelected, isMuted)
-                refresh()
+                refreshMusicSheet()
             }
 
             Spacer()
@@ -81,8 +81,7 @@ struct InstrumentRow: View {
 struct Sidebar: View {
 
     @Binding var document: EmuScriptDocument
-    let refreshCanvas: () -> Void
-    var properties : Properties
+    let refresh: () -> Void
     
     var propertiesTitle : String = ""
     
@@ -92,23 +91,27 @@ struct Sidebar: View {
             // The playlist
             Section(header: Text("Playlist").font(.headline)) {
                 ForEach (document.playlist) {
-                    PlaylistRow(name: $0.name, id: $0.id, isSelected: $0.isSelected, onChange: document.onPlaylistSelection, refresh: refreshCanvas)
+                    PlaylistRow(name: $0.name, id: $0.id, isSelected: $0.isSelected,
+                                onChange: document.onPlaylistSelection,
+                                refreshMusicSheet: refresh)
                 }
             }
             // The list on instruments
             Section(header: Text("Instruments").font(.headline)) {
                 ForEach (document.instruments) {
-                    InstrumentRow(name: $0.name, id: $0.id, isSelected: $0.isSelected, isMuted: $0.isMuted, onChange: document.onInstrumentSelection, refresh: refreshCanvas)
+                    InstrumentRow(name: $0.name, id: $0.id, isSelected: $0.isSelected, isMuted: $0.isMuted,
+                                  onChange: document.onInstrumentSelection,
+                                  refreshMusicSheet: refresh)
                 }
             }
         }.frame(minWidth: 250).listStyle(.sidebar)
         
         // The Step properties
-        if (document.parser.errors.isEmpty || properties.isSelection) {
+        if (document.parser.errors.isEmpty || document.properties.isSelection) {
             VStack(alignment: .leading, spacing: 3) {
                 Divider()
-                Text(properties.text).font(.headline).opacity(0.7)
-                ForEach (properties.items) { property in
+                Text(document.properties.text).font(.headline).opacity(0.7)
+                ForEach (document.properties.items) { property in
                     Text(String("- ") + property.name + property.separator + property.value)
                 }
             }.padding(.all, 10)

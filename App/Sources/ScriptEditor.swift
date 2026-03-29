@@ -100,9 +100,9 @@ struct ScriptEditor : View {
         }
     }
     
-    //---------------------------------------------------------------------
-    // Check if there is any error in the scripot and refresh the display
-    //---------------------------------------------------------------------
+    //--------------------------------------------------------------------
+    // Check if there is any error in the script and refresh the display
+    //--------------------------------------------------------------------
     func validate() {
         undoManager.push(old: document.textDocument, new: String(text.characters))
         text = document.onUpdate(String(text.characters), reload: true)
