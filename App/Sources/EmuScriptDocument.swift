@@ -247,8 +247,11 @@ final public class EmuScriptDocument: FileDocument  {
                 let key = line.key.lowercased()
                 
                 if (key == "playlist") {
-                    for sectionName in line.getValues(separator: ",") {
-                        playlist.append(PlaylistItem(name: String(sectionName).trimmingCharacters(in: .whitespaces)))
+                    self.composition.playlist = []
+                    for keyword in line.getValues(separator: ",") {
+                        let itemName = String(keyword).trimmingCharacters(in: .whitespaces)
+                        self.playlist.append(PlaylistItem(name: itemName))
+                        self.composition.playlist.append(itemName)
                     }
                 }
                 else if (key == "bpm") {

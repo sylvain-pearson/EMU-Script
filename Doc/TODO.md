@@ -16,8 +16,10 @@
 - [x] Improve sequencer accuracy
 - [x] Prevent system sleep during playback
 - [x] Undo function is buggy
-- [ ] Composition information view is not refreshed after a change
+- [x] Composition information view is not refreshed after a change
 - [x] Cut and paste operations are not added to undo history
+- [x] Wrong song duration displayed when a section is twice in the playlist
+- [ ] The progress cursor is not always visible when the main view is small
 - [ ] The document state is almost always "Edited"
 
 ## Wishlist

@@ -21,6 +21,7 @@ struct MusicalComposition {
     var stepsPerBeat: Int
     var transposition: Int8
     var sections: [MusicalSection] = [ ]
+    var playlist: [String] = [ ]
   
     // -----------------------------------
     // The default structure initializer
@@ -52,7 +53,8 @@ struct MusicalComposition {
     // ----------------------------
     func getMeasureCount() -> Int {
         var count = 0
-        for section in self.sections {
+        for itemName in self.playlist {
+            let section = getSection(name: itemName)
             count += section.getLength()
         }
         return count
@@ -113,7 +115,7 @@ struct MusicalComposition {
     func getProperties() -> Properties {
         var properties: Properties = Properties(text: String(localized: "Composition"))
         
-        var seconds = self.beatsPerMeasure * self.getMeasureCount() * Int(self.BPM) / 60
+        var seconds = self.beatsPerMeasure * self.getMeasureCount() * 60 / Int(self.BPM)
         let minutes = seconds / 60
         
         seconds = seconds - (minutes * 60)
