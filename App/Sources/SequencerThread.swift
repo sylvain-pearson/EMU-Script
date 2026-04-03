@@ -94,21 +94,24 @@ class SequencerThread: Thread {
     override func main()
     {
         let stepDuration = Double(60.0) / Double(document.composition.BPM) / Double(document.composition.stepsPerBeat)
-        let time0 = Date.now
+        
+        Thread.sleep(forTimeInterval: 0.05)
+        
+        let refreshTimeInterval: TimeInterval = 0.005
+        let startTime = Date.now + TimeInterval(refreshTimeInterval)
         var stepCount = 0
         
         let noSleepId = disableSleep()
 
         do {
-            Thread.sleep(forTimeInterval: 0.02)
-            let startTime = Date.now
-            
             for events in sequence {
                 
-                if (!isCancelled && stepCount % 6 == 0) {
+                if (!isCancelled && stepCount % 12 == 0) {
                     scrollTo(stepCount)
                 }
       
+                Thread.sleep(forTimeInterval: refreshTimeInterval)  // Reserve 5 ms for the screen refresh
+                
                 var strumming = false
                 for event in events {
                     if let midiEvent = event.midi {
@@ -144,14 +147,14 @@ class SequencerThread: Thread {
                 }
          
                 if (!isCancelled) {
-
+                    
                     stepCount += 1
                     
                     let endSleepTime = startTime +  TimeInterval(Double(stepCount) * stepDuration)
-                    Thread.sleep(until: endSleepTime)
+                    Thread.sleep(until: endSleepTime - TimeInterval(0.005))
                     
                     let timeDiff = endSleepTime.distance(to: Date.now) * 1000
-                    if (timeDiff > 10 || timeDiff < -10) {
+                    if (timeDiff > 5 || timeDiff < -5) {
                         print("Time drift of \(Int(timeDiff)) ms")
                     }
                 }
@@ -165,7 +168,7 @@ class SequencerThread: Thread {
         
         enableSleep(id: noSleepId)
         
-        let p = time0.distance(to: Date.now)
+        let p = startTime.distance(to: Date.now)
         print("Song duration: \(p) seconds")
     }
     
