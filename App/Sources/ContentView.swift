@@ -28,6 +28,9 @@ struct ContentView: View {
     @State var progress = -1.0
     @State var scrollByCount = 3
     
+    @FocusState var isTextEditorFocused: Bool
+    @State var isTextEditorDisabled = false
+    
     let measureHeight = 190
     let margin = 40
     let stepWidth = 8
@@ -53,7 +56,8 @@ struct ContentView: View {
                 
                 ScriptEditor(document: $document, reload: $document.reloadCounter)
                     .opacity(showTextEditor ? 1 : 0)
-                    .disabled(!showTextEditor)
+                    .focused($isTextEditorFocused)
+                    .disabled(isTextEditorDisabled)
             }
         }
         .alert(String(localized: "Runtime Error"), isPresented: $showError) { }  message: {
@@ -67,8 +71,7 @@ struct ContentView: View {
     
                     Toggle(isOn: $showTextEditor){ Label("Text Editor", systemImage: "doc.text") }
                         .onChange(of: showTextEditor) {
-                            if (showTextEditor) { clearSelection() }
-                            else { refreshCounter.toggle() }
+                            onChangeOfTextEditor(showTextEditor)
                         }
                         .disabled((sequencer != nil && sequencer!.isExecuting))
                     
@@ -96,7 +99,9 @@ struct ContentView: View {
                     Picker(selection: $scrollByCount,
                            label: Text("Scroll by"),
                            content: { Text("2").tag(2); Text("3").tag(3); Text("4").tag(4) }
-                    ).pickerStyle(.segmented)
+                    )
+                    .pickerStyle(.segmented)
+                    .disabled((sequencer != nil && sequencer!.isExecuting))
                 }
             }
         }.frame(minWidth: 1920 * 0.60, minHeight: 1080 * 0.60)
@@ -172,6 +177,22 @@ struct ContentView: View {
         refreshCounter.toggle()
     }
 
+    // -------------------------------------------------------------
+    // Set the focus on the text editor or on the music sheet view
+    // -------------------------------------------------------------
+    func onChangeOfTextEditor(_ showTextEditor : Bool) {
+        if (showTextEditor) {
+            clearSelection()
+            isTextEditorFocused = true
+            isTextEditorDisabled = false
+        }
+        else {
+            refreshCounter.toggle()
+            isTextEditorFocused = false
+            isTextEditorDisabled = true
+        }
+    }
+    
     // -----------------------------------------------
     // Scroll to a specific position on the staff
     // -----------------------------------------------
