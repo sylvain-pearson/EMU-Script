@@ -19,7 +19,8 @@
 - [x] Composition information view is not refreshed after a change
 - [x] Cut and paste operations are not added to undo history
 - [x] Wrong song duration displayed when a section is twice in the playlist
-- [ ] The progress cursor is not always visible when the main view is small
+- [x] The progress cursor is not always visible when the main view is small
+- [ ] Text typed in the music sheet is processed by the script editor
 - [ ] The document state is almost always "Edited"
 
 ## Wishlist

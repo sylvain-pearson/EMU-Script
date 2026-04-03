@@ -9,21 +9,24 @@
 import Foundation
 import SwiftUI
 
+let stepWidth = 8
+
 //------------------------------------------------------------------
 // This view displays a cursor on the current beat during playback
 //------------------------------------------------------------------
 struct MusicSheetProgress : View {
     
     @Binding var document: EmuScriptDocument
+    @Binding var scrollByCount: Int
     @Binding var progress : Double
     
     var body: some View {
         Canvas(opaque: false, colorMode: .linear, rendersAsynchronously: false) { context, size in
             if (progress >= 0) {
                 var path = Path()
-                let width = document.composition.beatsPerMeasure * document.composition.stepsPerBeat * 10 * 3
-                let pos = (Double(width) * progress) + 50
-                path.addRect(CGRect(x: pos+5, y: 195, width: 40, height: 5))
+                let width = document.composition.beatsPerMeasure * document.composition.stepsPerBeat * stepWidth * scrollByCount
+                let pos = (Double(width) * progress) + 51 + Double(stepWidth)
+                path.addRect(CGRect(x: pos, y: 15, width: 1.5, height: 1000))
                 context.fill(path, with: .color(.blue))
             }
         }.padding(.vertical, 25)
@@ -53,7 +56,7 @@ struct MusicSheetView : View {
     // Returns the width of a measure
     // ---------------------------------
     func getMeasureWidth() -> Int {
-        return document.composition.beatsPerMeasure * document.composition.stepsPerBeat * 10
+        return document.composition.beatsPerMeasure * document.composition.stepsPerBeat * stepWidth
     }
     
     // ------------------------------------------------------

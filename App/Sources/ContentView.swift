@@ -26,9 +26,11 @@ struct ContentView: View {
     @State var selection = AttributedTextSelection()
     @State var keyPressed : Character?
     @State var progress = -1.0
+    @State var scrollByCount = 3
     
     let measureHeight = 190
     let margin = 40
+    let stepWidth = 8
     
     // -------------------------------------------------------------------
     // Definition of the main view : a canvas, a side bar and a toolbar
@@ -40,7 +42,7 @@ struct ContentView: View {
         }
         detail: {
             ZStack {
-                MusicSheetProgress(document: $document, progress: $progress).opacity(showTextEditor ? 0 : 0.5)
+                MusicSheetProgress(document: $document, scrollByCount: $scrollByCount, progress: $progress).opacity(showTextEditor ? 0 : 0.6)
 
                 ScrollView(.horizontal, showsIndicators: true) {
                     MusicSheetView(document: $document, selectedStep: $selectedStep, refreshCounter: $refreshCounter)
@@ -80,8 +82,6 @@ struct ContentView: View {
                         .keyboardShortcut(.cancelAction)
                         .disabled(sequencer == nil || sequencer!.isFinished || showTextEditor)
                     
-                    Divider()
-                    
                     Button(action: scrollLeft) { Label("Scroll Left", systemImage: "chevron.left") }
                         .keyboardShortcut(.leftArrow, modifiers: [])
                         .disabled((sequencer != nil && sequencer!.isExecuting) || (scrollPosition.x != nil && scrollPosition.x == 0) || showTextEditor)
@@ -90,6 +90,13 @@ struct ContentView: View {
                         .keyboardShortcut(.rightArrow, modifiers: [])
                         .disabled((sequencer != nil && sequencer!.isExecuting) || showTextEditor ||
                                   (scrollPosition.x != nil && Int(scrollPosition.x!) > (document.measuresCount-3)*getMeasureWidth()))
+                    
+                    Divider()
+                    
+                    Picker(selection: $scrollByCount,
+                           label: Text("Scroll by"),
+                           content: { Text("2").tag(2); Text("3").tag(3); Text("4").tag(4) }
+                    ).pickerStyle(.segmented)
                 }
             }
         }.frame(minWidth: 1920 * 0.60, minHeight: 1080 * 0.60)
@@ -131,25 +138,25 @@ struct ContentView: View {
     }
     
     // -------------------------------------------------------
-    // Scroll right by 3 measures
+    // Scroll right
     // -------------------------------------------------------
     func scrollRight() {
         var newPosition = 0
         
         if (scrollPosition.x != nil) {
-            newPosition = Int(scrollPosition.x!) + (document.composition.beatsPerMeasure * document.composition.stepsPerBeat * 3 * 10)
+            newPosition = Int(scrollPosition.x!) + (document.composition.beatsPerMeasure * document.composition.stepsPerBeat * self.scrollByCount * self.stepWidth)
         }
         self.scrollPosition.scrollTo(x: CGFloat(newPosition))
     }
     
     // -------------------------------------------------------
-    // Scroll left by 3 measures
+    // Scroll left
     // -------------------------------------------------------
     func scrollLeft() {
         var newPosition = 0
         
         if (scrollPosition.x != nil) {
-            newPosition = Int(scrollPosition.x!) - (document.composition.beatsPerMeasure * document.composition.stepsPerBeat * 3 * 10)
+            newPosition = Int(scrollPosition.x!) - (document.composition.beatsPerMeasure * document.composition.stepsPerBeat * self.scrollByCount * self.stepWidth)
             if (newPosition < 0) {
                 newPosition = 0
             }
@@ -172,11 +179,11 @@ struct ContentView: View {
         
         let stepsPerMeasure = document.composition.stepsPerBeat * document.composition.beatsPerMeasure
         
-        if (position % (stepsPerMeasure * 3) == 0) {
-            self.scrollPosition.scrollTo(x: CGFloat(position*10))
+        if (position % (stepsPerMeasure * self.scrollByCount) == 0) {
+            self.scrollPosition.scrollTo(x: CGFloat(position * self.stepWidth))
         }
         
-        self.progress = (Double((position % (stepsPerMeasure * 3)))) / Double(stepsPerMeasure * 3)
+        self.progress = (Double((position % (stepsPerMeasure * self.scrollByCount)))) / Double(stepsPerMeasure * self.scrollByCount)
     }
     
     // -------------------------------------------------------------------------------------------
