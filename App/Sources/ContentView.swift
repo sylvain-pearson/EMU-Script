@@ -23,6 +23,7 @@ struct ContentView: View {
     @State var sequencer : SequencerThread?
     
     @State var showTextEditor : Bool = false
+    @State var initTextEditor : Bool = false
     @State var selection = AttributedTextSelection()
     @State var keyPressed : Character?
     @State var progress = -1.0
@@ -54,10 +55,12 @@ struct ContentView: View {
                 .opacity(showTextEditor ? 0 : 1)
                 .scrollPosition($scrollPosition)
                 
-                ScriptEditor(document: $document, reload: $document.reloadCounter)
-                    .opacity(showTextEditor ? 1 : 0)
-                    .focused($isTextEditorFocused)
-                    .disabled(isTextEditorDisabled)
+                if (initTextEditor) {
+                    ScriptEditor(document: $document, reload: $document.reloadCounter)
+                        .opacity(showTextEditor ? 1 : 0)
+                        .focused($isTextEditorFocused)
+                        .disabled(isTextEditorDisabled)
+                }
             }
         }
         .alert(String(localized: "Runtime Error"), isPresented: $showError) { }  message: {
@@ -182,6 +185,9 @@ struct ContentView: View {
     // -------------------------------------------------------------
     func onChangeOfTextEditor(_ showTextEditor : Bool) {
         if (showTextEditor) {
+            if (initTextEditor == false) {
+                initTextEditor = true
+            }
             clearSelection()
             isTextEditorFocused = true
             isTextEditorDisabled = false

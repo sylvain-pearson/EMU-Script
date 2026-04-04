@@ -49,7 +49,7 @@ struct MusicSheetView : View {
         Canvas(opaque: false, colorMode: .linear, rendersAsynchronously: false) { context, size in
             draw(context: context, size: size)
         }
-        .frame(width: (Double(getMeasureWidth()) * Double(document.measuresCount+2)) + Double(margin*2))
+        .frame(width: (Double(getMeasureWidth()) * Double(document.measuresCount+4)) + Double(margin*2))
     }
     
     // ---------------------------------
