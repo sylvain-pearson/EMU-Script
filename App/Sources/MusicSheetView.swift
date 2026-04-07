@@ -138,11 +138,13 @@ struct MusicSheetView : View {
         let measureWidth = getMeasureWidth()
         
         let y1 = y0 + measureHeight - (3 * 10) - 50      // low C
-        let y2 = y0 + measureHeight - (6 * 10) - 50      // low F
-        let y3 = y0 + measureHeight - (10 * 10) - 50     // high C
-        let y4 = y0 + measureHeight - (13 * 10) - 50     // high F
+        let y2 = y0 + measureHeight - (5 * 10) - 50      // low E
+        let y3 = y0 + measureHeight - (7 * 10) - 50      // low G
+        let y4 = y0 + measureHeight - (10 * 10) - 50     // high C
+        let y5 = y0 + measureHeight - (12 * 10) - 50     // high E
+        let y6 = y0 + measureHeight - (14 * 10) - 50     // high G
         
-        for y in [y1, y2, y3, y4] {
+        for y in [y1, y2, y3, y4, y5, y6] {
             var path = Path()
             path.move(to: CGPoint(x: x0, y: y))
             path.addLine(to: CGPoint(x: width+x0, y: y))
@@ -165,7 +167,7 @@ struct MusicSheetView : View {
         {
             var path = Path()
             path.move(to: CGPoint(x: x, y: y1 + 22))
-            path.addLine(to: CGPoint(x: x, y: y4 - 22))
+            path.addLine(to: CGPoint(x: x, y: y6))
             context.stroke(path, with: .color(.gray), lineWidth: 1)
             
             x = x + measureWidth
