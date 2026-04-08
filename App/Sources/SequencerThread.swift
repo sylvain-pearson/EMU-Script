@@ -106,11 +106,10 @@ class SequencerThread: Thread {
         do {
             for events in sequence {
                 
-                if (!isCancelled && stepCount % 12 == 0) {
+                if (!isCancelled) {
                     scrollTo(stepCount)
+                    Thread.sleep(forTimeInterval: refreshTimeInterval)  // Reserve 5 ms for the screen refresh
                 }
-      
-                Thread.sleep(forTimeInterval: refreshTimeInterval)  // Reserve 5 ms for the screen refresh
                 
                 var strumming = false
                 for event in events {

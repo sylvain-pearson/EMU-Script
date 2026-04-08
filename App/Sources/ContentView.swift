@@ -23,11 +23,11 @@ struct ContentView: View {
     @State var sequencer : SequencerThread?
     
     @State var showTextEditor : Bool = false
-    @State var initTextEditor : Bool = false
     @State var selection = AttributedTextSelection()
     @State var keyPressed : Character?
     @State var progress = -1.0
     @State var scrollByCount = 3
+    @State var metronomeUnit = 1
     
     @FocusState var isTextEditorFocused: Bool
     @State var isTextEditorDisabled = false
@@ -55,12 +55,10 @@ struct ContentView: View {
                 .opacity(showTextEditor ? 0 : 1)
                 .scrollPosition($scrollPosition)
                 
-                if (initTextEditor) {
-                    ScriptEditor(document: $document, reload: $document.reloadCounter)
-                        .opacity(showTextEditor ? 1 : 0)
-                        .focused($isTextEditorFocused)
-                        .disabled(isTextEditorDisabled)
-                }
+                ScriptEditor(document: $document, reload: $document.reloadCounter)
+                    .opacity(showTextEditor ? 1 : 0)
+                    .focused($isTextEditorFocused)
+                    .disabled(isTextEditorDisabled)
             }
         }
         .alert(String(localized: "Runtime Error"), isPresented: $showError) { }  message: {
@@ -99,11 +97,19 @@ struct ContentView: View {
                     
                     Divider()
                     
-                    Picker(selection: $scrollByCount,
-                           label: Text("Scroll by"),
-                           content: { Text("2").tag(2); Text("3").tag(3); Text("4").tag(4) }
-                    )
-                    .pickerStyle(.segmented)
+                    Menu {
+                        Picker(selection: $scrollByCount,
+                               label: Text("Scroll by"),
+                               content: { Text("2").tag(2); Text("3").tag(3); Text("4").tag(4) }
+                        )
+                        Picker(selection: $metronomeUnit,
+                               label: Text("Metronome"),
+                               content: { Text("♩").tag(1); Text("♪").tag(2) }
+                        )
+                    }
+                    label: {
+                        Image(systemName: "gearshape.fill")
+                    }
                     .disabled((sequencer != nil && sequencer!.isExecuting))
                 }
             }
@@ -185,9 +191,6 @@ struct ContentView: View {
     // -------------------------------------------------------------
     func onChangeOfTextEditor(_ showTextEditor : Bool) {
         if (showTextEditor) {
-            if (initTextEditor == false) {
-                initTextEditor = true
-            }
             clearSelection()
             isTextEditorFocused = true
             isTextEditorDisabled = false
@@ -204,13 +207,18 @@ struct ContentView: View {
     // -----------------------------------------------
     func scroll(position: Int) {
         
-        let stepsPerMeasure = document.composition.stepsPerBeat * document.composition.beatsPerMeasure
-        
-        if (position % (stepsPerMeasure * self.scrollByCount) == 0) {
-            self.scrollPosition.scrollTo(x: CGFloat(position * self.stepWidth))
+        if (position % (12 / metronomeUnit) == 0) {
+            let stepsPerMeasure = document.composition.stepsPerBeat * document.composition.beatsPerMeasure
+            
+            if (position % (stepsPerMeasure * self.scrollByCount) == 0) {
+                self.scrollPosition.scrollTo(x: CGFloat(position * self.stepWidth))
+            }
+            
+            self.progress = (Double((position % (stepsPerMeasure * self.scrollByCount)))) / Double(stepsPerMeasure * self.scrollByCount)
         }
-        
-        self.progress = (Double((position % (stepsPerMeasure * self.scrollByCount)))) / Double(stepsPerMeasure * self.scrollByCount)
+        else if (position == -1) {
+            self.progress = -1
+        }
     }
     
     // -------------------------------------------------------------------------------------------

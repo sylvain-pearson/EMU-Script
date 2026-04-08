@@ -4,24 +4,13 @@
 - [x] Add mute button to instrument list
 - [x] Add instrument names to Music Sheet view
 - [x] Add song duration to composition information
+- [x] Added scroll-by and metronome options to toolbar
 - [ ] Bundle scripts with application package
 - [ ] Update user manual : error display, undo/redo and mute functions
 - [ ] Release application package (version 1.0)
 
 ## Issues
-- [x] Cannot combine chords replacement (@) with measure repetition (...)
-- [x] Reduce CPU usage during playback
-- [x] Number of measures should not be limited to 100 in the Music Sheet view
-- [x] Paste text and save document clears pasted text
-- [x] Improve sequencer accuracy
-- [x] Prevent system sleep during playback
-- [x] Undo function is buggy
-- [x] Composition information view is not refreshed after a change
-- [x] Cut and paste operations are not added to undo history
-- [x] Wrong song duration displayed when a section is twice in the playlist
-- [x] The progress cursor is not always visible when the main view is small
-- [x] Text typed in the music sheet is processed by the script editor
-- [ ] The progress cursor is not well positioned in the last measures
+- [ ] After startup, the focus is on the script editor
 - [ ] The document state is almost always "Edited"
 
 ## Wishlist
