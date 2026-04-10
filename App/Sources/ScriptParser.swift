@@ -433,7 +433,7 @@ public class ScriptParser {
                     else if (wordType == .number) {
                         highligthedWord.foregroundColor = Color(hue: 0.07, saturation: 1, brightness: 0.6)
                     }
-                    else if (wordType == .reserved || word == "chord" || word == "root" || word == "arg") {
+                    else if (wordType == .reserved || (word == "chord" && c != ":") || word == "root" || word == "arg") {
                         highligthedWord.foregroundColor = Color(hue: 0.3, saturation: 1, brightness: 0.5)
                     }
                     else {
