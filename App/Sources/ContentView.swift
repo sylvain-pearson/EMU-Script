@@ -127,10 +127,7 @@ struct ContentView: View {
     // Start playing the composition in a background thread
     // -------------------------------------------------------
     func play() {
-        scroll(position: 0)
-        
         sequencer = SequencerThread(document: document, scrollFunc: self.scroll)
-
         if (sequencer != nil) {
             error = sequencer!.prepare()
             if (error.isErr()) {
