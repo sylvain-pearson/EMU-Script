@@ -83,10 +83,9 @@ struct MusicSheetView : View {
                     if (document.instruments[n].isSelected) {
                         
                         let isDrum = document.instruments[n].isDrum()
-                        let isSampler = document.instruments[n].isSampler()
                         instrumentNumber += 1
                         
-                        if (isDrum || isSampler) {
+                        if (isDrum) {
                             drawInstrumentName(context: context, name: document.instruments[n].name, x0: x, y0: y-50)
                             drawCompactStaff(context: context, x0: x, y0: y-20, width: width)
                         }
@@ -98,7 +97,7 @@ struct MusicSheetView : View {
                         
                         let instrumentName = document.instruments[n].name
                         if let measures = document.composition.getSection(name: item.name).measures[instrumentName] {
-                            drawNotes(context: context, x0: x, y0: y-50, measures: measures, measureNumber: measureNumber, isCompact: isDrum || isSampler)
+                            drawNotes(context: context, x0: x, y0: y-50, measures: measures, measureNumber: measureNumber, isCompact: isDrum)
                         }
                         
                         if (lyricsDone == false && !isDrum) {
@@ -109,7 +108,7 @@ struct MusicSheetView : View {
                             }
                         }
                         
-                        if (isDrum || isSampler) {
+                        if (isDrum) {
                             y += (measureHeight/2)
                         }
                         else {
@@ -174,9 +173,9 @@ struct MusicSheetView : View {
         }
     }
     
-    // -----------------------------------------------------------------------------------------------
-    // Draw a staff for drum and sampler, having 1 horizontal line and one vertical line per measure
-    // -----------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------
+    // Draw a staff for drum, having 1 horizontal line and one vertical line per measure
+    // -----------------------------------------------------------------------------------
     func drawCompactStaff(context: GraphicsContext, x0: Int, y0: Int, width: Int) {
    
         let beatsPerMeasure = document.composition.beatsPerMeasure
@@ -377,7 +376,7 @@ struct MusicSheetView : View {
                     y = y1
                 }
             }
-            else {  // drum or sample
+            else {  // drum
                 if (noteWidth < 9) {
                     path = Path()
                     path.addArc(center: CGPoint(x: Int(x+10), y: y+4), radius: 6, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)

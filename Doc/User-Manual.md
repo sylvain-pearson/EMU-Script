@@ -95,9 +95,9 @@ Here is an example:
 ### 3.2 The intruments section
 This mandatory section contains the configuration of the instruments used in the composition.  Each instrument defined in this section has a dedicated audio track and music staff. Here is the information that can be specified for an instrument:
 - **name**: the name of the instrument (specified before the colon)
-- **port**: the name of the MIDI port, within quotes, or the keyword `sample` for instruments that only play samples. 
+- **port**: the name of the MIDI port, within quotes.
 - **channel**: the MIDI channel used by the instrument. A number between 1 and 16.
-- **octave**: the octave of reference of the instrument. A number between 1 and 4 (bass clef = 2, treble clef = 3). This field must be omitted for drum- or sample-based instruments.
+- **octave**: the octave of reference of the instrument. A number between 1 and 4 (bass clef = 2, treble clef = 3). This field must be omitted for drum-based instruments.
 - **velocity**: the default velocity of MIDI notes. Must be a number between 0 and 127.
 
 Here is an example:
@@ -259,7 +259,7 @@ Here is a musical section that is equivalent to the previous example:
 ```
 
 ### 3.4 The sequences section
-The `[sequence]` section lists the sequences that can be inserted in musical sections. A sequence defines a few measures of music that can be parameterized and that is not bound to a specific instrument. The parameters of a sequence can be accessed using the `arg(n)` and `args`, build-in functions. Here is an example:
+The `[sequences]` section lists the sequences that can be inserted in musical sections. A sequence defines a few measures of music that can be parameterized and that is not bound to a specific instrument. The parameters of a sequence can be accessed using the `arg(n)` and `args`, build-in functions. Here is an example:
 ```
 [sequences]
 seq1: arg(1) arg(3) arg(2) arg(1)
@@ -275,10 +275,9 @@ piano: 3 7 5 3 | 2 - 3 4 | 5- (4) 3 - | 2 1 | . 3 4 5 | 4 3 36 -
 In this example, the `[intro1]` and `[intro2]` musical sections are equivalent.
 
 ### 3.4 The sounds section
-The `[sounds]` section contains the definition of new sounds that can be used in musical sections. The sounds are not bound to any specific instrument. There are 4 types of sound that can be added:
+The `[sounds]` section contains the definition of new sounds that can be used in musical sections. The sounds are not bound to any specific instrument. There are 3 types of sound that can be added:
 
-- **sample**: a WAV file path. The specified path must be relative to the user's Music directory. A volume can be provided (between 1 and 100).
-- **midi**: a MIDI note number. Must be between 0 and 127. A volume can be provided (between 1 and 100).
+- **midi**: a MIDI note number. Must be between 0 and 127. 
 - **arp**: an arpeggiated chord. It has 3 parameters: 
     1. A list of note indexes.
     2. **step**: the length of a step. Must be between 2 and 24, where 12 is the length of a quarter note.
@@ -291,8 +290,8 @@ The `[sounds]` section contains the definition of new sounds that can be used in
 Here is an example:
 ```
 [sounds]
-kick: sample("TR-707/kick.wav"), volume=70
-hh: midi(44), volume=90
+kick: midi(35)
+hh: midi(44)
 dw: strum(5 4 3 2 1), msec=5, vdec=3
 up: strum(1 2 3 4 5), msec=6, vdec=5
 a1: arp(1 1 1 2), step=3, duration=3

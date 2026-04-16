@@ -11,21 +11,19 @@ import Foundation
 enum StepType {
     case synth
     case drum
-    case sample
     case silence
     case text
 }
 
-// -------------------------------------------------------------------------------------------------
-// A Step represent a MIDI note, interval, chord or sample, having a certain duration and velocity.
-// -------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------
+// A Step represent a MIDI note, interval or chord, having a certain duration and velocity.
+// ------------------------------------------------------------------------------------------
 class Step : Identifiable {
     
     private var type: StepType  // The step type
     
     var id = UUID()
     var notes: [Int]                // MIDI notes to be played
-    var samples: [String]           // Names of samples to be played
     var ccMessages: [MidiControl]   // MIDI control messages
     var positions: [Int]            // Notes position on the staff (1 to 25)
     var text: String                // Text to be displayed
@@ -43,10 +41,6 @@ class Step : Identifiable {
     
     func isMIDINote() -> Bool {
         return (type == .synth || type == .drum)
-    }
-    
-    func isSample() -> Bool {
-        return (type == .sample)
     }
     
     func isSynth() -> Bool {
@@ -107,7 +101,6 @@ class Step : Identifiable {
         self.length = 1
         self.velocity = 80
         self.notes = []
-        self.samples = []
         self.ccMessages = []
         self.positions = []
         self.text = ""
@@ -127,7 +120,6 @@ class Step : Identifiable {
         step.length = length
         step.velocity = velocity
         step.notes = notes
-        step.samples = samples
         step.ccMessages = ccMessages
         step.positions = positions
         step.text = text
@@ -156,9 +148,6 @@ class Step : Identifiable {
         }
         else if (self.type == .synth) {
             properties.items.append(PropertyInfo(name: String(localized: "Octave"), value: self.octave.description))
-        }
-        else if (self.type == .sample) {
-            properties.items.append(PropertyInfo(value: String(localized: "Sample") + String((self.samples.count > 1) ? "s" : "")))
         }
         else if (self.type == .drum) {
             for note in self.notes {
@@ -281,17 +270,6 @@ class Step : Identifiable {
         self.octave = 0
     }
         
-    // -----------------------------------------------------------------
-    // Add a sample to the step
-    // -----------------------------------------------------------------
-    func add(sample: String) {
-        self.type = .sample
-        self.text.append(String(sample) + " ")
-        self.positions.append(7)
-        self.samples.append(sample)
-        self.octave = 0
-    }
-    
     // -----------------------------------------------------------------
     // Add lyrics to the step
     // -----------------------------------------------------------------

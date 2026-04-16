@@ -66,17 +66,15 @@ class SequencerThread: Thread {
         if (scriptErroror.isOk())
         {
             for instrument in document.instruments {
-                if (instrument.isSampler() == false) {
-                    var found = false
-                    for endpoint in midiManager.endpoints.inputs {
-                        if (endpoint.name == instrument.endpoint) {
-                            midiOut[instrument.channel]!.add(inputs: [endpoint])
-                            found = true
-                        }
+                var found = false
+                for endpoint in midiManager.endpoints.inputs {
+                    if (endpoint.name == instrument.endpoint) {
+                        midiOut[instrument.channel]!.add(inputs: [endpoint])
+                        found = true
                     }
-                    if (!found && scriptErroror.isOk()) {
-                        scriptErroror = ScriptError(code: .invalidEndpoint, info: instrument.endpoint)
-                    }
+                }
+                if (!found && scriptErroror.isOk()) {
+                    scriptErroror = ScriptError(code: .invalidEndpoint, info: instrument.endpoint)
                 }
             }
 

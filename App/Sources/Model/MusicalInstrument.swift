@@ -23,10 +23,6 @@ struct MusicalInstrument: Identifiable, Hashable {
     var isMuted = false
     
     func isDrum() -> Bool {
-        return (octave == 0 && !isSampler())
-    }
-    
-    func isSampler() -> Bool {
-        return (endpoint == "")
+        return (octave == 0)
     }
 }

@@ -5,13 +5,13 @@
 - [x] Add instrument names to Music Sheet view
 - [x] Add song duration to composition information
 - [x] Added scroll-by and metronome options to toolbar
+- [x] Remove sample plackback
 - [ ] Bundle scripts with application package
 - [ ] Update user manual : error display, undo/redo and mute functions
 - [ ] Release application package (version 1.0)
 
 ## Issues
 - [ ] After startup, the focus is on the script editor
-- [x] Fixed highlighting of "chord:" text
 - [ ] The document state is almost always "Edited"
 
 ## Wishlist

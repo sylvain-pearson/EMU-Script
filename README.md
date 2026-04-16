@@ -10,7 +10,6 @@ EMU-Script is a text-based, electronic music composition software for MacOS.
 - Structure your composition using musical sections and sequencing functions.
 - Use chord progressions, strum chords, and play arpeggios.
 - Specific notation for drum instruments.
-- User-definable sounds (hard-coded MIDI note or sample file).
 
 ## Documentation
 - The user manual can be found [here](https://sylvain-pearson.github.io/EMU-Script/Doc/User-Manual.html)

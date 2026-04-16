@@ -45,7 +45,6 @@ final public class EmuScriptDocument: FileDocument  {
     var sequences: [String : String] = [:]
     var midiNotes: [String : MidiNote] = [:]
     var ccNumbers: [String : Int] = [:]
-    var sampleFiles: [String : Sample] = [:]
     var strumOrArps: [String : StrumOrArp]  = [:]
     var chords = Chords()
     var documentEdited = false
@@ -160,7 +159,7 @@ final public class EmuScriptDocument: FileDocument  {
                 octave = instrument.octave
             }
         }
-        if (octave == 0) {  // drum or sampler
+        if (octave == 0) {  // drum
             return 0
         }
         else {
@@ -323,9 +322,6 @@ final public class EmuScriptDocument: FileDocument  {
                             parser.error(.unexpectedKeyword, info: key, at: line.lineNumber)
                         }
                     }
-                    else if (array.count == 1 && array[0] == "sample") {
-                        instrument.endpoint = ""
-                    }
                     else if (array.count == 1) {
                         instrument.endpoint = String(array[0]).trimmingCharacters(in: .punctuationCharacters)
                     }
@@ -367,7 +363,6 @@ final public class EmuScriptDocument: FileDocument  {
             {
                 let name = line.key
                 var functionText = ""
-                var volume = 100
                 var step = 6
                 var duration = 6
                 var msec = 10
@@ -384,10 +379,7 @@ final public class EmuScriptDocument: FileDocument  {
                             let key = String(array[0]).trimmingCharacters(in: .whitespaces)
                             let value = String(array[1]).trimmingCharacters(in: .whitespaces)
                             
-                            if (key == "volume") {
-                                volume = toNumber(value)
-                            }
-                            else if (key == "duration") {
+                            if (key == "duration") {
                                 duration = toNumber(value)
                             }
                             else if (key == "msec") {
@@ -415,13 +407,7 @@ final public class EmuScriptDocument: FileDocument  {
                     let fctName = array.removeFirst()
                     let firstArg = array[0]
                     
-                    if (fctName == "sample") {
-                        var sample = Sample(name: name)
-                        sample.path = firstArg.trimmingCharacters(in: .punctuationCharacters)
-                        sample.volume = UInt8(volume)
-                        sampleFiles[name] = sample
-                    }
-                    else if (fctName == "midi") {
+                    if (fctName == "midi") {
                         var midiNote = MidiNote(name: name)
                         midiNote.value = toNumber(firstArg)
                         midiNotes[name] = midiNote
@@ -727,9 +713,6 @@ final public class EmuScriptDocument: FileDocument  {
 
             if let midiNote = midiNotes[note] {
                 step.add(midiNote: midiNote.value, text: midiNote.name, isDrum: isDrum)
-            }
-            else if let sample = sampleFiles[note] {
-                step.add(sample: sample.name)
             }
             else if let strumOrArp = strumOrArps[note] {
                 step.playing = strumOrArp
