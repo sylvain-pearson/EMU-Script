@@ -10,16 +10,20 @@ import SwiftUI
 
 @main
 struct EmuScriptApp: App {
+ 
     var body: some Scene {
+ 
         DocumentGroup(newDocument: EmuScriptDocument()) { file in
             ContentView(document: file.$document)
         }
         .commands {
-           CommandGroup(replacing: .undoRedo) {
-               // Replacement goes here.
+            CommandGroup(replacing: .undoRedo) {
                EmptyView()
-           }
-       }
+            }
+            CommandGroup(replacing: .help) {
+                Link("Online User Manual", destination: URL(string: "https://sylvain-pearson.github.io/EMU-Script/Doc/User-Manual.html")!)
+                Link("Online Reference Manual", destination: URL(string: "https://sylvain-pearson.github.io/EMU-Script/Doc/Reference-Manual.html")!)
+            }
+        }
     }
-        
 }
