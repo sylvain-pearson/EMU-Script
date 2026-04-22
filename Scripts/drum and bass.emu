@@ -1,0 +1,31 @@
+[composition]
+title: "Drum and bass"
+by: "Deep Purple"
+BPM: 115
+time: 4/4
+transposition: -2     
+playlist: intro,verse
+
+[instruments]
+bass:  "bass", channel=11, octave=2, velocity=90
+drum: "drum", channel=12, velocity=120
+
+[sequences] 
+b1: 6 6 6' - 6 6 6' -  
+b2: 6 6 6' - 5' 2' 5 -  
+d1: bh h  sh h  bh h  sh h      
+d2: bh h  sh h s s (4 4 3 3)
+d3: (bh h h h) (sh h h h) (s s s -) (s s s s)
+
+[intro]
+drum: i i i i | d3
+
+[verse]
+bass: b1 | 6 6 3' 1' - 2' #2' 3' | b2 | - 6 7 1' 6' 3' 2' 1' 
+bass: b1 | b1  | 6 6 6' - 5' 2' 5 | 6 3' #2' 2' 1' 6 5 #5
+drum: d1 | * | * | * | * | * | * | d2 
+
+bass: b1 | 6 6' 5' 3' 2' 1' 6 5 | b2 | 6 - 6' 5' 3' 2' 1' 2'
+bass: b1 | 6 6 2' 3' 5' 6' 2' 3' | b2 | 6 6 6' 5' 3' 2' 1' 6
+drum: d1 | * | * | * | * | * | * | d3 | c
+

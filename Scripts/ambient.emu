@@ -1,0 +1,48 @@
+[composition]
+title: "La brume des Caps"
+by: "Sylvain Pearson"
+time: 4/4
+BPM: 85
+transposition: +4 
+playlist: intro, A, B, inter, A, B, outro
+
+[instruments]
+piano: "piano", octave=3, velocity=80, channel=8
+bass: "piano", octave=1, velocity=80, channel=8
+flute: "woodwinds", octave=2, velocity=80, channel=7
+pad: "brass", octave=2, velocity=80, channel=6
+drum: "drum", velocity=80, channel=12
+
+[sequences]
+arp: arg(1) arg(3) arg(2) arg(1) arg(3) arg(2) arg(1) arg(3) 
+s1: arg(1) - - - - - - arg(2)
+d1: B (. h) h (B h)  
+d2: B (o h) h (Bo h)
+
+[intro]
+piano: . 1  | . 3 |  . 4 | . | . . 4 2
+bass:  6 | 5 | 4 - - 3 | 2/6  
+flute: . | . | . | . 4 | -
+
+[A]
+piano: s1(1 2) | s1(3 5) | s1(4 3) | s1(4 2) | 3- - (4 5 6) | 5 7 | 4- - (5 6 7) | 1'
+bass: arp(6 1' 3') | arp(3 5 7) | arp(4 6 1') | arp(2 4 6) | ...
+pad: . | . | . | . | 3 | 5 | 6 | 2 4
+
+[B]
+piano: 6 | 3 | 4 5 . 4| . 4/6 - (. #5) | '63 | 3 | 4 5 . 4| . 26 - (. 4) | '63 
+bass: arp(6 1' 3') | arp(3 5 7) | arp(4 6 1') | arp(2 4 6) | ...
+pad: 3 | 5 | 4 | 2 | 3 6 | 57 | 4 | 2 | 1'
+drum: d1 | ...
+
+[inter]
+piano: . | . | . | . | 6 | 5 3 | 6 41 | 6 . 4 - | 1 '6 - -  | '7 37 5 - | . 41 - - | 6 5 4 3
+bass: . | . | . | .  | . | . | . | . | . '6 - - | . 3 - - | . 4 - - 
+flute: arp(63 1' -) | arp(37 5 -) | arp(41 6 -) | arp(26 4 -) | ...
+drum: d2 | ...
+
+[outro]
+piano:  arp(6 1' 3') | arp(3 5 7) | arp(4 6 1') | arp(2 4 6)  | '63
+bass:  36 | 5 3 | 6 41 | 6 4 | '63 | . '6 | . '6
+pad:  6 | 7 | 1' - - . 
+flute:  . | . | . | . | arp(6 1' 3') | arp(6 1' 3') | 6 3' 1' 6 - - - -
