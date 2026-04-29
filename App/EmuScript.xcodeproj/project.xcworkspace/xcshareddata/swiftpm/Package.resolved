@@ -6,8 +6,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/orchetect/MIDIKit.git",
       "state" : {
-        "revision" : "8af8007269daea0d0cb3788427e63acd04a31a3b",
-        "version" : "0.10.7"
+        "revision" : "f947e7119c73a55c8a12b43f0073059cde746b01",
+        "version" : "0.12.0"
+      }
+    },
+    {
+      "identity" : "swift-data-parsing",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/orchetect/swift-data-parsing",
+      "state" : {
+        "revision" : "b5c4d0455151c30069bb435e86a7cafa937c6e47",
+        "version" : "0.1.2"
       }
     },
     {
@@ -15,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/orchetect/swift-timecode",
       "state" : {
-        "revision" : "f9a9e88c8e4c38b1b29d3db8130e1f07112e8b9e",
-        "version" : "3.0.0"
+        "revision" : "41c975cfe71de05f3430fbfaf791ffa9d3847886",
+        "version" : "3.1.1"
       }
     }
   ],

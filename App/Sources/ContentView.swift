@@ -61,7 +61,7 @@ struct ContentView: View {
                     .disabled(isTextEditorDisabled)
             }
         }
-        .alert(String(localized: "Runtime Error"), isPresented: $showError) { }  message: {
+        .alert(String(localized: "Sequencer Error"), isPresented: $showError) { }  message: {
             Text(error.getMessage())
         }.dialogIcon(Image(systemName: "exclamationmark.circle.fill"))
         

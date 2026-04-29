@@ -40,6 +40,7 @@ struct ScriptError : Identifiable {
     
     var code: ScriptErrorCode
     var info: String
+    var details: String
     var lineNumber : UInt16
     let id = UUID()
     
@@ -47,12 +48,14 @@ struct ScriptError : Identifiable {
         self.code = .ok
         self.info = ""
         self.lineNumber = 0
+        self.details = ""
     }
     
     init(code: ScriptErrorCode, info: String, lineNumber: UInt16 = 0) {
         self.code = code
         self.info = info
         self.lineNumber = lineNumber
+        self.details = ""
     }
     
     func isOk() -> Bool {
@@ -82,7 +85,7 @@ struct ScriptError : Identifiable {
         case .UndefinedSection:
             message = String(localized: "The section '\(info)' cannot be found")
         case .invalidEndpoint:
-            message = String(localized: "Failed to open the MIDI enpoint: '\(info)'")
+            message = String(localized: "Invalid MIDI port: '\(info)'.\nYou can use one of the following ports or create a virtual port using MIDI Studio.\n \(details)")
         case .unexpectedKeyword:
             message = String(localized: "Unexpected keyword: '\(info)'")
         case .unsupportedTimeSignature:
