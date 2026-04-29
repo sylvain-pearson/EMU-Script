@@ -76,8 +76,10 @@ Here is an example:
 
 ### 3.2 Drum notes
 The available drum notes are:
-- **`B`**: bass drum (midi note is 36)
-- **`S`**: snare drum (38)
+- **`B`**: bass drum #1 (midi note is 36)
+- **`b`**: bass drum #2 (35)
+- **`S`**: snare drum #1 (38)
+- **`s`**: snare drum #2 (40)
 - **`1`**: floor-tom #1 (41)
 - **`2`**: floor-tom #2 (45)
 - **`3`**: tom-tom #1 (47)
@@ -254,7 +256,7 @@ Where:
 
 There are 3 attributes that can be specified:
 - **velocity**: temporarily increase or decrease the velocity of an instrument. The value must be a number between -50 and +50.
-- **cc**: send one or many control change messages (CC) to an instrument. The value is a comma-separated list of `keyword=number` pairs. The CC keywords must have been declared in the instrument section. The CC numbers must be a number between 0 and 127 or a decimal number between 0.0 and 10.0 (where 10.0 is equivalent to 127).
+- **cc**: send one or many control change messages (CC) to an instrument. The value is a comma-separated list of `keyword=number` pairs. The CC keywords must have been declared in the composition section. The CC numbers must be a number between 0 and 127 or a decimal number between 0.0 and 10.0 (where 10.0 is equivalent to 127).
 - **program**: change the current program (patch) of an instrument. A program identifier has two parts separated by a dot: the bank number (1 to 128) and the program number (1 to 128). 
 
 Here is an example:

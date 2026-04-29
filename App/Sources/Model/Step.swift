@@ -291,9 +291,11 @@ class Step : Identifiable {
         
         var note = 0
 
-        switch (drum.lowercased()) {
-            case "b": note = 36     // bass drum
-            case "s": note = 38     // snare drum
+        switch (drum) {
+            case "B": note = 36     // bass drum #1
+            case "b": note = 35     // bass drum #2
+            case "S": note = 38     // snare drum #1
+            case "s": note = 40     // snare drum #2
             case "1": note = 41     // floor tom 1
             case "2": note = 45     // floor tom 2
             case "3": note = 47     // tom-tom 1
