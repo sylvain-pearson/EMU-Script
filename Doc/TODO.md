@@ -1,15 +1,6 @@
 # EMU-Script
 
 ## TODO
-- [x] Add mute button to instrument list
-- [x] Add instrument names to Music Sheet view
-- [x] Add song duration to composition information
-- [x] Added scroll-by and metronome options to toolbar
-- [x] Remove sample plackback
-- [x] Show the list of MIDI endpoints when an endpoint error occur
-- [ ] Overview video
-- [ ] Increase drum notation
-- [ ] Update user manual : error display, undo/redo and mute functions
 - [ ] Release application package (version 1.0)
 
 ## Issues
@@ -19,6 +10,7 @@
 
 ## Wishlist
 - [ ] Add menu items for toolbar functions
+- [ ] Support for standard notes notation (C, D, E, F, G, A, B)
 - [ ] Show the chord notes when clicking on a chord name
 - [ ] Per section setting of BPM
 - [ ] Improve lyrics notation

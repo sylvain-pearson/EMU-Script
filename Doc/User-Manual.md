@@ -1,4 +1,4 @@
-![emu-icon](assets/emu-icon.png) 
+![emu-icon](assets/emu-icon.png)
 
 # User Manual
 EMU-Script is a programmable MIDI sequencer and music sheet viewer. It proposes an innovative approach to electronic music creation. I hope you will enjoy using it!
@@ -12,13 +12,19 @@ Here is the main view of the application after the creation of a new document:
 ![main-view](assets/main-view.png)
 
 The user interface has four distinct parts:
-- **The sidebar** (on the left) lists the musical sections and instruments of the composition. At the bottom of the sidebar, you can view information about the composition, the current selection, or error messages.
-- **The toolbar** (top right) with a button to toggle between the music sheet and the script editor, a play button, a stop button, and scroll buttons.
+- **The sidebar** (on the left) lists the musical sections and instruments of the composition. The M button, at the right of an instrument, is used to mute or unmute the instrument before playback. At the bottom of the sidebar, you can view information about the composition, the current selection, or error messages.
+- **The toolbar** (top right) with a button to toggle between the music sheet and the script editor, a play button, a stop button, scroll buttons, a configuration button, undo/redo buttons, and a validation button.
 - **The music sheet** (on the right), which displays the staffs of the selected musical instruments and musical sections.
 - **The script editor** is displayed on the right when the document button is pushed:
 
 ![script-editor](assets/script-editor.png)
-
+The following keyboard shortcuts are available:
+- **ENTER**: start playback
+- **ESC**: stop the current playback
+- **Right arrow**: scroll the music sheet to the right.
+- **Left arrow**: scroll the music sheet to the left.
+- **Command+Z**: undo the last action of the script editor.
+- **Command+Shift+Z**: redo the last action of the script editor.
 
 ## 2. The Music Sheet
 The music sheet is a visual representation of the composition. From left to right, it displays the measures of the compositions. From top to bottom, it displays the following:
@@ -30,8 +36,8 @@ The music sheet is a visual representation of the composition. From left to righ
 ![music-sheet](assets/music-sheet.png)
 
 
-### 2.1 Diatonic Staffs
-A diatonic staff has a range of two octaves (+ 2 whole tones). Here are the notes of the C major scale:
+### 2.1 Staffs
+A staff has a range of two octaves (+ 2 whole tones). Here are the notes of the C major scale:
 
 ![c-major-scale](assets/c-major-scale.png)
 
@@ -78,10 +84,10 @@ In an EMU-Script, notes are referred to by their scale degree numbers (1 to 7).
 
 For a complete description of the scripting language, please refer to the EMU-Script Reference Manual.
 
-## 3. Examples
+## 4. Examples
 Following are a few examples of EMU scripts.
 
-### 3.1 Ambient Music
+### 4.1 Ambient Music
 ```
 [composition]
 title: "La brume des Caps"
@@ -133,7 +139,7 @@ pad:  6 | 7 | 1' - - .
 flute:  . | . | . | . | arp(6 1' 3') | arp(6 1' 3') | 6 3' 1' 6 - - - -
 ```
 
-### 3.2 Drum and Bass
+### 4.2 Drum and Bass
 ```
 [composition]
 title: "Drum and bass"
@@ -167,7 +173,7 @@ bass: b1 | 6 6 2' 3' 5' 6' 2' 3' | b2 | 6 6 6' 5' 3' 2' 1' 6
 drum: d1 | * | * | * | * | * | * | d3 | c
 ```
 
-### 3.3 Christmas Song
+### 4.3 Christmas Song
 ```
 [composition]
 title: "Noël Blanc"
@@ -201,7 +207,7 @@ text: "yeux clairs - ma | man | . . Et  je | songe à | d'autres - No ëls | bla
 bass: #6 | 6 - 5 4 | #5 | 5 | 4 5 | . 1 | -
 ```
 
-### 3.4 Guitar Strumming
+### 4.4 Guitar Strumming
 ``` 
 [composition]
 title: "Guitar Strumming"

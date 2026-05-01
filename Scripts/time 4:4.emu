@@ -11,7 +11,7 @@ piano: "piano", channel=4, octave=3, velocity=80
 
 [example]
 piano: 1 - 2 3 | (4 5) [3 4 5] ((3 4 5 6)) .
-text: "half-note - quarter-note quarter-note | eighth-notes triplet sixteenth-notes quarter-rest" 
+text: "half-note - quarter-note quarter-note | eighth-notes triplet 16th-notes quarter-rest" 
 
  
 
