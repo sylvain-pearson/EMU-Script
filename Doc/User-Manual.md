@@ -3,6 +3,18 @@
 # User Manual
 EMU-Script is a programmable MIDI sequencer and music sheet viewer. It proposes an innovative approach to electronic music creation. I hope you will enjoy using it!
 
+## 1. Installation and Configuration
+
+To install EMU-Script, you just need to copy the EMU-Script.app file into the Mac's *Applications* directory (or on your desktop).
+
+### 1.1 MIDI Setup
+EMU-Script will communicate with your MIDI instruments through MIDI ports. 
+- If you have a synthesizer connected to your computer, a MIDI port will automatically be created by the system (on my Mac: 'MIDI Input').  
+- If you have virtual instruments, you will need to add MIDI virtual ports to your MIDI configuration. This can be done using the **MIDI Studio / IAC Properties** window of the **Audio MIDI Setup** system application. You could, for instance, create a new virtual port called "*piano*".
+- In the setting window of your virtual instruments, you have to select the virtual MIDI port to be listened to. For instance, if you have a virtual piano instrument, you could assign it to the "*piano*" virtual MIDI port.
+
+![virtual-ports](assets/virtual-ports.png)
+
 
 ## 1. The User Interface
 EMU-Script is a document-based application. Upon starting, you will be prompted to either open an existing EMU script document or to create a new one. 
