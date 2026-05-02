@@ -16,6 +16,9 @@ EMU-Script is a text-based, electronic music composition software for MacOS.
 - The user manual can be found [here](https://sylvain-pearson.github.io/EMU-Script/Doc/User-Manual.html)
 - The reference manual can be found [here](https://sylvain-pearson.github.io/EMU-Script/Doc/Reference-Manual.html)
 
+## Release
+You can download the latest version of the application using this link: [version 1.0](https://github.com/sylvain-pearson/EMU-Script/releases/download/EMU_V1.0/EMU-Script.app.zip)
+
 ## Requirements
 - Xcode version 26 or higher is required to build the application.
 - Minimum required MacOS version: 26
