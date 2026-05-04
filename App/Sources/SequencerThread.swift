@@ -153,19 +153,30 @@ class SequencerThread: Thread {
         
         var packet = MIDIPacket()
         packet.timeStamp = timestamp
-        packet.length = 3
-        packet.data.0 = midiEvent.midi1RawStatusByte()!
-        packet.data.1 = midiEvent.midi1RawDataBytes()?.data1?.littleEndian ?? 0
-        packet.data.2 = midiEvent.midi1RawDataBytes()?.data2?.littleEndian ?? 0
+        packet.length = UInt16(midiEvent.midi1RawBytes().count)
+        
+        if (packet.length > 2) {
+            packet.data.0 = midiEvent.midi1RawStatusByte()!
+            packet.data.1 = midiEvent.midi1RawBytes()[1].littleEndian
+            packet.data.2 = midiEvent.midi1RawBytes()[2].littleEndian
+            
+            if (packet.length > 3) { packet.data.3 = midiEvent.midi1RawBytes()[3].littleEndian }
+            if (packet.length > 4) { packet.data.4 = midiEvent.midi1RawBytes()[4].littleEndian }
+            if (packet.length > 5) { packet.data.5 = midiEvent.midi1RawBytes()[5].littleEndian }
+            if (packet.length > 6) { packet.data.6 = midiEvent.midi1RawBytes()[6].littleEndian }
+            if (packet.length > 7) { packet.data.7 = midiEvent.midi1RawBytes()[7].littleEndian }
+            
+            print(midiEvent.debugDescription)
+        }
 
         var list = MIDIPacketList(numPackets: 1, packet: packet)
         
         if let midiChannel = midiOut[UInt8(midiEvent.channel!)] {
-            
             let outputPortRef = midiChannel.coreMIDIOutputPortRef?.littleEndian ?? 0
-            
+              
             if (midiChannel.endpoints.count > 0) {
                 let enpoint = midiChannel.endpoints[0]
+
                 let endpointRef = enpoint.coreMIDIObjectRef.littleEndian
                 MIDISend(outputPortRef, endpointRef, &list)
             }

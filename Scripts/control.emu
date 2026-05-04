@@ -8,13 +8,13 @@ CC: modw=1
 playlist: example
 
 [instruments]
-synth: "MIDI Input", channel=4, octave=3, velocity=80
+synth: "MIDI Input", channel=4, octave=2, velocity=80
 drum: "drum", channel=10, velocity=80
 
 [sounds]
-kick: midi(36), volume=100
-hh: midi(42), volume=100
-toc: midi(37), volume=100
+kick: midi(36)
+hh: midi(42)
+toc: midi(37)
 
 [control]
 /synth/program: 8.8
