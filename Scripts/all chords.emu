@@ -11,40 +11,40 @@ piano: "piano", octave=3, velocity=75
 
 [diatonic]
 piano: chord | ...
-chord: 6m | 7d | 1M | 2m | 3m | 4M | 5M  
+chord: Am | Bdim | C | Dm | Em | F | G  
 
 [major]
 piano: chord | ...
-chord: 6M | 7M | 1M | 2M | 3M | 4M | 5M 
+chord: A | B | C | D | E | F | G 
 
 [minor]
 piano: chord | ...
-chord: 6M | 7M | 1M | 2M | 3M | 4M | 5M 
+chord: Am | Bm | Cm | Dm | Em | Fm | Gm
 
 [diatonic-7th]
 piano: chord | ...
-chord: 6m7 | 7d7 | 1M7 | 2m7 | 3m7 | 4M7 | 5D7 
+chord: Am7 | Bdim7 | CM7 | Dm7 | Em7 | FM7 | G7 
 
 [dominant-7th]
 piano: chord | ...
-chord: 6D7 | 7D7 | 1D7 | 2D7 | 3D7 | 4D7 | 5D7 
+chord: A7 | B7 | C7 | D7 | E7 | F7 | G7 
 
 [minor-7th]
 piano: chord | ...
-chord: 6m7 | 7m7 | 1m7 | 2m7 | 3m7 | 4m7 | 5m7 
+chord: Am7 | Bm7 | Cm7 | Dm7 | Em7 | Fm7 | Gm7 
 
 [major-7th]
 piano: chord | ...
-chord: 6M7 | 7M7 | 1M7 | 2M7 | 3M7 | 4M7 | 5M7 
+chord: AM7 | BM7 | CM7 | DM7 | EM7 | FM7 | GM7 
 
 [diminished]
 piano: chord | ...
-chord: 6d | 7d | 1d | 2d | 3d | 4d | 5d
+chord: Adim | Bdim | Cdim | Ddim | Edim | Fdim | Gdim
 
 [diminished-7th]
 piano: chord | ...
-chord: 6d7 | 7d7 | 1d7 | 2d7 | 3d7 | 4d7 | 5d7 
+chord: Adim7 | Bdim7 | Cdim7 | Ddim7 | Edim7 | Fdim7 | Gdim7
 
 [augmented]
 piano: chord | ...
-chord: 6a | 7a | 1a | 2a | 3a | 4a | 5a
+chord: Aaug | Baug | Caug | Daug | Eaug | Faug | Gaug

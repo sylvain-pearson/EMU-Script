@@ -128,22 +128,22 @@ There are three different types of notation for chords:
 ```
 - **Named**: predefined chord names. 
 ```
-    1M 6m 5m7 7d
+    C Am Gm7 Bdim
 ```
 
-A chord name is built by concatenating its root note with one of the following suffixes:
-- **`M`**: Major triad 
+A chord name is built by concatenating its root note letter (C, D, E, F, G, A or, B), with one of the following suffixes:
+- **`M`**: Major triad (or just the root note with no suffix)
 - **`m`**: Minor triad
-- **`d`**: Diminished triad
-- **`a`**: Augmented triad
-- **`D7`**: Dominant seventh chord
+- **`dim`**: Diminished triad
+- **`aug`**: Augmented triad
+- **`7`**: Dominant seventh chord
 - **`M7`**: Major seventh chord
 - **`m7`**: Minor seventh chord
-- **`d7`**: Diminished seventh chord
+- **`dim7`**: Diminished seventh chord
 
 Two types of chord inversions can be used with chord names:
-- **Higher inversion**: If you suffix a chord name with an apostrophe, the root note is moved to the end of the chord. For instance, `1M'` is equivalent to `351`.
-- **Lower inversion**: If you prefix a chord name with an apostrophe, the last note is moved to the beginning of the chord. For instance, `'4M` is equivalent to `146`.
+- **Higher inversion**: If you suffix a chord name with an apostrophe, the root note is moved to the end of the chord. For instance, `C'` is equivalent to `351`.
+- **Lower inversion**: If you prefix a chord name with an apostrophe, the last note is moved to the beginning of the chord. For instance, `'F` is equivalent to `146`.
 
 ### 3.5 Lyrics
 If you wish, it is possible to add lyrics to a composition. Here is an example: 
@@ -165,7 +165,7 @@ All lyrics must be quoted, and lyric lines must be prefixed by `text:`. The same
 A chord progression defines the harmonic structure of a composition. You can add a chord progression using lines that are prefixed by `chord:`. Here is an example:
 ```
     [verse]
-    chord: 1M | 6m | '4M '5M | 1M
+    chord: C | Am | 'F 'G | C
 ``` 
 Once a chord progression has been defined, it is possible to access the notes of the current chord using three built-in functions:
 - **`root`**: returns the current root note.
@@ -175,7 +175,7 @@ Once a chord progression has been defined, it is possible to access the notes of
 Here is an example of use:
 ```
     [verse]
-    chord:   6m  |  2m'    5M     |   1M 
+    chord:   Am  |  Dm'    G      |   C 
     synth1: root | chord chord(2) | chord(4)  
     synth2:  '6  |  462    57     |  1351 
      

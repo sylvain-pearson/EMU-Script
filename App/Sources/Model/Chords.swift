@@ -14,79 +14,88 @@ struct Chords {
     
     init() {
         
-        // Diatonic triads : C, Dm, Em, F, G, Am, B˚(diminished)
-        map["1M"] = "1 3 5"
-        map["2m"] = "2 4 6"
-        map["3m"] = "3 5 7"
-        map["4M"] = "4 6 1"
-        map["5M"] = "5 7 2"
-        map["6m"] = "6 1 3"
-        map["7d"] = "7 2 4"
+        // Diatonic triads : C, Dm, Em, F, G, Am, B°
+        map["C"]  = "1 3 5"
+        map["Dm"] = "2 4 6"
+        map["Em"] = "3 5 7"
+        map["F"]  = "4 6 1"
+        map["G"]  = "5 7 2"
+        map["Am"] = "6 1 3"
+        map["Bdim"] = "7 2 4"
         
-        // Chromatic major and minor triads : Cm, D, E, Fm, Gm, A, Bm, BM
-        map["1m"] = "1 #2 5"
-        map["2M"] = "2 #4 6"
-        map["3M"] = "3 #5 7"
-        map["4m"] = "4 #5 1"
-        map["5m"] = "5 #6 2"
-        map["6M"] = "6 #1 3"
-        map["7m"] = "7 2 #4"
-        map["7M"] = "7 #2 #4"
+        // Chromatic major and minor triads : Cm, D, E, Fm, Gm, A, Bm, B
+        map["Cm"] = "1 #2 5"
+        map["D"]  = "2 #4 6"
+        map["E"]  = "3 #5 7"
+        map["Fm"] = "4 #5 1"
+        map["Gm"] = "5 #6 2"
+        map["A"]  = "6 #1 3"
+        map["Bm"] = "7 2 #4"
+        map["B"]  = "7 #2 #4"
         
         // Chromatic diminished triads : C°, D°, E°, F°, G°, A°
-        map["1d"] = "1 #2 #4"
-        map["2d"] = "2 4 #5"
-        map["3d"] = "3 5 #6"
-        map["4d"] = "4 #5 7"
-        map["5d"] = "5 #6 #1"
-        map["6d"] = "6 1 #2"
+        map["Cdim"] = "1 #2 #4"
+        map["Ddim"] = "2 4 #5"
+        map["Edim"] = "3 5 #6"
+        map["Fdim"] = "4 #5 7"
+        map["Gdim"] = "5 #6 #1"
+        map["Adim"] = "6 1 #2"
         
         // Chromatic augmented triads : C+, D+, E+°, F+, G+, A+, B+
-        map["1a"] = "1 3 #5"
-        map["2a"] = "2 #4 #6"
-        map["3a"] = "3 #5 1"
-        map["4a"] = "4 6 #1"
-        map["5a"] = "5 7 #2"
-        map["6a"] = "6 #1 4"
-        map["7a"] = "7 #2 5"
+        map["Caug"] = "1 3 #5"
+        map["Daug"] = "2 #4 #6"
+        map["Eaug"] = "3 #5 1"
+        map["Faug"] = "4 6 #1"
+        map["Gaug"] = "5 7 #2"
+        map["Aaug"] = "6 #1 4"
+        map["Baug"] = "7 #2 5"
         
         // Diatonic seventh chords : CM7, Dm7, Em7, FM7, G7, Am7, Bø7
-        map["1M7"] = "1 3 5 7"
-        map["2m7"] = "2 4 6 1"
-        map["3m7"] = "3 5 7 2"
-        map["4M7"] = "4 6 1 3"
-        map["5D7"] = "5 7 2 4"
-        map["6m7"] = "6 1 3 5"
-        map["7d7"] = "7 2 4 6"
+        map["CM7"] = "1 3 5 7"
+        map["Dm7"] = "2 4 6 1"
+        map["Em7"] = "3 5 7 2"
+        map["FM7"] = "4 6 1 3"
+        map["G7"]  = "5 7 2 4"
+        map["Am7"] = "6 1 3 5"
+        map["Bdim7"] = "7 2 4 6"
         
         // Chromatic dominant sevenths chords : C7, D7, E7, F7, A7, B7
-        map["1D7"] = "1 3 5 #6"
-        map["2D7"] = "2 #4 6 1"
-        map["3D7"] = "3 #5 7 2"
-        map["4D7"] = "4 6 1 #2"
-        map["6D7"] = "6 #1 3 5"
-        map["7D7"] = "7 #2 #4 6"
+        map["C7"] = "1 3 5 #6"
+        map["D7"] = "2 #4 6 1"
+        map["E7"] = "3 #5 7 2"
+        map["F7"] = "4 6 1 #2"
+        map["A7"] = "6 #1 3 5"
+        map["B7"] = "7 #2 #4 6"
 
         // Chromatic major sevenths chords : DM7, EM7, GM7, AM7, BM7
-        map["2M7"] = "2 4 6 #1"
-        map["3M7"] = "3 5 7 #2"
-        map["5M7"] = "5 7 2 #4"
-        map["6M7"] = "6 1 3 #5"
-        map["7M7"] = "7 2 4 #6"
+        map["DM7"] = "2 4 6 #1"
+        map["EM7"] = "3 5 7 #2"
+        map["GM7"] = "5 7 2 #4"
+        map["AM7"] = "6 1 3 #5"
+        map["BM7"] = "7 2 4 #6"
 
         // Chromatic minor sevenths chords : Cm7, Fm7, Gm7, Bm7
-        map["1m7"] = "1 #2 5 #6"
-        map["4m7"] = "4 #5 1 #2"
-        map["5m7"] = "5 #6 2 4"
-        map["7m7"] = "7 2 #4 6"
+        map["Cm7"] = "1 #2 5 #6"
+        map["Fm7"] = "4 #5 1 #2"
+        map["Gm7"] = "5 #6 2 4"
+        map["Bm7"] = "7 2 #4 6"
         
         // Chromatic diminished sevenths chords : , C°7, D°7, E°7, F°7, G°7, A°7
-        map["1d7"] = "1 #2 #4 6"
-        map["2d7"] = "2 4 #5 7"
-        map["3d7"] = "3 5 #6 #1"
-        map["4d7"] = "4 #5 7 2"
-        map["5d7"] = "5 #6 #1 3"
-        map["6d7"] = "6 1 #2 #4"
+        map["Cdim7"] = "1 #2 #4 6"
+        map["Ddim7"] = "2 4 #5 7"
+        map["Edim7"] = "3 5 #6 #1"
+        map["Fdim7"] = "4 #5 7 2"
+        map["Gdim7"] = "5 #6 #1 3"
+        map["Adim7"] = "6 1 #2 #4"
+        
+        // Major chords synonyms
+        map["AM"]  = map["A"]
+        map["BM"]  = map["B"]
+        map["CM"]  = map["C"]
+        map["DM"]  = map["D"]
+        map["EM"]  = map["E"]
+        map["FM"]  = map["F"]
+        map["GM"]  = map["G"]
     }
     
     //--------------------------------

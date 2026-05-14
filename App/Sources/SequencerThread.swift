@@ -166,7 +166,7 @@ class SequencerThread: Thread {
             if (packet.length > 6) { packet.data.6 = midiEvent.midi1RawBytes()[6].littleEndian }
             if (packet.length > 7) { packet.data.7 = midiEvent.midi1RawBytes()[7].littleEndian }
             
-            print(midiEvent.debugDescription)
+            // print(midiEvent.debugDescription)
         }
 
         var list = MIDIPacketList(numPackets: 1, packet: packet)
