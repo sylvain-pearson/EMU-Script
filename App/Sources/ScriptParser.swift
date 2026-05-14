@@ -386,6 +386,7 @@ public class ScriptParser {
         var richText = AttributedString()
         var textLine = AttributedString()
         var lineNumber : UInt16 = 1
+        var isHeader = false
         
         let addedNewLine = (text.hasSuffix("\n") == false)
         
@@ -404,14 +405,6 @@ public class ScriptParser {
                 textLine += AttributedString(String(c))
                 wordType = .comment
             }
-            else if (wordType == .number && (c == "M" || c == "m" || c == "d" || c == "D" || c == "a")) {
-                word += String(c)
-                wordType = .reserved
-            }
-            else if (wordType == .reserved && word.count == 2 && c == "7") {
-                word += String(c)
-                wordType = .reserved
-            }
             else if (c.isNumber && wordType != .keyword) {
                 word += String(c)
                 wordType = .number
@@ -421,7 +414,10 @@ public class ScriptParser {
                 wordType = .keyword
             }
             else {
-                if (!word.isEmpty || wordType == .text) {
+                if (c == "[" && textLine == "") {
+                    isHeader = true
+                }
+                else if (!word.isEmpty || wordType == .text) {
                     var highligthedWord = AttributedString(word)
  
                     if (wordType == .comment) {
@@ -433,12 +429,12 @@ public class ScriptParser {
                     else if (wordType == .number) {
                         highligthedWord.foregroundColor = Color(hue: 0.07, saturation: 1, brightness: 0.6)
                     }
-                    else if (wordType == .reserved || (word == "chord" && c != ":") || word == "root" || word == "arg" || word == "args") {
+                    else if (c != ":" && isReservedKeyword(word)) {
                         highligthedWord.foregroundColor = Color(hue: 0.3, saturation: 1, brightness: 0.5)
                     }
                     else {
                         highligthedWord.foregroundColor = .black
-                        if (c == "]") {
+                        if (c == "]" && isHeader) {
                             highligthedWord.foregroundColor = Color(hue: 0.9, saturation: 1, brightness: 0.8)
                         }
                         else if (c == ":") {
@@ -466,6 +462,7 @@ public class ScriptParser {
                 richText.append(textLine)
                 textLine = ""
                 lineNumber += 1
+                isHeader = false
             }
             last = c
         }
@@ -477,4 +474,16 @@ public class ScriptParser {
         return richText
     }
 
+    // ---------------------------------------------------------------------------------------
+    // Returns true, if the provided word is a reserved keyword (and returns false otherwise)
+    // ---------------------------------------------------------------------------------------
+    func isReservedKeyword(_ word: String) -> Bool {
+        var isReserved = false
+        
+        if (word == "chord" || word == "root" || word == "arg" || word == "args") {
+            isReserved = true
+        }
+        
+        return isReserved
+    }
 }
