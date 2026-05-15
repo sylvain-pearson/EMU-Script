@@ -572,12 +572,12 @@ final public class EmuScriptDocument: FileDocument  {
 
         let musicalSection = MusicalSection(name: name, length: 4)
         
-        for line in section.textLines {
+        for line in preProcess(section.textLines) {
             
             let instrumentName = line.key
             var measures: [Measure]  = []
             
-            let text = preProcess(line.value, measureCount: musicalSection.getLength())
+            let text = line.value
             let phrases = text.split(separator: "|")
             var measureNumber = 0
             
@@ -764,18 +764,42 @@ final public class EmuScriptDocument: FileDocument  {
         return step
     }
     
-    // --------------------------------------------------
-    // Preprocess a music line :
-    //  - Do the text replacement of sequences
-    //  - Repeat measures (* and ...)
-    // --------------------------------------------------
-    func preProcess(_ text: String, measureCount: Int) -> String
+    // ---------------------------------
+    // Do the text lines preprocessing
+    // ---------------------------------
+    func preProcess(_ lineArray: [TextLine]) -> [TextLine] {
+        var lines = lineArray
+
+        for line in lines {
+            line.value = preProcess1(line.value)
+        }
+        
+        var mesasureCount = 0
+        
+        for line in lines {
+            let count = line.value.split(separator: "|").count
+            if (count > mesasureCount) {
+                mesasureCount = count
+            }
+        }
+        
+        for line in lines {
+            line.value = preProcess2(line.value, measureCount: mesasureCount)
+        }
+        
+        return lines
+    }
+    
+    // -------------------------------------------------------------
+    // The first preprocessing phase: the replacement of sequences
+    // -------------------------------------------------------------
+    func preProcess1(_ text: String) -> String
     {
-        var phrases = text.split(separator: "|")
+        let phrases = text.split(separator: "|")
         var result = ""
         var m = 1
         
-        // First, process the sequences
+        // Process the sequences
         for phrase in phrases {
             if (result != "") {
                 result += " | "
@@ -808,12 +832,20 @@ final public class EmuScriptDocument: FileDocument  {
             result += newPhrase
             m += 1
         }
-    
-        phrases = result.split(separator: "|")
-        result = ""
-        m = 1
+            
+        return result.trimmingCharacters(in: ["\""])
+    }
+
+    // --------------------------------------------------------------
+    // The second preprocessing phase: the replacement of * and ...
+    // --------------------------------------------------------------
+    func preProcess2(_ text: String, measureCount: Int) -> String
+    {
+        var phrases = text.split(separator: "|")
+        var result = ""
+        var m = 1
         
-        // Now process the measures repetition
+        // Process the measures repetition
         for phrase in phrases {
             if (result != "") {
                 result += " | "

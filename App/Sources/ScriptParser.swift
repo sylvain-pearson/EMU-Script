@@ -23,7 +23,8 @@ enum TokenType: String {
 public class TextLine {
     
     private(set) var key: String
-    private(set) var value: String
+    var value: String
+    
     private(set) var lineNumber: UInt16
     private(set) var error: ScriptError
     
