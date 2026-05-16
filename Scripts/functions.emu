@@ -1,0 +1,19 @@
+[composition]
+title: "Untitled"
+by: "Someone"
+time: 4/4
+BPM: 120
+transposition: 0
+playlist: intro
+
+[instruments]
+piano: "piano", channel=1, octave=3, velocity=80
+
+[sequences]
+fc: f1(arg(1) arg(2)) | f2(root chord(2)) | f1(arg(2) (arg(1) arg(2))) | f2(arg(1) (arg(2) root/root))
+f1: arg(1) arg(2) arg(1) - | arg(2) arg(1)
+f2: arg(1) arg(1) - - | root chord(2) - - | arg(2)
+
+[intro]
+piano: fc(2 5) | chord
+chord: Am' | Em | C | ... | Am'

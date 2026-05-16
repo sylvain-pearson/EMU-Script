@@ -3,14 +3,15 @@
 ## TODO
 - [x] Change chord names to standard names (C, Dm, Bdim, G7, etc)
 - [ ] Show the chord notes when clicking on a chord name
+- [x] Nested sequences support
 - [ ] Release application package (version 1.1)
 
 ## Issues
 - [ ] Out of bound numbers in a script are not handled properly
-- [ ] ... not expanded in chord lines
+- [ ] Improve undo/redo granularity
+- [x] ... not expanded in chord lines
 - [x] Incorect highlight of triolet (ex [1 2 3])
 - [ ] After startup, the focus is on the script editor
-- [ ] Improve undo/redo granularity
 - [ ] The document state is almost always "Edited"
 
 ## Wishlist

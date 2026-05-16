@@ -401,7 +401,7 @@ final public class EmuScriptDocument: FileDocument  {
                     }
                 }
                 
-                var array = parseFunction(text: functionText)
+                var array = parser.parseFunction(text: functionText)
                 
                 if (array.count >= 2) {
                     let fctName = array.removeFirst()
@@ -738,7 +738,7 @@ final public class EmuScriptDocument: FileDocument  {
                     stepNotes = chords.find(name: chord)
                 }
                 else if (note.starts(with: "chord(") && note.hasSuffix(")")) {
-                    let args = parseFunction(text: note)
+                    let args = parser.parseFunction(text: note)
                     let n = (args.count == 2) ? toNumber(args[1]) : 0
                     if (n > 0) {
                         stepNotes = chords.find(name: chord, notesCount: n)
@@ -768,14 +768,16 @@ final public class EmuScriptDocument: FileDocument  {
     // Do the text lines preprocessing
     // ---------------------------------
     func preProcess(_ lineArray: [TextLine]) -> [TextLine] {
-        var lines = lineArray
+        let lines = lineArray
 
-        for line in lines {
-            line.value = preProcess1(line.value)
+        // Replace sequences (up to 3 level of nesting)
+        for _ in [1, 2, 3] {
+            for line in lines {
+                line.value = preProcess1(line.value)
+            }
         }
         
         var mesasureCount = 0
-        
         for line in lines {
             let count = line.value.split(separator: "|").count
             if (count > mesasureCount) {
@@ -783,6 +785,7 @@ final public class EmuScriptDocument: FileDocument  {
             }
         }
         
+        // Replace ... and *
         for line in lines {
             line.value = preProcess2(line.value, measureCount: mesasureCount)
         }
@@ -814,7 +817,7 @@ final public class EmuScriptDocument: FileDocument  {
                 newPhrase = sequences[id]!
                 
                 var n = 0
-                for argValue in parseFunction(text: String(phrase)) {
+                for argValue in parser.parseFunction(text: String(phrase)) {
                     let argName = String("arg(\(n))")
                     newPhrase = newPhrase.replacingOccurrences(of: argName, with: argValue)
                     n = n + 1
@@ -893,27 +896,6 @@ final public class EmuScriptDocument: FileDocument  {
         }
         
         return result.trimmingCharacters(in: ["\""])
-    }
-
-    // ------------------------------------------------
-    // Parse a function, such as "arp(1 2 3)"
-    // ------------------------------------------------
-    func parseFunction(text: String) -> [String] {
-        var result: [String] = []
-        
-        let args = text.trimmingCharacters(in: .whitespaces).split(separator: "(")
-        if (args.count == 2) {
-            result.append(String(args[0]))
-            let args = args[1].split(separator: ")")
-            if (args.count == 1) {
-                let args = args[0].split(separator: " ")
-                for arg in args {
-                    result.append(String(arg).trimmingCharacters(in: .whitespaces))
-                }
-            }
-        }
-        
-        return result
     }
     
     // ------------------------------------------------

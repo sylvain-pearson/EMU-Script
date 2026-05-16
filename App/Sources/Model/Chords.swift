@@ -126,12 +126,23 @@ struct Chords {
         {
             if (notesCount < 1) {
                 // return the chord's root
-                chord = name
-                if (chord.hasPrefix("'")) {
-                    chord = String(chord.dropFirst())
+                var root = name
+                if (root.hasPrefix("'")) {
+                    root = String(root.dropFirst())
                 }
-                chord = String(chord.first!)
+                root = String(root.first!)
                 
+                // Translate to number
+                switch (root) {
+                    case "C" : chord = "1"
+                    case "D" : chord = "2"
+                    case "E" : chord = "3"
+                    case "F" : chord = "4"
+                    case "G" : chord = "5"
+                    case "A" : chord = "6"
+                    case "B" : chord = "7"
+                    default: chord = "error"
+                }
             }
             else {
                 // Return the requested count of notes

@@ -330,6 +330,65 @@ public class ScriptParser {
         }
     }
     
+    //-------------------------------------
+    // Parse a function and its arguments
+    //-------------------------------------
+    func parseFunction(text: String) -> [String] {
+        var result: [String] = []
+        var token = ""
+        var depth = 0
+        var debugInfo = ""
+        
+        for char in text.trimmingCharacters(in: .whitespaces) {
+            
+            if (char == "(" && result.count == 0) {
+                depth = 1
+                result.append(token)
+                debugInfo = token + ":"
+                token = ""
+            }
+            else if (char == "(") {
+                token.append(char)
+                depth += 1
+            }
+            else if (char == ")" && depth == 1) {
+                if (token.isEmpty == false) {
+                    result.append(token)
+                    debugInfo += "  '\(token)'"
+                }
+                break
+            }
+            else if (char == ")" && depth == 2) {
+                token.append(char)
+                result.append(token)
+                debugInfo += "  '\(token)'"
+                token = ""
+                depth -= 1
+            }
+            else if (char == ")") {
+                token.append(char)
+                depth -= 1
+            }
+            else if (char.isWhitespace && token.isEmpty == false && depth == 1) {
+                result.append(token)
+                debugInfo += "  '\(token)'"
+                token = ""
+            }
+            else {
+                token.append(char)
+            }
+        }
+        
+        if (result.count == 0) {
+            result.append(token)
+            debugInfo = token
+        }
+        
+        print(debugInfo)
+        
+        return result
+    }
+    
     //-----------------------------------------------------------------------------------
     // Split a string into a list of tokens.
     // The tokens separators are: whitespace, parenthesis, curly braces, square brakets
