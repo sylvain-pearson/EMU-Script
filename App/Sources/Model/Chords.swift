@@ -180,7 +180,7 @@ struct Chords {
     //  - If the requested chord is suffixed by a quote, the higher inversion is returned
     // The function return a list of notes separated by spaces (as a string)
     //-----------------------------------------------------------------------------------
-    private func get(name: String) -> String {
+    func get(name: String) -> String {
         var chordName = name
         var lowerInversion = false
         var higherInversion = false

@@ -10,6 +10,13 @@ import SwiftUI
 import AppKit
 import Foundation
 
+struct Selection {
+    var step : Step?
+    var chord : String = ""
+    var measure : Int = 0
+}
+
+
 struct ContentView: View {
     
     @Binding var document: EmuScriptDocument
@@ -19,11 +26,11 @@ struct ContentView: View {
     @State var error = ScriptError()
     @State var scrollPosition = ScrollPosition(edge: .top)
     @State var stepCountProgress = 0
-    @State var selectedStep : Step?
     @State var sequencer : SequencerThread?
+    @State var selection = Selection()
     
     @State var showTextEditor : Bool = false
-    @State var selection = AttributedTextSelection()
+    @State var selectedText = AttributedTextSelection()
     @State var keyPressed : Character?
     @State var progress = -1.0
     @State var scrollByCount = 3
@@ -32,6 +39,7 @@ struct ContentView: View {
     @FocusState var isTextEditorFocused: Bool
     @State var isTextEditorDisabled = false
     
+    let chords = Chords()
     let measureHeight = 190
     let margin = 40
     let stepWidth = 8
@@ -49,7 +57,7 @@ struct ContentView: View {
                 MusicSheetProgress(document: $document, scrollByCount: $scrollByCount, progress: $progress).opacity(showTextEditor ? 0 : 0.6)
 
                 ScrollView(.horizontal, showsIndicators: true) {
-                    MusicSheetView(document: $document, selectedStep: $selectedStep, refreshCounter: $refreshCounter)
+                    MusicSheetView(document: $document, selection: $selection, refreshCounter: $refreshCounter)
                             .onTapGesture { location in selectStep(at: location) }
                 }
                 .opacity(showTextEditor ? 0 : 1)
@@ -120,7 +128,7 @@ struct ContentView: View {
     // Returns the width of a measure
     // ---------------------------------
     func getMeasureWidth() -> Int {
-        return document.composition.beatsPerMeasure * document.composition.stepsPerBeat * 10
+        return document.composition.beatsPerMeasure * document.composition.stepsPerBeat * stepWidth
     }
     
     // -------------------------------------------------------
@@ -228,8 +236,10 @@ struct ContentView: View {
                 for pos in document.positions {
 
                     if (Int(at.x) > pos.x - 10 && Int(at.x) < pos.x + pos.width && Int(at.y) > pos.y - 10 && Int(at.y) < pos.y + pos.height) {
-                        selectedStep = pos.step
-                        document.properties =  selectedStep!.getProperties(transposition: document.composition.transposition)
+                        selection.step = pos.step
+                        selection.chord = chords.find(name: selection.step!.text)
+                        selection.measure = ((Int(at.x) - margin) / getMeasureWidth()) + 1
+                        document.properties =  selection.step!.getProperties(transposition: document.composition.transposition)
                         document.properties.isSelection = true
                         break
                     }
@@ -247,7 +257,9 @@ struct ContentView: View {
     func clearSelection() {
         document.properties = document.composition.getProperties()
         document.properties.isSelection = false
-        selectedStep = nil
+        selection.step = nil
+        selection.chord = ""
+        selection.measure = 0
     }
 }
 extension NSTextView {

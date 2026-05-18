@@ -59,6 +59,17 @@ class Step : Identifiable {
         return step.id == id
     }
     
+    func isChordNote(pos: Int, chordNotes: String) -> Bool {
+        var isChordNote = false
+        if (type == .synth) {
+            if (pos < positions.count) {
+                let note = ((positions[Int(pos)] + 4) % 7) + 1
+                isChordNote = chordNotes.contains(String(note))
+            }
+        }
+        return isChordNote
+    }
+    
     func isSharp(pos: Int, transposition: Int8) -> Bool {
         var isSharp = false
         if (type == .synth) {
@@ -137,9 +148,16 @@ class Step : Identifiable {
     // ---------------------------------------------------------------------
     func getProperties(transposition: Int8) -> Properties {
         var properties: Properties = Properties(text: String(localized: "Selection"))
-
+        
         if (self.text != "" && !self.isError()) {
             properties.items.append(PropertyInfo(name: String(localized: "Text"), value: self.text))
+            
+            let chords = Chords()
+            let chordNotes = chords.get(name: self.text)
+            
+            if (chordNotes != "") {
+                properties.items.append(PropertyInfo(name: String(localized: "Chord"), value: chordNotes))
+            }
         }
         
         if (self.isError()) {
@@ -165,15 +183,17 @@ class Step : Identifiable {
                     case 51: drumNote = String(localized:"Ryde Cymbal")
                     case 61: drumNote = String(localized:"Crash Cymbal")
                     case 37: drumNote = String(localized:"Drum Stick")
-                    default: drumNote = "?"
+                default: drumNote = "?"
                 }
                 properties.items.append(PropertyInfo(value: drumNote))
             }
         }
-
+        
         if (!self.isError()) {
             properties.items.append(PropertyInfo(name: String(localized: "Duration"), value: String(Float(self.length)/12)))
-            properties.items.append(PropertyInfo(name: String(localized: "Velocity"), value: String(self.velocity)))
+            if (self.type != .text) {
+                properties.items.append(PropertyInfo(name: String(localized: "Velocity"), value: String(self.velocity)))
+            }
             
             var value = ""
             for note in self.notes {

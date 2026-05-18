@@ -337,14 +337,12 @@ public class ScriptParser {
         var result: [String] = []
         var token = ""
         var depth = 0
-        var debugInfo = ""
         
         for char in text.trimmingCharacters(in: .whitespaces) {
             
             if (char == "(" && result.count == 0) {
                 depth = 1
                 result.append(token)
-                debugInfo = token + ":"
                 token = ""
             }
             else if (char == "(") {
@@ -354,14 +352,12 @@ public class ScriptParser {
             else if (char == ")" && depth == 1) {
                 if (token.isEmpty == false) {
                     result.append(token)
-                    debugInfo += "  '\(token)'"
                 }
                 break
             }
             else if (char == ")" && depth == 2) {
                 token.append(char)
                 result.append(token)
-                debugInfo += "  '\(token)'"
                 token = ""
                 depth -= 1
             }
@@ -371,7 +367,6 @@ public class ScriptParser {
             }
             else if (char.isWhitespace && token.isEmpty == false && depth == 1) {
                 result.append(token)
-                debugInfo += "  '\(token)'"
                 token = ""
             }
             else {
@@ -381,10 +376,7 @@ public class ScriptParser {
         
         if (result.count == 0) {
             result.append(token)
-            debugInfo = token
         }
-        
-        print(debugInfo)
         
         return result
     }

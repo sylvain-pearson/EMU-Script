@@ -39,7 +39,7 @@ struct MusicSheetProgress : View {
 struct MusicSheetView : View {
     
     @Binding var document: EmuScriptDocument
-    @Binding var selectedStep : Step?
+    @Binding var selection : Selection
     @Binding var refreshCounter : Bool
     
     let measureHeight = 190
@@ -255,7 +255,7 @@ struct MusicSheetView : View {
         let measureWidth = getMeasureWidth()
         let dx = Float(measureWidth) / Float(beatsPerMeasure * stepsPerBeat)
         var x = Float(x0)
-        var m = measureNumber - 1
+        var m = measureNumber
         
         for measure in measures {
             
@@ -263,7 +263,7 @@ struct MusicSheetView : View {
             for step in measure.steps {
                 
                 if (!step.isSilence()) {
-                    drawStep(context: context, x: x, y0: y0, step: step, stepCount: stepCount, measureCount: m, isCompact: isCompact)
+                    drawStep(context: context, x: x, y0: y0, step: step, stepCount: stepCount, measureNumber: m, isCompact: isCompact)
                 }
                 
                 x = x + (Float(step.length) * dx)
@@ -276,7 +276,7 @@ struct MusicSheetView : View {
     //---------------------------------
     // Draw a note, interval or chord
     //---------------------------------
-    func drawStep(context: GraphicsContext, x: Float, y0: Int, step: Step, stepCount: Int, measureCount: Int, isCompact: Bool)
+    func drawStep(context: GraphicsContext, x: Float, y0: Int, step: Step, stepCount: Int, measureNumber: Int, isCompact: Bool)
     {
         let beatsPerMeasure = document.composition.beatsPerMeasure
         let stepsPerBeat = document.composition.stepsPerBeat
@@ -314,7 +314,7 @@ struct MusicSheetView : View {
         }
 
         path = Path()
-        if (selectedStep != nil && step.isEqual(selectedStep!)) {
+        if (selection.step != nil && step.isEqual(selection.step!)) {
             path.addRect(CGRect(x: Int(x+4), y: y+1, width: width-8, height: 6))
         }
         else {
@@ -333,16 +333,18 @@ struct MusicSheetView : View {
             if (step.isSynth() && step.positions.count > 0) {
                 for n in 1...step.positions.count {
                     let y1 = y0 + measureHeight - (step.positions[n-1] * 10) - 4
+                    let isSharp = step.isSharp(pos: n-1, transposition: document.composition.transposition)
+                    let isChordSelection = step.isChordNote(pos: n-1, chordNotes: selection.chord) && measureNumber == selection.measure
                     
                     if (noteWidth < 9) {
                         path = Path()
                         path.addArc(center: CGPoint(x: Int(x+10), y: y1+4), radius: 6, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
                         context.fill(path, with: .color(.black))
                                 
-                        if (step.isSharp(pos: n-1, transposition: document.composition.transposition)) {
+                        if (isSharp || isChordSelection) {
                             path = Path()
                             path.addArc(center: CGPoint(x: Int(x+10), y: y1+4), radius: 4, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
-                            context.fill(path, with: .color(.white))
+                            context.fill(path, with: isSharp ? .color(.white) : .color(.green))
                         }
                     }
                     else {
@@ -352,12 +354,11 @@ struct MusicSheetView : View {
                         path.addRoundedRect(in: rect, cornerSize: roundCorner)
                         context.fill(path, with: .color(.black))
                         
-                        if (step.isSharp(pos: n-1, transposition: document.composition.transposition)) {
+                        if (isSharp || isChordSelection) {
                             path = Path()
                             let rect = CGRect(x: Int(x+6), y: y1, width: noteWidth-4, height: 8)
                             path.addRoundedRect(in: rect, cornerSize: roundCorner)
-                            
-                            context.fill(path, with: .color(.white))
+                            context.fill(path, with: isSharp ? .color(.white) : .color(.green))
                         }
                     }
                     
@@ -392,7 +393,8 @@ struct MusicSheetView : View {
             }
         }
         
-        document.positions.append(NotePosition(x: Int(x), y: y0+margin, width: width, height: measureHeight-margin, step: step))
+        let height = (isCompact ? measureHeight / 2 : measureHeight) - (margin/2)
+        document.positions.append(NotePosition(x: Int(x), y: y0+(margin/2), width: width, height: height, step: step))
         
         if (!step.isSilence() && !step.sustained && !step.isSynth()) {
             let xOffset = noteWidth + 3
@@ -445,11 +447,16 @@ struct MusicSheetView : View {
             for step in measure.steps {
 
                 let width = Float(step.length) * dx
-                let text = step.text
-                
+    
                 if (step.isText()) {
                     let y = y0
-                    context.draw(Text(text).font(.title2).foregroundStyle(.black), at: CGPoint(x: Int(x+(width/2)), y: y+15), anchor: .center)
+                    var text = Text(step.text).font(.title3).foregroundStyle(.black)
+                    
+                    if (selection.step != nil && step.isEqual(selection.step!)) {
+                        text = text.bold().underline(true, color: .green)
+                    }
+                    
+                    context.draw(text, at: CGPoint(x: Int(x+(width/2)), y: y+15), anchor: .center)
                 }
                 
                 var path = Path()
@@ -459,8 +466,11 @@ struct MusicSheetView : View {
                 path.addLine(to: CGPoint(x: Int(x+width-4), y: y0-10))
                 context.stroke(path, with: .color(.gray), lineWidth: 1)
                 
+                document.positions.append(NotePosition(x: Int(x), y: y0-10, width: Int(width), height: 50, step: step))
+                
                 x = x + width
                 stepCount += step.length
+                
             }
         }
     }

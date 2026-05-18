@@ -2,7 +2,7 @@
 
 ## TODO
 - [x] Change chord names to standard names (C, Dm, Bdim, G7, etc)
-- [ ] Show the chord notes when clicking on a chord name
+- [x] Show the chord notes when clicking on a chord name
 - [x] Nested sequences support
 - [ ] Release application package (version 1.1)
 
