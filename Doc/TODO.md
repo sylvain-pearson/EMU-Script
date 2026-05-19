@@ -8,7 +8,7 @@
 
 ## Issues
 - [ ] Out of bound numbers in a script are not handled properly
-- [ ] Improve undo/redo granularity
+- [x] Improve undo/redo granularity
 - [x] ... not expanded in chord lines
 - [x] Incorect highlight of triolet (ex [1 2 3])
 - [ ] After startup, the focus is on the script editor

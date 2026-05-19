@@ -22,6 +22,7 @@ struct ScriptEditor : View {
     @State var keyPressed : Character?
     @State var isEdited = false
     @State var undoManager = UndoManager()
+    @State var lastUpdate = Date.now
     
     var body: some View {
         
@@ -37,8 +38,13 @@ struct ScriptEditor : View {
                         // Push the initial text
                         undoManager.push(old: document.textDocument)
                     }
+                    else if (isEdited && lastUpdate.distance(to: Date.now) > TimeInterval(4)) {
+                        // Last text update has been done at least 5 seconds ago, push it on the undo stack
+                        undoManager.push(old: document.textDocument, new: document.updatedDocument)
+                    }
                     isEdited = true
                     keyPressed = press.characters.first
+                    lastUpdate = Date.now
                 }
                 return .ignored
             }
@@ -55,7 +61,7 @@ struct ScriptEditor : View {
                     keyPressed = nil
                 }
                 else {
-                    let diff = (document.textDocument.count - newValue.characters.count)
+                    let diff = (document.updatedDocument.count - newValue.characters.count)
                     if (diff > 5 || diff < -5) {
                         if (newValue != "" && undoManager.contains(String(newValue.characters)) == false) {
                             // A cut or paste operation has been performed
@@ -67,7 +73,7 @@ struct ScriptEditor : View {
                 }
         }
         .onChange(of: reload) {
-            text = document.onUpdate(document.textDocument)
+            text = document.onUpdate(document.updatedDocument)
         }
         .toolbar {
             ToolbarItemGroup(placement: .principal) {
@@ -104,7 +110,7 @@ struct ScriptEditor : View {
     // Check if there is any error in the script and refresh the display
     //--------------------------------------------------------------------
     func validate() {
-        undoManager.push(old: document.textDocument, new: String(text.characters))
+        undoManager.push(old: document.textDocument, new: document.updatedDocument)
         text = document.onUpdate(String(text.characters), reload: true)
         reload += 1
         isEdited = false
@@ -115,7 +121,7 @@ struct ScriptEditor : View {
     //-----------------------
     func undo() {
         if (undoManager.canUndo()) {
-            text = document.onUpdate(undoManager.undo(String(text.characters)))
+            text = document.onUpdate(undoManager.undo(document.updatedDocument))
             isEdited = false
         }
     }
@@ -125,7 +131,7 @@ struct ScriptEditor : View {
     //-----------------------
     func redo() {
         if (undoManager.canRedo()) {
-            text = document.onUpdate(undoManager.redo(String(text.characters)))
+            text = document.onUpdate(undoManager.redo(document.updatedDocument))
             isEdited = false
         }
     }
