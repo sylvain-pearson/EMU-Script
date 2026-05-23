@@ -23,7 +23,7 @@ struct MidiControl {
     
     init(bank: UInt8, program: UInt8) {
         self.isProgramChange = true
-        self.id = bank - 1
-        self.value = program - 1
+        self.id = bank
+        self.value = program
     }
 }

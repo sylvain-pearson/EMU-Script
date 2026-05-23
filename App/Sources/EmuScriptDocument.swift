@@ -254,7 +254,9 @@ final public class EmuScriptDocument: FileDocument  {
                     }
                 }
                 else if (key == "bpm") {
-                    self.composition.BPM = UInt8(toNumber(line.value))
+                    if let n = toNumber(line.value, min: 40, max: 140, name: "BPM", line: line.lineNumber) {
+                        self.composition.BPM = UInt8(n)
+                    }
                 }
                 else if (key == "time") {
                     let timeSignature = line.value
@@ -267,7 +269,7 @@ final public class EmuScriptDocument: FileDocument  {
                     if (transposition >= -7 && transposition <= 7) {
                         self.composition.transposition = Int8(transposition)
                     } else {
-                        parser.error(.InvalidTransposition, info: line.value, at: line.lineNumber)
+                        parser.error(.invalidTransposition, info: line.value, at: line.lineNumber)
                     }
                 }
                 else if (key == "title") {
@@ -277,7 +279,7 @@ final public class EmuScriptDocument: FileDocument  {
                     self.composition.autor = line.value.trimmingCharacters(in: ["\""])
                 }
                 else if (key == "cc") {
-                    self.ccNumbers.merge(parseCC(line.value)) { (x, y) in x }
+                    self.ccNumbers.merge(parseCC(line)) { (x, y) in x }
                 }
                 else if (key != "info") {
                     parser.error(.unexpectedKeyword, info: line.key, at: line.lineNumber)
@@ -285,7 +287,7 @@ final public class EmuScriptDocument: FileDocument  {
             }
         }
         else {
-            parser.error(.MissingSection, info: sectionName)
+            parser.error(.missingSection, info: sectionName)
         }
     }
     
@@ -310,13 +312,19 @@ final public class EmuScriptDocument: FileDocument  {
                         let value = String(array[1]).trimmingCharacters(in: .whitespaces)
                         
                         if (key == "channel") {
-                            instrument.channel = UInt8(toNumber(value) - 1)
+                            if let n = toNumber(value, min: 1, max: 16, name: "channel", line: line.lineNumber) {
+                                instrument.channel = UInt8(n - 1)
+                            }
                         }
                         else if (key == "octave") {
-                            instrument.octave = UInt8(toNumber(value))
+                            if let n = toNumber(value, min: 1, max: 4, name: "octave", line: line.lineNumber) {
+                                instrument.octave = UInt8(n)
+                            }
                         }
                         else if (key == "velocity") {
-                            instrument.velocity = UInt8(toNumber(value))
+                            if let n = toNumber(value, min: 1, max: 127, name: "velocity", line: line.lineNumber) {
+                                instrument.velocity = UInt8(n)
+                            }
                         }
                         else if (key != "info") {
                             parser.error(.unexpectedKeyword, info: key, at: line.lineNumber)
@@ -334,7 +342,7 @@ final public class EmuScriptDocument: FileDocument  {
             }
         }
         else {
-            parser.error(.MissingSection, info: sectionName)
+            parser.error(.missingSection, info: sectionName)
         }
 
     }
@@ -380,16 +388,24 @@ final public class EmuScriptDocument: FileDocument  {
                             let value = String(array[1]).trimmingCharacters(in: .whitespaces)
                             
                             if (key == "duration") {
-                                duration = toNumber(value)
+                                if let n = toNumber(value, min: 2, max: 24, name: "duration", line: line.lineNumber) {
+                                    duration = n
+                                }
                             }
                             else if (key == "msec") {
-                                msec = toNumber(value)
+                                if let n = toNumber(value, min: 3, max: 15, name: "msec", line: line.lineNumber) {
+                                    msec = n
+                                }
                             }
                             else if (key == "vdec") {
-                                vdec = toNumber(value)
+                                if let n = toNumber(value, min: 0, max: 10, name: "vdec", line: line.lineNumber) {
+                                    vdec = n
+                                }
                             }
                             else if (key == "step") {
-                                step = toNumber(value)
+                                if let n = toNumber(value, min: 2, max: 24, name: "step", line: line.lineNumber) {
+                                    step = n
+                                }
                             }
                             else {
                                 parser.error(.unexpectedKeyword, info: key, at: line.lineNumber)
@@ -409,13 +425,17 @@ final public class EmuScriptDocument: FileDocument  {
                     
                     if (fctName == "midi") {
                         var midiNote = MidiNote(name: name)
-                        midiNote.value = toNumber(firstArg)
+                        if let n = toNumber(firstArg, min: 0, max: 127, name: "MIDI", line: line.lineNumber) {
+                            midiNote.value = n
+                        }
                         midiNotes[name] = midiNote
                     }
                     else if (fctName == "arp" || fctName == "strum") {
                         var sequence = [UInt8]()
                         for arg in array {
-                            sequence.append(UInt8(toNumber(arg)))
+                            if let n = toNumber(arg, min: 1, max: 6, name: fctName, line: line.lineNumber) {
+                                sequence.append(UInt8(n))
+                            }
                         }
                         if (fctName == "arp") {
                             let arp = StrumOrArp(sequence: sequence, step: UInt8(step), duration: UInt8(duration))
@@ -453,14 +473,13 @@ final public class EmuScriptDocument: FileDocument  {
                 if (target.count > 1) {
                     let instrumentName = String(target[0])
                     let messageName = String(target[target.count-1])
-                    var messageValue = toNumber(String(line.value))
                     let messageValueIsSigned = line.value.contains("-") || line.value.contains("+")
                     var messageMap : [String:Int] = [:]
                     var sectionName = (composition.sections.count > 0) ? composition.sections[0].name : ""
                     if (target.count > 2) {
                         sectionName = String(target[1])
                     }
-                    
+                        
                     var measures = composition.getSection(name: sectionName).getMeasures(instrumentName: instrumentName)
                     
                     if (measures.isEmpty) {
@@ -472,28 +491,41 @@ final public class EmuScriptDocument: FileDocument  {
                     var measureEnd = (messageName == "velocity") ? measures.count : 1
                     if (target.count > 3) {
                         let measures = target[2].split(separator: "..")
-                        measureStart = toNumber(String(measures[0]))
+                        
+                        if let n = toNumber(String(measures[0]), min: 1, max: 99, name: "measure", line: line.lineNumber) {
+                            measureStart = n
+                        }
                         
                         if (measures.count == 2) {
-                            measureEnd = toNumber(String(measures[1]))
+                            if let n = toNumber(String(measures[1]), min: 1, max: 99, name: "measure", line: line.lineNumber) {
+                                measureEnd = n
+                            }
                         }
                         else {
                             measureEnd = measureStart
                         }
                     }
                     
-                    var messageId = -1
-                    if (messageName == "cc") {
-                        messageMap = parseCC(line.value)
-                        if (messageMap.isEmpty) {
-                            parser.error(.ccSyntaxError, info: "", at: line.lineNumber)
+                    var messageValue = 0
+                    if (messageName == "velocity") {
+                        if let n = toNumber(line.value, min: -50, max: 50, name: "velocity", line: line.lineNumber) {
+                            messageValue = n
                         }
+                    }
+                    
+                    var messageId = 0
+                    if (messageName == "cc") {
+                        messageMap = parseCC(line)
                     }
                     else if (messageName == "program") {
                         let msg = line.getValues(separator: ".")
                         if (msg.count == 2) {
-                            messageId = toNumber(String(msg[0]))
-                            messageValue = toNumber(String(msg[1]))
+                            if let n = toNumber(String(msg[0]), min: 1, max: 16384, name: "bank", line: line.lineNumber) {
+                                messageId = n - 1
+                            }
+                            if let n = toNumber(String(msg[1]), min: 1, max: 128, name: "program", line: line.lineNumber) {
+                                messageValue = n - 1
+                            }
                         }
                     }
                     
@@ -561,7 +593,7 @@ final public class EmuScriptDocument: FileDocument  {
             loadMusicalSection(name: name, section: section)
         }
         else {
-            parser.error(.UndefinedSection, info: sectionName, at: parser.getLineNumber(sectionName: "composition", lineKey: "playlist"))
+            parser.error(.undefinedSection, info: sectionName, at: parser.getLineNumber(sectionName: "composition", lineKey: "playlist"))
         }
     }
     
@@ -901,14 +933,19 @@ final public class EmuScriptDocument: FileDocument  {
     // ------------------------------------------------
     // Parse a coma separated list of CC name=value
     // ------------------------------------------------
-    func parseCC(_ text: String) -> [String : Int] {
+    func parseCC(_ line: TextLine) -> [String : Int] {
         var result: [String : Int] = [:]
         
-        for phrase in text.split(separator: ",") {
+        for phrase in line.value.split(separator: ",") {
             let expression = phrase.split(separator: "=")
             if (expression.count == 2) {
                 let ccName = String(expression[0]).trimmingCharacters(in: .whitespaces)
-                result[ccName] = toCCValue(String(expression[1]))
+                if let ccValue = toCCValue(String(expression[1]), line: line.lineNumber) {
+                    result[ccName] = ccValue
+                }
+            }
+            else {
+                parser.error(.ccSyntaxError, info: "", at: line.lineNumber)
             }
         }
         
@@ -928,22 +965,47 @@ final public class EmuScriptDocument: FileDocument  {
         return result
     }
     
-    // ----------------------------------------
-    // Convert a string to a CC Value (0-127)
-    // ----------------------------------------
-    func toCCValue(_ text: String) -> Int {
-        var result : Int = 0
-        if (text.contains(".")) {
-            let num = Float(text)
-            if (num != nil) {
-                result = ((Int)(num! * 127)) / 10
+    // --------------------------------------------------
+    // Convert a string to a number with error checking
+    // --------------------------------------------------
+    func toNumber(_ text: String, min: Int, max: Int, name: String, line: UInt16) -> Int? {
+        var result : Int? = nil
+        
+        if let num = Int(text) {
+            if (num < min || num > max) {
+                let info = String(localized: "Invalid \(name) number: '\(text)'; must be between \(min) and \(max))")
+                parser.error(.error, info: info, at: line)
+            }
+            else {
+                result = num
             }
         }
         else {
-            let num = Int(text)
-            if (num != nil) {
-                result = num!
+            let info = String(localized: "Invalid \(name) number: '\(text)'.")
+            parser.error(.error, info: info, at: line)
+        }
+
+        return result
+    }
+    
+    // ----------------------------------------
+    // Convert a string to a CC Value (0-127)
+    // ----------------------------------------
+    func toCCValue(_ text: String, line: UInt16) -> Int? {
+        var result : Int? = nil
+        
+        if (text.contains(".")) {
+            if let num = Float(text) {
+                if (num >= 0 && num <= 10) {
+                    result = ((Int)(num * 127)) / 10
+                }
+                else {
+                    parser.error(.invalidCC, info: text, at: line)
+                }
             }
+        }
+        else {
+            result = toNumber(text, min: 0, max: 127, name: "CC", line: line)
         }
         
         return result

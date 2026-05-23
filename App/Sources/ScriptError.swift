@@ -10,16 +10,18 @@ import UniformTypeIdentifiers
 
 enum ScriptErrorCode {
     case ok
+    case error
     case midiError
     case fileNotFound
-    case MissingSection
-    case UndefinedSection
+    case missingSection
+    case undefinedSection
     case invalidEndpoint
     case invalidNote
     case invalidKeyword
     case invalidDrum
     case invalidChord
-    case InvalidTransposition
+    case invalidTransposition
+    case invalidCC
     case noteIsTooLow
     case noteIsTooHigh
     case unsupportedTimeSignature
@@ -78,11 +80,13 @@ struct ScriptError : Identifiable {
         var message: String = ""
         
         switch code {
+        case .error:
+            message = info
         case .fileNotFound:
             message = String(localized: "Cannot open file: '\(info)'")
-        case .MissingSection:
+        case .missingSection:
             message = String(localized: "The section '\(info)' is mandatory and cannot be found")
-        case .UndefinedSection:
+        case .undefinedSection:
             message = String(localized: "The section '\(info)' cannot be found")
         case .invalidEndpoint:
             message = String(localized: "Invalid MIDI port: '\(info)'.\nYou can use one of the following ports or create a virtual port using MIDI Studio.\n \(details)")
@@ -90,7 +94,7 @@ struct ScriptError : Identifiable {
             message = String(localized: "Unexpected keyword: '\(info)'")
         case .unsupportedTimeSignature:
             message = String(localized: "Unsupported time signature: '\(info)'")
-        case .InvalidTransposition:
+        case .invalidTransposition:
             message = String(localized: "Unsupported transposition: '\(info)'")
         case .invalidSectionName:
             message = String(localized: "The section name '\(info)' has an invalid syntax")
@@ -108,8 +112,10 @@ struct ScriptError : Identifiable {
             message = String(localized: "Invalid keyword: '\(info)'")
         case .invalidChord:
             message = String(localized: "Invalid chord: '\(info)'")
+        case .invalidCC:
+            message = String(localized: "Invalid CC number: '\(info)'; should be a decimal number between 0.0 and 10.0)")
         case .syntaxError:
-            message = String(localized: "Syntax error: '\(info)'")
+            message = String(localized: "Syntax error: '\(info)'.")
         case .parenthesisMismatch:
             message = String(localized: "Parenthesis mismatch")
         case .squareBracketMismatch:
