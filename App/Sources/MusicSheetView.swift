@@ -333,8 +333,8 @@ struct MusicSheetView : View {
             if (step.isSynth() && step.positions.count > 0) {
                 for n in 1...step.positions.count {
                     let y1 = y0 + measureHeight - (step.positions[n-1] * 10) - 4
-                    let isSharp = step.isSharp(pos: n-1, transposition: document.composition.transposition)
-                    let isChordSelection = step.isChordNote(pos: n-1, chordNotes: selection.chord) && measureNumber == selection.measure
+                    let isSharp = step.isSharp(pos: n-1)
+                    let isChordSelection = step.isChordNote(pos: n-1, chordName: selection.chord) && measureNumber == selection.measure
                     
                     if (noteWidth < 9) {
                         path = Path()
@@ -344,7 +344,7 @@ struct MusicSheetView : View {
                         if (isSharp || isChordSelection) {
                             path = Path()
                             path.addArc(center: CGPoint(x: Int(x+10), y: y1+4), radius: 4, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
-                            context.fill(path, with: isSharp ? .color(.white) : .color(.green))
+                            context.fill(path, with: isChordSelection ? .color(.green) : .color(.white))
                         }
                     }
                     else {
@@ -358,7 +358,7 @@ struct MusicSheetView : View {
                             path = Path()
                             let rect = CGRect(x: Int(x+6), y: y1, width: noteWidth-4, height: 8)
                             path.addRoundedRect(in: rect, cornerSize: roundCorner)
-                            context.fill(path, with: isSharp ? .color(.white) : .color(.green))
+                            context.fill(path, with: isChordSelection ? .color(.green) : .color(.white))
                         }
                     }
                     

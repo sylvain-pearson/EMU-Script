@@ -34,6 +34,7 @@ class Step : Identifiable {
     var sustained: Bool             // The note has been raised in the preceding measure
     var playing: StrumOrArp?        // Indication on how to do the strumming or arpeggio, if applicable
     var error: ScriptErrorCode      // An error code or ok
+    var transposition: Int8
     
     func isError() -> Bool {
         return error != .ok
@@ -59,18 +60,33 @@ class Step : Identifiable {
         return step.id == id
     }
     
-    func isChordNote(pos: Int, chordNotes: String) -> Bool {
+    func isStrum() -> Bool {
+        return (playing != nil && playing!.isStrum())
+    }
+    
+    func isArp() -> Bool {
+        return (playing != nil && playing!.isArp())
+    }
+    
+    // -----------------------------------------------------
+    // Is the note at the specified position a chord note ?
+    // -----------------------------------------------------
+    func isChordNote(pos: Int, chordName: String) -> Bool {
         var isChordNote = false
         if (type == .synth) {
             if (pos < positions.count) {
-                let note = ((positions[Int(pos)] + 4) % 7) + 1
-                isChordNote = chordNotes.contains(String(note))
+                let n = ((positions[Int(pos)] + 4) % 7) + 1
+                let note = (isSharp(pos: pos) ? "#" : "") + String(n)
+                isChordNote = Chords().isChordNote(chord: chordName, note: note)
             }
         }
         return isChordNote
     }
     
-    func isSharp(pos: Int, transposition: Int8) -> Bool {
+    // -----------------------------------------------------
+    // Is the note at the specified position a sharp note ?
+    // -----------------------------------------------------
+    func isSharp(pos: Int) -> Bool {
         var isSharp = false
         if (type == .synth) {
             if (pos < notes.count) {
@@ -79,14 +95,6 @@ class Step : Identifiable {
             }
         }
         return isSharp
-    }
-    
-    func isStrum() -> Bool {
-        return (playing != nil && playing!.isStrum())
-    }
-    
-    func isArp() -> Bool {
-        return (playing != nil && playing!.isArp())
     }
     
     // ----------------------------------------------
@@ -108,7 +116,7 @@ class Step : Identifiable {
     // -----------------------------------
     // The default class initializer
     // -----------------------------------
-    init() {
+    init(transposition: Int8) {
         self.length = 1
         self.velocity = 80
         self.notes = []
@@ -121,13 +129,14 @@ class Step : Identifiable {
         self.playing = nil
         self.error = .ok
         self.type = .silence
+        self.transposition = transposition
     }
     
     // -----------------------------------
     // Creates a copy of the Step
     // -----------------------------------
     func clone() -> Step {
-        let step = Step()
+        let step = Step(transposition: transposition)
         step.length = length
         step.velocity = velocity
         step.notes = notes
@@ -146,15 +155,13 @@ class Step : Identifiable {
     // ---------------------------------------------------------------------
     // Return the step properties, in a format suitable for display
     // ---------------------------------------------------------------------
-    func getProperties(transposition: Int8) -> Properties {
+    func getProperties() -> Properties {
         var properties: Properties = Properties(text: String(localized: "Selection"))
         
         if (self.text != "" && !self.isError()) {
             properties.items.append(PropertyInfo(name: String(localized: "Text"), value: self.text))
             
-            let chords = Chords()
-            let chordNotes = chords.get(name: self.text)
-            
+            let chordNotes = Chords().get(name: self.text)
             if (chordNotes != "") {
                 properties.items.append(PropertyInfo(name: String(localized: "Chord"), value: chordNotes))
             }
@@ -205,7 +212,7 @@ class Step : Identifiable {
             
             value = ""
             for note in self.notes {
-                value += self.getMidiNoteAsText(note: note, transposition: transposition) + " "
+                value += self.getMidiNoteAsText(note: note) + " "
             }
             if (value != "") {
                 properties.items.append(PropertyInfo(name: String(localized: "Note(s)"), value: value))
@@ -218,7 +225,7 @@ class Step : Identifiable {
     // -----------------------------------------------------------------
     // Get a MIDI note as text (such as: ♭G4)
     // -----------------------------------------------------------------
-    func getMidiNoteAsText(note: Int, transposition: Int8) -> String {
+    func getMidiNoteAsText(note: Int) -> String {
         var textList: [String] = [ ]
 
         if (transposition == 3 /* E-bémol */ || transposition == 6 /* F */ || transposition == -2 /* B-bémol */ || transposition == -4 /* A-bémol */) {
@@ -239,7 +246,7 @@ class Step : Identifiable {
     // -----------------------------------------------------------
     // Add a synth note, interval or chord to the step
     // -----------------------------------------------------------
-    func add(notes: String, octave: UInt8, transposition: Int8) {
+    func add(notes: String, octave: UInt8) {
         var isSharp = false
         var isHigher = notes.hasSuffix("'")
         let isLower = notes.hasPrefix("#'") || notes.hasPrefix("'")
@@ -250,7 +257,7 @@ class Step : Identifiable {
             }
             else if (c != "'") {
                 let note = (isSharp ? "#" : "" ) + (isLower ? "'" : "") + String(c) + (isHigher ? "'" : "")
-                self.add(note: note, octave: octave, transposition: transposition)
+                self.add(note: note, octave: octave)
                 isSharp = false
                 isHigher = false
             }
@@ -340,7 +347,7 @@ class Step : Identifiable {
     // -----------------------------------------------------------
     // Add a synth note to the step
     // -----------------------------------------------------------
-    private func add(note: String, octave: UInt8, transposition: Int8) {
+    private func add(note: String, octave: UInt8) {
         var pos = 0
         var text = ""
         var isError = true

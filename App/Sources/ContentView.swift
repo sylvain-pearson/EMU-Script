@@ -237,9 +237,9 @@ struct ContentView: View {
 
                     if (Int(at.x) > pos.x - 10 && Int(at.x) < pos.x + pos.width && Int(at.y) > pos.y - 10 && Int(at.y) < pos.y + pos.height) {
                         selection.step = pos.step
-                        selection.chord = chords.find(name: selection.step!.text)
+                        selection.chord = selection.step!.isText() ? selection.step!.text : ""
                         selection.measure = ((Int(at.x) - margin) / getMeasureWidth()) + 1
-                        document.properties =  selection.step!.getProperties(transposition: document.composition.transposition)
+                        document.properties =  selection.step!.getProperties()
                         document.properties.isSelection = true
                         break
                     }

@@ -551,7 +551,7 @@ final public class EmuScriptDocument: FileDocument  {
                             }
                             else {
                                 if (measure.steps.count == 0) {
-                                    measure.steps.append(Step())
+                                    measure.steps.append(Step(transposition: composition.transposition))
                                 }
                                 if (messageName == "program") {
                                     measure.steps[0].ccMessages.append(MidiControl(bank: UInt8(messageId), program: UInt8(messageValue)))
@@ -724,7 +724,7 @@ final public class EmuScriptDocument: FileDocument  {
     // Parse a musical step, such as "123", "-" or "4"
     // --------------------------------------------------
     func parseStep(text: String, octave: UInt8, instrumentName: String, chord: String, length: Int) -> Step {
-        let step = Step()
+        let step = Step(transposition: composition.transposition)
         var notes = text
         
         step.length = length
@@ -789,7 +789,7 @@ final public class EmuScriptDocument: FileDocument  {
                     stepNotes = note
                 }
                 
-                step.add(notes: stepNotes, octave: octave, transposition: composition.transposition)
+                step.add(notes: stepNotes, octave: octave)
             }
         }
         

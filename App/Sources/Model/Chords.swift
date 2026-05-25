@@ -217,4 +217,16 @@ struct Chords {
         return chord
     }
 
+    //---------------------------------
+    // Check if a note is in a chord
+    //---------------------------------
+    func isChordNote(chord: String, note: String) -> Bool {
+        let notes = get(name: chord).split(separator: " ")
+        for n in notes {
+            if (n == note) {
+                return true
+            }
+        }
+        return false
+    }
 }
