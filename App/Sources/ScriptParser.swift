@@ -427,6 +427,43 @@ public class ScriptParser {
         return textList
     }
     
+    //-----------------------------------------------------------------------------------
+    // Split a chord string into a list of tokens.
+    // The tokens separator is the slash and slashes within parenthesis are ignored
+    //------------------------------------------------------------------------------------
+    func tokeniseChord(text: String) -> [String] {
+        
+        var textList: [String] = []
+        var token = ""
+        var inFunction = false
+        
+        for char in text {
+            if (char == "(") {
+                inFunction = true
+                token.append(String(char))
+            }
+            else if (inFunction && char == ")") {
+                inFunction = false
+                token.append(String(char))
+            }
+            else if (inFunction == false && char == "/") {
+                if (!token.isEmpty) {
+                    textList.append(token)
+                }
+                token = ""
+            }
+            else {
+                token.append(String(char))
+            }
+        }
+        
+        if (!token.isEmpty) {
+            textList.append(token)
+        }
+        
+        return textList
+    }
+    
     //-------------------------------------
     // Add syntax highligting to a script
     //-------------------------------------
@@ -457,7 +494,7 @@ public class ScriptParser {
                 textLine += AttributedString(String(c))
                 wordType = .comment
             }
-            else if (c.isNumber && wordType != .keyword) {
+            else if ((c.isNumber || (c >= "A" && c <= "G")) && wordType != .keyword) {
                 word += String(c)
                 wordType = .number
             }
@@ -532,8 +569,36 @@ public class ScriptParser {
     func isReservedKeyword(_ word: String) -> Bool {
         var isReserved = false
         
-        if (word == "chord" || word == "root" || word == "arg" || word == "args") {
+        if (word == "chord" || word == "bass" || word == "root" || word == "arg" || word == "args") {
             isReserved = true
+        }
+        else {
+            let name_ext = word.split(separator: "-")
+            let name = String(name_ext[0])
+            
+            if (name == "min" || name == "maj" || name == "dim" || name == "aug") {
+                isReserved = true
+            }
+            else if (name == "dom7" || name == "min7" || name == "maj7" || name == "dim7" || name == "aug7") {
+                isReserved = true
+            }
+            else if (name == "dom9" || name == "min9" || name == "maj9" || name == "dim9" || name == "aug9") {
+                isReserved = true
+            }
+            else if (name == "sus" || name == "sus2" || name == "sus4" || name == "min6" || name == "maj6") {
+                isReserved = true
+            }
+            else if (name == "m3" || name == "M3" || name == "P4" || name == "P5" || name == "m6" || name == "M6") {
+                isReserved = true
+            }
+            
+            if (isReserved && name_ext.count > 1) {
+                let ext = String(name_ext[1])
+                
+                if (ext == "m7" || ext == "M7" || ext == "m9" || ext == "M9") {
+                    isReserved = true
+                }
+            }
         }
         
         return isReserved

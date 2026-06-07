@@ -450,10 +450,11 @@ struct MusicSheetView : View {
     
                 if (step.isText()) {
                     let y = y0
-                    var text = Text(step.text).font(.title3).foregroundStyle(.black)
+                    var text = Text(step.text).font(.system(size: 14)).monospaced().foregroundStyle(.black)
+                        
                     
                     if (selection.step != nil && step.isEqual(selection.step!)) {
-                        text = text.bold().underline(true, color: .green)
+                        text = text.bold()
                     }
                     
                     context.draw(text, at: CGPoint(x: Int(x+(width/2)), y: y+15), anchor: .center)

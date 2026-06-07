@@ -1,50 +1,44 @@
 [composition]
 title: "All Chords"
 by: "Sylvain Pearson"
-time: 2/4
-BPM: 60
+time: 4/4
+BPM: 50
 transposition: 0
-playlist: diatonic, major, minor, diatonic-7th, dominant-7th, minor-7th, major-7th, diminished, diminished-7th, augmented
+playlist: intervals, triads, sixths, sevenths, ninths, bass-note, root-note, extensions
 
 [instruments]
-piano: "piano", octave=3, velocity=75 
+synth: "MIDI Input", channel=1, octave=2, velocity=80
 
-[diatonic]
-piano: chord | ...
-chord: Am | Bdim | C | Dm | Em | F | G  
+[intervals]
+synth: chord | ...
+chord: m3(D) | M3(F) | P4(C) | P5(C) | m6(D) | M6(D)
+text: "minor-third | major-third | perfect-fourth | perfect-fifth | minor-sixth | major-sixth"
 
-[major]
-piano: chord | ...
-chord: A | B | C | D | E | F | G 
+[triads]
+synth:  chord chord | ...
+chord: maj(C) min(E) | min(G) maj(D) | dim(B) dim(D) | sus4(E) sus2(F) | aug(C) aug(#D) 
 
-[minor]
-piano: chord | ...
-chord: Am | Bm | Cm | Dm | Em | Fm | Gm
+[sixths]
+synth: chord chord | ...
+chord: min6(D) maj6(C) |  min6(C) maj6(E)
 
-[diatonic-7th]
-piano: chord | ...
-chord: Am7 | Bdim7 | CM7 | Dm7 | Em7 | FM7 | G7 
+[sevenths]
+synth: chord chord | ...
+chord: dom7(G) maj7(C) | min7(A) min7(C) | dim7(B) aug7(D)
 
-[dominant-7th]
-piano: chord | ...
-chord: A7 | B7 | C7 | D7 | E7 | F7 | G7 
+[ninths]
+synth: chord chord | ...
+chord: dom9(G) maj9(C) | 'min9(A) min9(C) | 'dim9(B) aug9(D)
 
-[minor-7th]
-piano: chord | ...
-chord: Am7 | Bm7 | Cm7 | Dm7 | Em7 | Fm7 | Gm7 
+[bass-note]
+synth: chord bass | ...
+chord: maj(C,E) | maj(C,G) | maj(G,E) | 'dom7(D,#A) 
 
-[major-7th]
-piano: chord | ...
-chord: AM7 | BM7 | CM7 | DM7 | EM7 | FM7 | GM7 
+[root-note]
+synth: chord root | ...
+chord: min(A) | 'min(A) | maj(C) | maj(C)' | 'maj(C,#A)
 
-[diminished]
-piano: chord | ...
-chord: Adim | Bdim | Cdim | Ddim | Edim | Fdim | Gdim
-
-[diminished-7th]
-piano: chord | ...
-chord: Adim7 | Bdim7 | Cdim7 | Ddim7 | Edim7 | Fdim7 | Gdim7
-
-[augmented]
-piano: chord | ...
-chord: Aaug | Baug | Caug | Daug | Eaug | Faug | Gaug
+[extensions]
+synth: chord | ...
+chord: dim-m7(A) | min-M7(E) | dom7-M9(C) | dom7-m9(C) | maj6-M9(C) | min-M9(E)
+text: "half-diminished-7th | minor-major-7th | dominant-9th | dominant-minor-9th | major-6/9 | minor-add9"

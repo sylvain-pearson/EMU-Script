@@ -75,8 +75,9 @@ class Step : Identifiable {
         var isChordNote = false
         if (type == .synth) {
             if (pos < positions.count) {
-                let n = ((positions[Int(pos)] + 4) % 7) + 1
-                let note = (isSharp(pos: pos) ? "#" : "") + String(n)
+                
+                let n = Character("1").asciiValue! + UInt8((positions[Int(pos)] + 4) % 7)
+                let note = (isSharp(pos: pos) ? "#" : "") + String(UnicodeScalar(n))
                 isChordNote = Chords().isChordNote(chord: chordName, note: note)
             }
         }
@@ -161,9 +162,16 @@ class Step : Identifiable {
         if (self.text != "" && !self.isError()) {
             properties.items.append(PropertyInfo(name: String(localized: "Text"), value: self.text))
             
-            let chordNotes = Chords().get(name: self.text)
-            if (chordNotes != "") {
-                properties.items.append(PropertyInfo(name: String(localized: "Chord"), value: chordNotes))
+            let chordNotes = Chords().getChordNotes(self.text)
+            if (chordNotes.count > 0) {
+                var chord = ""
+                for note in chordNotes {
+                    if (chord.isEmpty == false) {
+                        chord += " "
+                    }
+                    chord += note
+                }
+                properties.items.append(PropertyInfo(name: String(localized: "Chord"), value: chord))
             }
         }
         
@@ -369,11 +377,12 @@ class Step : Identifiable {
             10, 10, 11, 11, 12, 13, 13, 14, 14, 15, 15, 16
         ]
         
-        let textList = ["1", "♯1", "2", "♯2", "3", "4", "♯4", "5", "♯5", "6", "♯6", "7"]
+        let textList = ["1", "#1", "2", "#2", "3", "4", "#4", "5", "#5", "6", "#6", "7"]
         
-        for n in notes {
+        let translatedNote = translateNote(note)
+        for note in notes {
             pos += 1
-            if (note == n) {
+            if (note == translatedNote) {
                 isError = false
                 break
             }
@@ -420,6 +429,20 @@ class Step : Identifiable {
                     self.error = .noteIsTooHigh
                 }
             }
+        }
+        
+        func translateNote(_ note: String) -> String {
+            var result = note
+            
+            result.replace("C", with: "1")
+            result.replace("D", with: "2")
+            result.replace("E", with: "3")
+            result.replace("F", with: "4")
+            result.replace("G", with: "5")
+            result.replace("A", with: "6")
+            result.replace("B", with: "7")
+            
+            return result
         }
     }
 }

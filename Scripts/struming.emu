@@ -20,7 +20,7 @@ r3: dw/chord(5) - - - - - up/chord(3) -
 
 [example]
 guitar: r1 | r2 | r1 | r3 | r1 | r2 | r1 | up/chord(5)
-chord: Am | Dm | 'G | C | F | Bdim | Em | Am
+chord: 'min(A) | min(D) | maj(G,D) | maj(C) | maj(F) | 'dim(B) | min(E) | 'min(A)
 
 
 

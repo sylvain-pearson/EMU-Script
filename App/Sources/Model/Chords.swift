@@ -9,224 +9,312 @@
 import Foundation
 
 struct Chords {
-    
-    private var map: [String : String] = [:]
-    
-    init() {
         
-        // Diatonic triads : C, Dm, Em, F, G, Am, B°
-        map["C"]  = "1 3 5"
-        map["Dm"] = "2 4 6"
-        map["Em"] = "3 5 7"
-        map["F"]  = "4 6 1"
-        map["G"]  = "5 7 2"
-        map["Am"] = "6 1 3"
-        map["Bdim"] = "7 2 4"
-        
-        // Chromatic major and minor triads : Cm, D, E, Fm, Gm, A, Bm, B
-        map["Cm"] = "1 #2 5"
-        map["D"]  = "2 #4 6"
-        map["E"]  = "3 #5 7"
-        map["Fm"] = "4 #5 1"
-        map["Gm"] = "5 #6 2"
-        map["A"]  = "6 #1 3"
-        map["Bm"] = "7 2 #4"
-        map["B"]  = "7 #2 #4"
-        
-        // Chromatic diminished triads : C°, D°, E°, F°, G°, A°
-        map["Cdim"] = "1 #2 #4"
-        map["Ddim"] = "2 4 #5"
-        map["Edim"] = "3 5 #6"
-        map["Fdim"] = "4 #5 7"
-        map["Gdim"] = "5 #6 #1"
-        map["Adim"] = "6 1 #2"
-        
-        // Chromatic augmented triads : C+, D+, E+°, F+, G+, A+, B+
-        map["Caug"] = "1 3 #5"
-        map["Daug"] = "2 #4 #6"
-        map["Eaug"] = "3 #5 1"
-        map["Faug"] = "4 6 #1"
-        map["Gaug"] = "5 7 #2"
-        map["Aaug"] = "6 #1 4"
-        map["Baug"] = "7 #2 5"
-        
-        // Diatonic seventh chords : CM7, Dm7, Em7, FM7, G7, Am7, Bø7
-        map["CM7"] = "1 3 5 7"
-        map["Dm7"] = "2 4 6 1"
-        map["Em7"] = "3 5 7 2"
-        map["FM7"] = "4 6 1 3"
-        map["G7"]  = "5 7 2 4"
-        map["Am7"] = "6 1 3 5"
-        map["Bdim7"] = "7 2 4 6"
-        
-        // Chromatic dominant sevenths chords : C7, D7, E7, F7, A7, B7
-        map["C7"] = "1 3 5 #6"
-        map["D7"] = "2 #4 6 1"
-        map["E7"] = "3 #5 7 2"
-        map["F7"] = "4 6 1 #2"
-        map["A7"] = "6 #1 3 5"
-        map["B7"] = "7 #2 #4 6"
-
-        // Chromatic major sevenths chords : DM7, EM7, GM7, AM7, BM7
-        map["DM7"] = "2 4 6 #1"
-        map["EM7"] = "3 5 7 #2"
-        map["GM7"] = "5 7 2 #4"
-        map["AM7"] = "6 1 3 #5"
-        map["BM7"] = "7 2 4 #6"
-
-        // Chromatic minor sevenths chords : Cm7, Fm7, Gm7, Bm7
-        map["Cm7"] = "1 #2 5 #6"
-        map["Fm7"] = "4 #5 1 #2"
-        map["Gm7"] = "5 #6 2 4"
-        map["Bm7"] = "7 2 #4 6"
-        
-        // Chromatic diminished sevenths chords : , C°7, D°7, E°7, F°7, G°7, A°7
-        map["Cdim7"] = "1 #2 #4 6"
-        map["Ddim7"] = "2 4 #5 7"
-        map["Edim7"] = "3 5 #6 #1"
-        map["Fdim7"] = "4 #5 7 2"
-        map["Gdim7"] = "5 #6 #1 3"
-        map["Adim7"] = "6 1 #2 #4"
-        
-        // Major chords synonyms
-        map["AM"]  = map["A"]
-        map["BM"]  = map["B"]
-        map["CM"]  = map["C"]
-        map["DM"]  = map["D"]
-        map["EM"]  = map["E"]
-        map["FM"]  = map["F"]
-        map["GM"]  = map["G"]
-    }
-    
-    //--------------------------------
-    // Returns the notes of a chord
-    //--------------------------------
-    func find(name: String) -> String {
-        
-        var chord = get(name: name)
-        chord = chord.replacingOccurrences(of: " ", with: "")
-        
-        if (chord.hasPrefix("6") || chord.hasPrefix("#6") || chord.hasPrefix("7")) {
-            chord = "'" + chord
-        }
-        
-        return chord
-    }
-    
     //--------------------------------------------------------------------------------------------------
-    // Returns the notes of a chord.
+    // Returns the notes of a chord, as a string
     //  - The chord is reduced, if the requested notes count is lower than the number of chord notes.
     //  - The chord is augmented, if the requested notes count is higher than the number of chord notes.
-    //  - The chord's soot is returned, if the notes count is -1
+    //  - If the notes count is 0, all chord notes are returned
     //--------------------------------------------------------------------------------------------------
-    func find(name: String, notesCount: Int) -> String {
+    func get(_ text: String, notesCount: Int = 0) -> String {
         
-        var chord = get(name: name)
-        if (chord != "")
-        {
-            if (notesCount < 1) {
-                // return the chord's root
-                var root = name
-                if (root.hasPrefix("'")) {
-                    root = String(root.dropFirst())
+        let notes = getChordNotes(text)
+        var result = ""
+        var n = 0
+        
+        for note in notes.prefix(notesCount == 0 ? notes.count : notesCount) {
+            result += note
+            n += 1
+        }
+        
+        // Expand chord, if required
+        if (n < notesCount) {
+            for note in notes.prefix(notesCount) {
+                if (n < notesCount) {
+                    result += note
+                    n += 1
                 }
-                root = String(root.first!)
-                
-                // Translate to number
-                switch (root) {
-                    case "C" : chord = "1"
-                    case "D" : chord = "2"
-                    case "E" : chord = "3"
-                    case "F" : chord = "4"
-                    case "G" : chord = "5"
-                    case "A" : chord = "6"
-                    case "B" : chord = "7"
-                    default: chord = "error"
+                else {
+                    break
                 }
-            }
-            else {
-                // Return the requested count of notes
-                
-                let notes = chord.split(separator: " ")
-                
-                if (notesCount == 1) {
-                    chord = String(notes[0])
-                }
-                else if (notesCount == 2) {
-                    chord = String(notes[0] + notes[1])
-                }
-                else if (notesCount == 3) {
-                    chord = String(notes[0] + notes[1] + notes[2])
-                }
-                else if (notesCount == 4) {
-                    chord = String(notes[0] + notes[1] + notes[2] + notes[notes.count == 4 ? 3 : 0])
-                }
-                else if (notesCount >= 5) {
-                    chord = String(notes[0] + notes[1] + notes[2] + notes[notes.count == 4 ? 3 : 0]  + notes[notes.count == 4 ? 0 : 1])
-                }
-            }
-            
-            if (chord.hasPrefix("6") || chord.hasPrefix("#6") || chord.hasPrefix("7")) {
-                chord = "'" + chord
             }
         }
         
-        return chord
+        if (result.isEmpty == false) {
+            if (text.hasPrefix("'")) {
+                result = "'" + result
+            }
+            else if (text.hasSuffix("'")) {
+                result = result + "'"
+            }
+        }
+        
+        return result
     }
     
-    //-----------------------------------------------------------------------------------
-    // Get the notes of the requested chord.
-    //  - If the requested chord is prefixed by a quote, the lower inversion is returned
-    //  - If the requested chord is suffixed by a quote, the higher inversion is returned
-    // The function return a list of notes separated by spaces (as a string)
-    //-----------------------------------------------------------------------------------
-    func get(name: String) -> String {
-        var chordName = name
-        var lowerInversion = false
-        var higherInversion = false
-        
-        if (chordName.hasPrefix("'")) {
-            lowerInversion = true
-            chordName = String(chordName.dropFirst())
-        }
-        else if (chordName.hasSuffix("'")) {
-            higherInversion = true
-            chordName = String(chordName.dropLast())
-        }
-        
-        var chord = map[chordName] ?? ""
-        
-        if (chord != "" && (lowerInversion || higherInversion))
-        {
-            let notes = chord.split(separator: " ")
-             
-            if (lowerInversion && notes.count == 3) {
-                chord = String(notes[2] + " " + notes[0] + " " + notes[1])
-            }
-            else if (lowerInversion && notes.count == 4) {
-                chord = String(notes[3] + " " + notes[0] + " " + notes[1] + " " + notes[2])
-            }
-            else if (higherInversion && notes.count == 3) {
-                chord = String(notes[1] + " " + notes[2] + " " + notes[0])
-            }
-            else if (higherInversion && notes.count == 4) {
-                chord = String(notes[1] + " " + notes[2] + " " + notes[3] + " " + notes[0])
-            }
-        }
-        
-        return chord
-    }
-
     //---------------------------------
     // Check if a note is in a chord
     //---------------------------------
     func isChordNote(chord: String, note: String) -> Bool {
-        let notes = get(name: chord).split(separator: " ")
-        for n in notes {
-            if (n == note) {
-                return true
+        let notes = getChordNotes(toNoteNumber(chord))
+        return notes.contains(toNoteNumber(note))
+    }
+    
+    //---------------------------------
+    // Get a chord's root note
+    //---------------------------------
+    func getChordRoot(_ text: String) -> String {
+        var root = ""
+        
+        let chord = trim(text)
+        
+        if let i = chord.firstIndex(of: "(") {
+            if chord.hasSuffix(")") {
+                let notes = chord.suffix(from: i).dropLast().dropFirst().split(separator: ",")
+                root = String(notes[0])
             }
         }
-        return false
+        
+        return root
+    }
+    
+    //---------------------------------
+    // Get a chord's bass note
+    //---------------------------------
+    func getChordBass(_ text: String) -> String {
+        var bass = ""
+        
+        let chord = trim(text)
+        
+        if let i = chord.firstIndex(of: "(") {
+            if chord.hasSuffix(")") {
+                let notes = chord.suffix(from: i).dropLast().dropFirst().split(separator: ",")
+                bass = String(notes[0])
+                if notes.count > 1 {
+                    bass = String(notes[1])
+                }
+            }
+        }
+        
+        if (bass.isEmpty == false) {
+            if (text.hasPrefix("'")) {
+                bass = "'" + bass
+            }
+            else if (text.hasSuffix("'")) {
+                bass = bass + "'"
+            }
+        }
+        
+        return bass
+    }
+    
+    //-----------------------------------------------------------------------------------
+    // Get the notes of the requested chord.The chords formats are:
+    //  - name(root)        -> examples: maj(1), min(A)
+    //  - name-ext(root)    -> examples: dim-min(7)
+    //  - name(root,bass)   -" examples: maj(F,G), min(3,6)
+    // The function return an array of notes
+    //-----------------------------------------------------------------------------------
+    func getChordNotes(_ text: String) -> [String] {
+        var name = ""
+        var root = ""
+        var ext = ""
+        var bass = ""
+        
+        let chord = trim(text)
+        
+        if let i = chord.firstIndex(of: "(") {
+            name = String(chord.prefix(upTo: i))
+            
+            let name_ext = name.split(separator: "-")
+            if (name_ext.count > 0) {
+                name = String(name_ext[0])
+            }
+            if (name_ext.count > 1) {
+                ext = String(name_ext[1])
+            }
+            
+            if chord.hasSuffix(")") {
+                let notes = chord.suffix(from: i).dropLast().dropFirst().split(separator: ",")
+                root = String(notes[0])
+                
+                if notes.count > 1 {
+                    bass = String(notes[1])
+                }
+            }
+        }
+        
+        if (name.isEmpty || root.isEmpty) {
+            return []
+        }
+        else {
+            return getChordNotes(name: name, root: root, ext: ext, bass: bass)
+        }
+    }
+    
+    //---------------------------------------
+    // Get the notes of the requested chord
+    //---------------------------------------
+    private func getChordNotes(name: String, root: String, ext: String, bass: String = "") -> [String] {
+        var notes = [root]
+        
+        switch name {
+        case "maj":
+            notes.append(addSemitones(root, 4))
+            notes.append(addSemitones(root, 7))
+        case "min":
+            notes.append(addSemitones(root, 3))
+            notes.append(addSemitones(root, 7))
+        case "dim":
+            notes.append(addSemitones(root, 3))
+            notes.append(addSemitones(root, 6))
+        case "aug":
+            notes.append(addSemitones(root, 4))
+            notes.append(addSemitones(root, 8))
+        case "sus2":
+            notes.append(addSemitones(root, 2))
+            notes.append(addSemitones(root, 7))
+        case "sus4":
+            notes.append(addSemitones(root, 5))
+            notes.append(addSemitones(root, 7))
+        case "sus":
+            notes.append(addSemitones(root, 5))
+            notes.append(addSemitones(root, 7))
+        case "dom7", "dom9":
+            notes.append(addSemitones(root, 4))
+            notes.append(addSemitones(root, 7))
+            notes.append(addSemitones(root, 10))
+        case "maj7", "maj9":
+            notes.append(addSemitones(root, 4))
+            notes.append(addSemitones(root, 7))
+            notes.append(addSemitones(root, 11))
+        case "min7", "min9":
+            notes.append(addSemitones(root, 3))
+            notes.append(addSemitones(root, 7))
+            notes.append(addSemitones(root, 10))
+        case "dim7", "dim9":
+            notes.append(addSemitones(root, 3))
+            notes.append(addSemitones(root, 6))
+            notes.append(addSemitones(root, 9))
+        case "aug7", "aug9":
+            notes.append(addSemitones(root, 4))
+            notes.append(addSemitones(root, 8))
+            notes.append(addSemitones(root, 10))
+        case "maj6":
+            notes.append(addSemitones(root, 4))
+            notes.append(addSemitones(root, 7))
+            notes.append(addSemitones(root, 9))
+        case "min6":
+            notes.append(addSemitones(root, 3))
+            notes.append(addSemitones(root, 7))
+            notes.append(addSemitones(root, 9))
+        case "m3":
+            notes.append(addSemitones(root, 3))     // minor third interval
+        case "M3":
+            notes.append(addSemitones(root, 4))     // major third interval
+        case "P4":
+            notes.append(addSemitones(root, 5))     // perfect fourth interval
+        case "P5":
+            notes.append(addSemitones(root, 7))     // perfect fifth interval
+        case "m6":
+            notes.append(addSemitones(root, 8))     // minor sixth interval
+        case "M6":
+            notes.append(addSemitones(root, 9))     // major sixth interval
+        default:
+            notes.removeAll()
+        }
+        
+        if (name.last == "9") {
+            notes.append(addSemitones(root, 2))    // major ninth interval
+        }
+        else if (ext.isEmpty == false  && notes.count > 1) {
+            // Handle extensions
+            if (ext == "m7") {
+                // Add a minor seventh
+                notes.append(addSemitones(root, 10))
+            }
+            else if (ext == "M7") {
+                // Add a major seventh
+                notes.append(addSemitones(root, 11))
+            }
+            else if (ext == "m9") {
+                // Add a minor ninth
+                notes.append(addSemitones(root, 1))
+            }
+            else if (ext == "M9") {
+                // Add a major ninth
+                notes.append(addSemitones(root, 2))
+            }
+            else {
+                notes.removeAll()
+            }
+        }
+        
+        if (bass.isEmpty == false) {
+            if (notes.contains(bass)) {
+                while (notes.first != bass) {
+                    notes.append(notes.removeFirst())
+                }
+            }
+            else if (notes.count > 0) {
+                notes.insert(bass, at: 0)
+            }
+        }
+        
+        return notes
+    }
+    
+    //-------------------------------------------------
+    // Add the requested count of semitones to a note
+    //-------------------------------------------------
+    private func addSemitones(_ note: String, _ count: Int8) -> String {
+        var result = note
+        
+        let notes = [ "1", "#1", "2", "#2", "3", "4", "#4", "5", "#5", "6", "#6", "7" ]
+        if let i = notes.firstIndex(of: note) {
+            let j = (i + Int(count)) % 12
+            result = notes[j]
+        }
+        else {
+            let notes = [ "C", "#C", "D", "#D", "E", "F", "#F", "G", "#G", "A", "#A", "B" ]
+            if let i = notes.firstIndex(of: note) {
+                let j = (i + Int(count)) % 12
+                result = notes[j]
+            }
+        }
+        
+        return result
+    }
+    
+    //--------------------------------------------------
+    // Convert a standard note (A-G) to a number (1-7)
+    //--------------------------------------------------
+    private func toNoteNumber(_ note: String) -> String {
+        var result = note
+        
+        result.replace("C", with: "1")
+        result.replace("D", with: "2")
+        result.replace("E", with: "3")
+        result.replace("F", with: "4")
+        result.replace("G", with: "5")
+        result.replace("A", with: "6")
+        result.replace("B", with: "7")
+        
+        return result
+    }
+    
+    //-------------------------------------------
+    // Trim quote prefix and suffix from chord
+    //-------------------------------------------
+    private func trim(_ text: String) -> String {
+        var chord = text
+        
+        if (chord.hasPrefix("'")) {
+            chord = String(chord.dropFirst())
+        }
+        else if (chord.hasSuffix("'")) {
+            chord = String(chord.dropLast())
+        }
+        return chord
     }
 }

@@ -10,5 +10,5 @@ playlist: example
 synth: "MIDI Input", channel=1, octave=3, velocity=80
 
 [example]
-synth: F Em G7 | D Cm 25
-text: "F Em G7 | D Cm interval"
+synth: maj(4) | min(3) | dom7(5) | maj(2) | min(1) | P4(2)
+text: "F | Em | G7 | D | Cm | perfect-fourth"

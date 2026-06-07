@@ -740,8 +740,7 @@ final public class EmuScriptDocument: FileDocument  {
         let isChord = instrumentName.contains("chord")
         let isDrum = (octave == 0 && !isText && !isChord)
         
-        for note in notes.split(separator: "/") {
-            let note = String(note)
+        for note in parser.tokeniseChord(text: notes) {
 
             if let midiNote = midiNotes[note] {
                 step.add(midiNote: midiNote.value, text: midiNote.name, isDrum: isDrum)
@@ -760,30 +759,33 @@ final public class EmuScriptDocument: FileDocument  {
             }
             else if (isChord) {
                 step.add(text: note)
-                if (chords.find(name: note) == "" && note != ".") {
+                if (chords.get(note) == "" && note != ".") {
                     step.error = .invalidChord
                 }
             }
             else {
                 var stepNotes = ""
                 if (note == "chord") {
-                    stepNotes = chords.find(name: chord)
+                    stepNotes = chords.get(chord)
                 }
                 else if (note.starts(with: "chord(") && note.hasSuffix(")")) {
                     let args = parser.parseFunction(text: note)
                     let n = (args.count == 2) ? toNumber(args[1]) : 0
                     if (n > 0) {
-                        stepNotes = chords.find(name: chord, notesCount: n)
+                        stepNotes = chords.get(chord, notesCount: n)
                     }
                     else {
                         step.error = .syntaxError
                     }
                 }
                 else if (note == "root") {
-                    stepNotes = chords.find(name: chord, notesCount: -1)
+                    stepNotes = chords.getChordRoot(chord)
+                }
+                else if (note == "bass") {
+                    stepNotes = chords.getChordBass(chord)
                 }
                 else {
-                    stepNotes = chords.find(name: note)
+                    stepNotes = chords.get(note)
                 }
                 if (stepNotes == "") {
                     stepNotes = note
@@ -793,6 +795,7 @@ final public class EmuScriptDocument: FileDocument  {
             }
         }
         
+        step.text = notes
         return step
     }
     

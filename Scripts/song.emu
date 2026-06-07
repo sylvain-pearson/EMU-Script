@@ -14,8 +14,8 @@ drum: "drum", channel=12, velocity=90, info="Studio drum"
 ds: h - h o  h - h- (h) 
 
 [A]
-lead: 3 | 4 3 #2 3 | 4 | #4 5 - - | . 6 7 1' | 2' 1' 7 6 | 5 | . . 1 2 | 3 3 
-bass: 1 5 | 1 - '7 1 | 2 6 | #2 3 - 5 | 4 | - | 3 - 4 #4 | 5 | 1 - 1' 7 
+lead: E | F E #D E | F | #F G - - | . A B C' | D' C' B A | G | . . C D | E E 
+bass: C G | C - 'B C | D A | #D E - G | F | - | E - F #F | G | C - C' B 
 drum: ds | ... 
 
 [A1]
@@ -25,15 +25,15 @@ text: "Oh | quand j'en tends chan | ter | No ël - - | . J'aime a re | voir mes 
 text: "Oh | quand j'en tends so | nner | au ciel - - | . L'heure où le  | bon vieill ard des | cend | . . Je re | vois tes"
 
 [B]
-lead: 3 6 - 5 | 1 1 | 1 5 - 4 | 3 | 4 3 2 #1 | 2 | -
+lead: E A - G | C C | C G - F | E | F E D #C | D | -
 text: "ti llant -  la | nei ge | d'ar gent - No | ël | mon beau rê ve | blanc"
-bass: #6 | 6 | #5 | 5 1 | #1 - - . | . 2 3 4 | 5 '7
+bass: #A | A | #G | G C | #C - - . | . D E F | G 'B
 drum: ds | ...
 
 [C]
-lead:  3 6 - 5 | 1' | 41 - 1 2 | 3 3 | 6- ('7) '7 '7 | 1 | -
+lead:  E A - G | C' | FC - C D | E E | A- ('B) 'B 'B | C | -
 text: "yeux clairs - ma | man | . . Et  je | songe à | d'autres - No ëls | blancs"
-bass: #6 | 6 - 5 4 | #5 | 5 | 4 5 | . 1 | -
+bass: #A | A - G F | #G | G | F G | . C | -
 drum: ds | ...
 
 
