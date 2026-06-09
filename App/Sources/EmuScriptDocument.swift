@@ -254,7 +254,7 @@ final public class EmuScriptDocument: FileDocument  {
                     }
                 }
                 else if (key == "bpm") {
-                    if let n = toNumber(line.value, min: 40, max: 140, name: "BPM", line: line.lineNumber) {
+                    if let n = toNumber(line.value, min: 30, max: 180, name: "BPM", line: line.lineNumber) {
                         self.composition.BPM = UInt8(n)
                     }
                 }
@@ -795,7 +795,10 @@ final public class EmuScriptDocument: FileDocument  {
             }
         }
         
-        step.text = notes
+        if (!isText) {
+            step.text = notes
+        }
+        
         return step
     }
     

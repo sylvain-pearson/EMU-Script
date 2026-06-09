@@ -420,8 +420,10 @@ struct MusicSheetView : View {
             for step in measure.steps {
                 if (step.isText()) {
                     let y = y0 - 40
+                    let offset = (Float(step.length > stepsPerBeat ? stepsPerBeat : step.length) * dx) / 2
+                    
                     if (!step.sustained) {
-                        context.draw(Text(step.text).font(.title3).foregroundStyle(.black), at: CGPoint(x: Int(x+6), y: y), anchor: .leading)
+                        context.draw(Text(step.text).font(.title3).foregroundStyle(.black), at: CGPoint(x: Int(x+offset), y: y), anchor: .center)
                     }
                 }
                 x = x + (Float(step.length) * dx)

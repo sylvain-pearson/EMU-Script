@@ -312,6 +312,11 @@ class Step : Identifiable {
         self.type = .text
         self.text = text
         self.octave = 0
+        
+        if (text.hasSuffix("_")) {
+            self.text = "  " + self.text
+        }
+        self.text.replace("_", with: " - ") 
     }
     
     // -----------------------------------------------------------------
