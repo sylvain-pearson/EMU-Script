@@ -77,7 +77,7 @@ final public class EmuScriptDocument: FileDocument  {
         synth: "MIDI Input", channel=1, octave=3, velocity=80
 
         [intro]
-        synth: 1 2 3 4 | 5 6 7 1'
+        synth: C D E F | G A B C'
         """
         
         self.updatedDocument = self.textDocument

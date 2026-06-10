@@ -88,11 +88,14 @@ An EMU script has differents sections that describe a composition.
 - **sequences**: In this section, you can define the musical phrases and patterns that occur many times in your composition.
 - **musical sections**: A musical section contains the sequence of notes to be played for each instrument. Each musical section has a name, and that name is listed in the playlist (at least once or many times). 
 
-In an EMU-Script, notes are referred to by their scale degree numbers (1 to 7). 
+In an EMU script, notes can either be numeric (1 to 7) or alphabetic (A to G). There is a strict equivalence between the two: C=1, D=2, E=3, F=4, G=5, A=6, and B=7. 
+
+Here are some of the language's reserved characters and their meaning:
 - The apostrophe is used to make a note one octave higher or lower. 
 - The dash increases a note duration.
 - The parentheses decrease the notes' durations.
 - The dot represents a silence.
+- The vertical bar is a measure separator.
 
 For a complete description of the scripting language, please refer to the EMU-Script Reference Manual.
 
@@ -185,7 +188,7 @@ bass: b1 | 6 6 2' 3' 5' 6' 2' 3' | b2 | 6 6 6' 5' 3' 2' 1' 6
 drum: d1 | * | * | * | * | * | * | d3 | c
 ```
 
-### 4.3 Christmas Song
+### 4.3 Simple Song
 ```
 [composition]
 title: "Noël Blanc"
@@ -195,28 +198,28 @@ time: 4/4
 playlist: A1, B, A2, C
 
 [instruments]
-lead: "piano", channel=1, octave=3, velocity=100      
-bass: "bass", channel=2, octave=2, velocity=90
+lead: "piano", channel=1, octave=3, velocity=95     
+bass: "bass", channel=11, octave=2, velocity=85
 
 [A]
-lead: 3 | 4 3 #2 3 | 4 | #4 5 - - | . 6 7 1' | 2' 1' 7 6 | 5 | . . 1 2 | 3 3 
-bass: 1 5 | 1 - '7 1 | 2 6 | #2 3 - 5 | 4 | - | 3 - 4 #4 | 5 | 1 - 1' 7 
+lead: E | F E #D E | F | #F G - - | . A B C' | D' C' B A | G | . . C D | E E 
+bass: C G | C - 'B C | D A | #D E - G | F | - | E - F #F | G | C - C' B 
 
 [A1]
-text: "Oh | quand j'en tends chan | ter | No ël - - | . J'aime a re | voir mes joies d'en | fant | . . Le sa | pin sin"
+text: "Oh | quand j'en_ tends chan_ | ter | No_ ël - - | . J'aime a re_ |voir mes joies d'en_ |fant | . . Le sa_ | pin sin_"
 
 [A2]
-text: "Oh | quand j'en tends so | nner | au ciel - - | . L'heure où le  | bon vieill ard des | cend | . . Je re | vois tes"
+text: "Oh | quand j'en tends so_ | nner | au ciel - - | . L'heure où le  | bon vieill_ ard des_ | cend | . . Je re_ | vois tes"
 
 [B]
-lead: 3 6 - 5 | 1 1 | 1 5 - 4 | 3 | 4 3 2 #1 | 2 | -
-text: "ti llant -  la | nei ge | d'ar gent - No | ël | mon beau rê ve | blanc"
-bass: #6 | 6 | #5 | 5 1 | #1 - - . | . 2 3 4 | 5 '7
+lead: E A - G | C C | C G - F | E | F E D #C | D | -
+text: "ti_ llant -  la | nei_ ge | d'ar_ gent - No_ | ël | mon beau rê_ ve | blanc"
+bass: #A | A | #G | G C | #C - - . | . D E F | G 'B
 
 [C]
-lead:  3 6 - 5 | 1' | 41 - 1 2 | 3 3 | 6- ('7) '7 '7 | 1 | -
-text: "yeux clairs - ma | man | . . Et  je | songe à | d'autres - No ëls | blancs"
-bass: #6 | 6 - 5 4 | #5 | 5 | 4 5 | . 1 | -
+lead:  E A - G | C' | FC - C D | E E | A- ('B) 'B 'B | C | -
+text: "yeux clairs - ma_ | man | . . Et  je | songe à | d'autres - No_ ëls | blancs"
+bass: #A | A - G F | #G | G | F G | . C | -
 ```
 
 ### 4.4 Guitar Strumming
@@ -243,5 +246,5 @@ r3: dw/chord(5) - - - - - up/chord(3) -
 
 [example]
 guitar: r1 | r2 | r1 | r3 | r1 | r2 | r1 | up/chord(5)
-chord: Am | Dm | 'G | C | F | Bdim | Em | Am
+chord: 'min(A) | min(D) | maj(G,D) | maj(C) | maj(F) | 'dim(B) | min(E) | 'min(A)
 ```
