@@ -4,7 +4,7 @@ by: "Sylvain Pearson"
 time: 4/4
 BPM: 50
 transposition: 0
-playlist: intervals, triads, sixths, sevenths, ninths, bass-note, root-note, extensions
+playlist: intervals, triads, sixths, sevenths, ninths, bass-note, root-note, extensions, flat5
 
 [instruments]
 synth: "MIDI Input", channel=1, octave=2, velocity=80
@@ -24,11 +24,11 @@ chord: min6(D) maj6(C) |  min6(C) maj6(E)
 
 [sevenths]
 synth: chord chord | ...
-chord: dom7(G) maj7(C) | min7(A) min7(C) | dim7(B) aug7(D)
+chord: dom7(G) maj7(C) | min7(A) sus7(E) | dim7(B) aug7(D)
 
 [ninths]
 synth: chord chord | ...
-chord: dom9(G) maj9(C) | 'min9(A) min9(C) | 'dim9(B) aug9(D)
+chord: dom9(G) maj9(C) | 'min9(A) sus9(E) | 'dim9(B) aug9(D)
 
 [bass-note]
 synth: chord bass | ...
@@ -42,3 +42,8 @@ chord: min(A) | 'min(A) | maj(C) | maj(C)' | 'maj(C,#A)
 synth: chord | ...
 chord: dim-m7(A) | min-M7(E) | dom7-M9(C) | dom7-m9(C) | maj6-M9(C) | min-M9(E)
 text: "half-diminished-7th | minor-major-7th | dominant-9th | dominant-minor-9th | major-6/9 | minor-add9"
+
+[flat5]
+synth: chord | ...
+chord: 'min9-b5(A) | dom7-b5(C)
+text: "minor-9th-b5 | dominant-7th-flat5"

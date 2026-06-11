@@ -579,10 +579,10 @@ public class ScriptParser {
             if (name == "min" || name == "maj" || name == "dim" || name == "aug") {
                 isReserved = true
             }
-            else if (name == "dom7" || name == "min7" || name == "maj7" || name == "dim7" || name == "aug7") {
+            else if (name == "dom7" || name == "min7" || name == "maj7" || name == "dim7" || name == "aug7" || name == "sus7") {
                 isReserved = true
             }
-            else if (name == "dom9" || name == "min9" || name == "maj9" || name == "dim9" || name == "aug9") {
+            else if (name == "dom9" || name == "min9" || name == "maj9" || name == "dim9" || name == "aug9" || name == "sus9") {
                 isReserved = true
             }
             else if (name == "sus" || name == "sus2" || name == "sus4" || name == "min6" || name == "maj6") {
@@ -595,7 +595,7 @@ public class ScriptParser {
             if (isReserved && name_ext.count > 1) {
                 let ext = String(name_ext[1])
                 
-                if (ext == "m7" || ext == "M7" || ext == "m9" || ext == "M9") {
+                if (ext == "m7" || ext == "M7" || ext == "m9" || ext == "M9" || ext == "b5") {
                     isReserved = true
                 }
             }

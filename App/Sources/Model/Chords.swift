@@ -174,10 +174,7 @@ struct Chords {
         case "sus2":
             notes.append(addSemitones(root, 2))
             notes.append(addSemitones(root, 7))
-        case "sus4":
-            notes.append(addSemitones(root, 5))
-            notes.append(addSemitones(root, 7))
-        case "sus":
+        case "sus", "sus4":
             notes.append(addSemitones(root, 5))
             notes.append(addSemitones(root, 7))
         case "dom7", "dom9":
@@ -199,6 +196,10 @@ struct Chords {
         case "aug7", "aug9":
             notes.append(addSemitones(root, 4))
             notes.append(addSemitones(root, 8))
+            notes.append(addSemitones(root, 10))
+        case "sus7", "sus9":
+            notes.append(addSemitones(root, 5))
+            notes.append(addSemitones(root, 7))
             notes.append(addSemitones(root, 10))
         case "maj6":
             notes.append(addSemitones(root, 4))
@@ -227,7 +228,7 @@ struct Chords {
         if (name.last == "9") {
             notes.append(addSemitones(root, 2))    // major ninth interval
         }
-        else if (ext.isEmpty == false  && notes.count > 1) {
+        else if (ext.isEmpty == false && notes.count > 1) {
             // Handle extensions
             if (ext == "m7") {
                 // Add a minor seventh
@@ -245,7 +246,25 @@ struct Chords {
                 // Add a major ninth
                 notes.append(addSemitones(root, 2))
             }
-            else {
+            else if (ext != "b5") {
+                notes.removeAll()
+            }
+        }
+        
+        // flat five chord modifier
+        if (ext == "b5"  && notes.count > 1) {
+            let fifth = addSemitones(root, 7)
+            var found = false
+            var i = 0
+            for n in notes {
+                if (n == fifth) {
+                    notes[i] = addSemitones(root, 6)
+                    found = true
+                    break
+                }
+                i = i + 1
+            }
+            if (found == false) {
                 notes.removeAll()
             }
         }
