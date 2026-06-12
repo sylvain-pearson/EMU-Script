@@ -6,6 +6,8 @@
 - [x] Show the chord notes when clicking on a chord name
 - [x] Nested sequences support
 - [x] Improve lyrics notation (underscore used as a replacement for dash)
+- [x] Add sus7 and sus9 chord
+- [x] Documentation update for release 1.1
 - [ ] Release application package (version 1.1)
 
 ## Issues

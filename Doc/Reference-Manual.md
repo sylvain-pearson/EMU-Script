@@ -60,7 +60,9 @@ Musical sections are the core building blocks of a musical composition. A musica
 When a section name ends with a number, it means that the section is a variation of another section. For instance, if a section name is `A1`, it means that the content of the section will be merged with the content of its "parent" section `[A]` (you will find an example in section 3.5).
 
 ### 3.1 Diatonic notes
-In an EMU-Script, the notes of a major scale are always 1, 2, 3, 4, 5, 6, and 7. The transposition defined in the `[composition]` section is used to set the tonality and therefore the key of a composition. A transposition of 0 means that we are composing in C major, a transposition of +5 means that we are composing in F major, etc. The actual note played by the sequencer also depends on the reference octave of the instrument. 
+In an EMU-Script, the notes of a major scale are always 1, 2, 3, 4, 5, 6, and 7. If you prefer, you can use the alphabetic equivalents instead: C, D, E, F, G, A, and B. 
+
+The transposition defined in the `[composition]` section is used to set the tonality and therefore the key of a composition. A transposition of 0 means that we are composing in C major, a transposition of +5 means that we are composing in F major, etc. The actual note played by the sequencer also depends on the reference octave of the instrument. 
 
 There are some modifiers that can be applied to diatonic notes:
 - **`#`**: The sharp sign, used as a prefix, increases the pitch of the note by one semitone. The chromatic notes are #1, #2, #4, #5, and #6.
@@ -70,7 +72,12 @@ There are some modifiers that can be applied to diatonic notes:
 Here is an example:
 ```
     [intro]
-    piano: '6 '7 1 2 | 3 4 #5 6 | 7 1' 2' #3'
+    piano: '6 '7 1 2 | 3 4 #5 6 | 7 1' #2' 3'
+```
+or alternatively:
+```
+    [intro]
+    piano: 'A 'B C D | E F #G A | B C' #D' E'
 ```
 *The vertical bar (`|`) acts as a measure separator. In the example, we have defined 3 measures.* 
 
@@ -106,79 +113,92 @@ The duration of the notes in a measure depends on the time signature, the BPM, t
 - **`.`**: A dot is a silent note.
 
 Here are some examples, based on a 4/4 time signature:
-- `| 5 |` : a whole note
+- `| F |` : a whole note
 - `| 5 7 |` : two half notes
 - `| 7 - 6 4 |` : a half note (7) and two quarter notes (6, 4)
-- `| 6 - - 7 |` : a dotted half note (6) and a quarter note (7)
+- `| A - - B |` : a dotted half note (A) and a quarter note (B)
 - `| (2 1) 3 4 5 |` : two eighth notes (2, 1) and three quarter notes
-- `| (1) 2 3 4- |` : one eighth note (1), two quarter notes and one dotted quarter note
-- `| 3 . |` : a half note and a half rest
-- `| (.) 3 - 4- |` : a eighth rest, a half note and a dotted quarter note
+- `| (C) D E F- |` : one eighth note (C), two quarter notes and one dotted quarter note
+- `| E . |` : a half note and a half rest
+- `| (.) E - F- |` : a eighth rest, a half note and a dotted quarter note
 - `| [1 2 3] 4 5 6 |` : a triplet (1, 2, 3) and three quarter notes
 
 ### 3.4 Chords and intervals
-There are three different types of notation for chords:
-- **Explicit**: notes are separated using the slash character. Using this notation, you can specify any type of chord or interval.
-```
-    1/3/5 '6/1/3 5/#6/2'/4' '7/2/4
-```
-- **Compact**: notes are concatenated in ascending pitch order.
-```
-    135 '613 5#624 '724
-```
-- **Named**: predefined chord names. 
-```
-    C Am Gm7 Bdim
-```
+When notes are grouped together, they create a chord or interval. Optionally, you can separate the notes of a chord using the slash character. Here are some examples:
+- **`CEG`**: the C major chord 
+- **`ACE`**: the A minor chord
+- **`724`**: the B diminished chord
+- **`6#13`**: the A major chord
+- **`#C/E/#G/B`**: the C sharp minor seventh chord
 
-A chord name is built by concatenating its root note letter (C, D, E, F, G, A or, B), with one of the following suffixes:
-- **`M`**: Major triad (or just the root note with no suffix)
-- **`m`**: Minor triad
-- **`dim`**: Diminished triad
-- **`aug`**: Augmented triad
-- **`7`**: Dominant seventh chord
-- **`M7`**: Major seventh chord
-- **`m7`**: Minor seventh chord
-- **`dim7`**: Diminished seventh chord
+Many chord functions are provided to facilitate chord creation and identification. A chord function has the following format: 
+```
+name-extension(root,bass)
+```
+The chord extension and bass note are optional. The chord name can be one of the following:
+- **`maj`**: Major chord
+- **`min`**: Minor chord
+- **`dim`**: Diminished chord
+- **`aug`**: Augmented chord
+- **`sus2`**: Suspended second chord.
+- **`sus sus4`**: Suspended fourth chord.
+- **`dom7 dom9`**: Dominant seventh and ninth chords.
+- **`maj7 maj9`**: Major seventh and ninth chords.
+- **`min7 min9`**: Minor seventh and ninth chords.
+- **`dim7 dim9`**: Diminished seventh and ninth chords.
+- **`aug7 aug9`**: Augmented seventh and ninth chords.
+- **`sus7 sus9`**: Suspended seventh and ninth chords.
 
-Two types of chord inversions can be used with chord names:
-- **Higher inversion**: If you suffix a chord name with an apostrophe, the root note is moved to the end of the chord. For instance, `C'` is equivalent to `351`.
-- **Lower inversion**: If you prefix a chord name with an apostrophe, the last note is moved to the beginning of the chord. For instance, `'F` is equivalent to `146`.
+The available chord extensions are:
+- **m7**: add a minor seventh to the chord.
+- **M7**: add a major seventh to the chord.
+- **m9**: add a minor ninth to the chord.
+- **M9**: add a major ninth to the chord.
+- **b5**: lower the fifth by one semitone (flat 5).
+
+Here are some examples:
+- **`maj(C)`**: the C major chord (CEG).
+- **`maj(C,E)`**: the C major chord with an E as a bass note (EGC).
+- **`'maj(4,5)`**: the F major chord with a G as a bass note ('GFAC).
+- **`min-M7(A)`**: the A minor-major seventh chord (ACE#G).
+- **`maj-M9(5)`**: the G major add9 chord (GBDA).
 
 ### 3.5 Lyrics
 If you wish, it is possible to add lyrics to a composition. Here is an example: 
 ```
 [A]
-piano: 3 | 4 3 #2 3 | 4 | #4 5 - - | . 6 7 1' | 2' 1' 7 6 | 5 
-bass: 1 5 | 1 - '7 1 | 2 6 | #2 3 - 5 | 4 | - | 3 - 4 #4 
-text: "Oh" 
+lead: E | F E #D E | F | #F G - - | . A B C' | D' C' B A | G | . . C D | E E 
+bass: C G | C - 'B C | D A | #D E - G | F | - | E - F #F | G | C - C' B 
+drum: ds | ... 
 
 [A1]
-text: "quand j'en tends chan | ter | No ël - - | . J'aime a re | voir mes joies d'en | fant"
+text: "Oh | quand j'en_ tends chan_ | ter | No_ ël - - | . J'aime a re_ |voir mes joies d'en_ |fant | . . Le sa_ | pin sin_"
 
 [A2]
-text: "quand j'en tends so | nner | au ciel - - | . L'heure où le  | bon vieill ard des | cend"
+text: "Oh | quand j'en tends so_ | nner | au ciel - - | . L'heure où le  | bon vieill_ ard des_ | cend | . . Je re_ | vois tes"
 ```
-All lyrics must be quoted, and lyric lines must be prefixed by `text:`. The same time modifiers that are used for notes are also valid for lyrics (parenthesis, dash, dot).
+All lyrics must be quoted, and lyric lines must be prefixed by `text:`. The same time modifiers that are used for notes are also valid for lyrics (parenthesis, dash, dot). 
+
+To indicate that a word is spread over two notes, you can use the underscore character at the end or beginning of a syllable, and it will be displayed as a dash in the music sheet ("quand j'en_ tends chan_" is displayed as "quand j'en - tends chan -").
 
 ### 3.6 Chord progression
 A chord progression defines the harmonic structure of a composition. You can add a chord progression using lines that are prefixed by `chord:`. Here is an example:
 ```
     [verse]
-    chord: C | Am | 'F 'G | C
+    chord: maj(C) | 'min(A) | maj(F,A) dom7(G) | maj(C)'
 ``` 
 Once a chord progression has been defined, it is possible to access the notes of the current chord using three built-in functions:
 - **`root`**: returns the current root note.
+- **`bass`**: returns the current bass note.
 - **`chord`**: returns the current chord.
 - **`chord(n)`**: returns the first 'n' notes of the current chord. When `n` is higher than the chord notes count, the chord is extended.
 
 Here is an example of use:
 ```
     [verse]
-    chord:   Am  |  Dm'    G      |   C 
-    synth1: root | chord chord(2) | chord(4)  
-    synth2:  '6  |  462    57     |  1351 
-     
+    chord:   min(A,C)  |     min(E)     |  maj(C) 
+    synth1: root  bass | chord chord(2) | chord(5)  
+    synth2:   A    C   |  EGB    EG     |  CEGCE     
 ``` 
 *In the example, the synth1 and synth2 instruments play exactly the same notes.*
 
