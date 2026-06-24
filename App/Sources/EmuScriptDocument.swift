@@ -180,6 +180,32 @@ final public class EmuScriptDocument: FileDocument  {
         return velocity
     }
 
+    // --------------------------------------------------------------
+    // Get the count of measures to be displayed in the music sheet
+    // --------------------------------------------------------------
+    func getSelectedMeasuresCount() -> Int {
+        var count = 0
+        for i in 0..<playlist.count {
+            if (playlist[i].isSelected) {
+                count += composition.getSectionLength(name: playlist[i].name)
+            }
+        }
+        return count
+    }
+    
+    // -----------------------------------------------------------------
+    // Get the count of instruments to be displayed in the music sheet
+    // -----------------------------------------------------------------
+    func getSelectedInstrumentsCount() -> Int {
+        var count = 0
+        for i in 0..<instruments.count {
+            if (instruments[i].isSelected) {
+                count += 1
+            }
+        }
+        return count
+    }
+    
     // -------------------------------------------------
     // Load all sections of the text document (script)
     // -------------------------------------------------

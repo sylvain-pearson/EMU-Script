@@ -56,8 +56,8 @@ struct ContentView: View {
             ZStack {
                 MusicSheetProgress(document: $document, scrollByCount: $scrollByCount, progress: $progress).opacity(showTextEditor ? 0 : 0.6)
 
-                ScrollView(.horizontal, showsIndicators: true) {
-                    MusicSheetView(document: $document, selection: $selection, refreshCounter: $refreshCounter)
+                ScrollView([.horizontal, .vertical], showsIndicators: true) {
+                        MusicSheetView(document: $document, selection: $selection, refreshCounter: $refreshCounter)
                             .onTapGesture { location in selectStep(at: location) }
                 }
                 .opacity(showTextEditor ? 0 : 1)
@@ -121,7 +121,10 @@ struct ContentView: View {
                     .disabled((sequencer != nil && sequencer!.isExecuting))
                 }
             }
-        }.frame(minWidth: 1920 * 0.60, minHeight: 1080 * 0.60)
+        }
+        .frame(minWidth: 1920 * 0.60, minHeight: 1080 * 0.60)
+        // App store required size. Hold Option key when doing the capture
+        // .frame(minWidth: (2880) / 2, minHeight: (1800 - 104) / 2)
     }
 
     // ---------------------------------

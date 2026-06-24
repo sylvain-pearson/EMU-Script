@@ -8,10 +8,12 @@
 - [x] Improve lyrics notation (underscore used as a replacement for dash)
 - [x] Add sus7 and sus9 chord
 - [x] Documentation update for release 1.1
+- [x] Music sheet vertical scrolling
+- [ ] Create screen captures for app store (2880 × 1800px)
 - [ ] Release application package (version 1.1)
 
 ## Issues
-- [ ] Music sheet width is not reduced when music sections are unselected
+- [x] Music sheet width is not reduced when music sections are unselected
 - [ ] After startup, the focus is on the script editor
 - [ ] The document state is almost always "Edited"
 
