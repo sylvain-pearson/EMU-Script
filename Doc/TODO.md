@@ -9,6 +9,7 @@
 - [x] Add sus7 and sus9 chord
 - [x] Documentation update for release 1.1
 - [x] Music sheet vertical scrolling
+- [x] Use coma as a function arguments separator (instead of spaces)
 - [ ] Create screen captures for app store (2880 × 1800px)
 - [ ] Release application package (version 1.1)
 

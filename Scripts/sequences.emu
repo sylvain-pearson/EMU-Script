@@ -16,7 +16,7 @@ b2: arg(1) - . arg(1) arg(1) - . arg(2)
 ds: Bh h sh h Bh h sh h | Bh h sh h Bh h sh arg(1)      
 
 [example]
-bass: b1('6 1) | b2(2 4) | b1(5 7) | 1 .
+bass: b1('6,1) | b2(2,4) | b1(5,7) | 1 .
 drum: ds(o) | ds(c)
 
 

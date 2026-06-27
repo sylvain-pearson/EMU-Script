@@ -402,7 +402,7 @@ final public class EmuScriptDocument: FileDocument  {
                 var msec = 10
                 var vdec = 3
                 
-                for keyValue in line.getValues(separator: ",") {
+                for keyValue in parser.splitComaSeparatedList(line.value) {
                     if (keyValue.contains("(") && keyValue.contains(")")) {
                         functionText = String(keyValue)
                     }
@@ -646,7 +646,7 @@ final public class EmuScriptDocument: FileDocument  {
                 var measureStepsLength = 0
 
                 measureNumber += 1
-                let tokens = parser.tokenise(text: String(phrase))
+                let tokens = parser.tokenise(String(phrase))
                 var defaultStepLength = getMeasureStepLength(tokens)
                    
                 for word in tokens {
@@ -766,7 +766,7 @@ final public class EmuScriptDocument: FileDocument  {
         let isChord = instrumentName.contains("chord")
         let isDrum = (octave == 0 && !isText && !isChord)
         
-        for note in parser.tokeniseChord(text: notes) {
+        for note in parser.tokeniseChord(notes) {
 
             if let midiNote = midiNotes[note] {
                 step.add(midiNote: midiNote.value, text: midiNote.name, isDrum: isDrum)

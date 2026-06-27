@@ -6,60 +6,30 @@ time: 4/4
 playlist: A1, B, A2, C
 
 [instruments]
-lead: "piano", channel=1, octave=3, velocity=95, info="Japanese Home Clean piano with reverb"      
-bass: "bass", channel=11, octave=2, velocity=85, info="Electric bass guitar played with fingers"
-drum: "drum", channel=12, velocity=90, info="Studio drum"
-
-[sequences]
-ds: h - h o  h - h- (h) 
+lead: "piano", channel=1, octave=3, velocity=95      
+bass: "bass", channel=11, octave=2, velocity=85
 
 [A]
 lead: E | F E #D E | F | #F G - - | . A B C' | D' C' B A | G | . . C D | E E 
 bass: C G | C - 'B C | D A | #D E - G | F | - | E - F #F | G | C - C' B 
-drum: ds | ... 
 
 [A1]
-text: "Oh | quand j'en_ tends chan_ | ter | No_ ël - - | . J'aime a re_ |voir mes joies d'en_ |fant | . . Le sa_ | pin sin_"
+text: "Oh | quand j'en_ tends chan_ | ter | No_ ël - - "
+text: ". J'aime a re_ |voir mes joies d'en_ |fant | . . Le sa_ | pin sin_"
 
 [A2]
-text: "Oh | quand j'en tends so_ | nner | au ciel - - | . L'heure où le  | bon vieill_ ard des_ | cend | . . Je re_ | vois tes"
+text: "Oh | quand j'en tends so_ | nner | au ciel - - "
+text: " . L'heure où le  | bon vieill_ ard des_ | cend | . . Je re_ | vois tes"
 
 [B]
 lead: E A - G | C C | C G - F | E | F E D #C | D | -
 text: "ti_ llant -  la | nei_ ge | d'ar_ gent - No_ | ël | mon beau rê_ ve | blanc"
 bass: #A | A | #G | G C | #C - - . | . D E F | G 'B
-drum: ds | ...
 
 [C]
 lead:  E A - G | C' | FC - C D | E E | A- ('B) 'B 'B | C | -
 text: "yeux clairs - ma_ | man | . . Et  je | songe à | d'autres - No_ ëls | blancs"
 bass: #A | A - G F | #G | G | F G | . C | -
-drum: ds | ...
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

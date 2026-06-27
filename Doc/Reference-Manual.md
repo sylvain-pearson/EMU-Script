@@ -229,7 +229,7 @@ seq2: 2 - 3 4 | 5- (4) 3 - | args
 seq3: . 3 4 5 | 4 3 36 -
 
 [intro1]
-piano: seq1(3 5 7) | seq2(2 1) | seq3
+piano: seq1(3, 5, 7) | seq2(2, 1) | seq3
 
 [intro2]
 piano: 3 7 5 3 | 2 - 3 4 | 5- (4) 3 - | 2 1 | . 3 4 5 | 4 3 36 -
@@ -241,11 +241,11 @@ The `[sounds]` section contains the definition of new sounds that can be used in
 
 - **midi**: a MIDI note number. Must be between 0 and 127. 
 - **arp**: an arpeggiated chord. It has 3 parameters: 
-    1. A list of note indexes.
+    1. A list of comma-separated note indexes.
     2. **step**: the length of a step. Must be between 2 and 24, where 12 is the length of a quarter note.
     3. **duration**: the note duration. Must be between 2 and 24.
 - **strum**: a strummed chord. It has 3 parameters:
-    1. A list of note indexes.
+    1. A list of comma-separated note indexes.
     2. **msec**: the duration between each note, in milliseconds. Must be between 3 and 15.
     3. **vdec**: the percentage of velocity's decrease between each note. Must be between 0 and 10.
 
@@ -254,10 +254,10 @@ Here is an example:
 [sounds]
 kick: midi(35)
 hh: midi(44)
-dw: strum(5 4 3 2 1), msec=5, vdec=3
-up: strum(1 2 3 4 5), msec=6, vdec=5
-a1: arp(1 1 1 2), step=3, duration=3
-a2: arp(1 2 3 4 3 2), step=5, duration=8
+dw: strum(5, 4, 3, 2, 1), msec=5, vdec=3
+up: strum(1, 2, 3, 4, 5), msec=6, vdec=5
+a1: arp(1, 1, 1, 2), step=3, duration=3
+a2: arp(1, 2, 3, 4, 3, 2), step=5, duration=8
  
 [exemple]
 guitar: a1/37 | - | dw/61351 up/'61351 | up/'57257 | a2/2461

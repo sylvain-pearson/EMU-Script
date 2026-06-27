@@ -131,27 +131,27 @@ bass:  6 | 5 | 4 - - 3 | 2/6
 flute: . | . | . | . 4 | -
 
 [A]
-piano: s1(1 2) | s1(3 5) | s1(4 3) | s1(4 2) | 3- - (4 5 6) | 5 7 | 4- - (5 6 7) | 1'
-bass: arp(6 1' 3') | arp(3 5 7) | arp(4 6 1') | arp(2 4 6) | ...
+piano: s1(1, 2) | s1(3, 5) | s1(4, 3) | s1(4, 2) | 3- - (4 5 6) | 5 7 | 4- - (5 6 7) | 1'
+bass: arp(6, 1', 3') | arp(3, 5, 7) | arp(4, 6, 1') | arp(2, 4, 6) | ...
 pad: . | . | . | . | 3 | 5 | 6 | 2 4
 
 [B]
 piano: 6 | 3 | 4 5 . 4| . 4/6 - (. #5) | '63 | 3 | 4 5 . 4| . 26 - (. 4) | '63 
-bass: arp(6 1' 3') | arp(3 5 7) | arp(4 6 1') | arp(2 4 6) | ...
+bass: arp(6, 1', 3') | arp(3, 5, 7) | arp(4, 6, 1') | arp(2, 4, 6) | ...
 pad: 3 | 5 | 4 | 2 | 3 6 | 57 | 4 | 2 | 1'
 drum: d1 | ...
 
 [inter]
 piano: . | . | . | . | 6 | 5 3 | 6 41 | 6 . 4 - | 1 '6 - -  | '7 37 5 - | . 41 - - | 6 5 4 3
 bass: . | . | . | .  | . | . | . | . | . '6 - - | . 3 - - | . 4 - - 
-flute: arp(63 1' -) | arp(37 5 -) | arp(41 6 -) | arp(26 4 -) | ...
+flute: arp(63, 1', -) | arp(37, 5, -) | arp(41, 6, -) | arp(26, 4, -) | ...
 drum: d2 | ...
 
 [outro]
-piano:  arp(6 1' 3') | arp(3 5 7) | arp(4 6 1') | arp(2 4 6)  | '63
+piano:  arp(6, 1', 3') | arp(3, 5, 7) | arp(4, 6, 1') | arp(2, 4, 6)  | '63
 bass:  36 | 5 3 | 6 41 | 6 4 | '63 | . '6 | . '6
 pad:  6 | 7 | 1' - - . 
-flute:  . | . | . | . | arp(6 1' 3') | arp(6 1' 3') | 6 3' 1' 6 - - - -
+flute:  . | . | . | . | arp(6, 1', 3') | arp(6, 1', 3') | 6 3' 1' 6 - - - -
 ```
 
 ### 4.2 Drum and Bass
@@ -236,8 +236,8 @@ playlist: example
 guitar: "guitar", channel=4, octave=3, velocity=60
 
 [sounds]
-dw: strum(5 4 3 2 1), msec=5, vdec=3
-up: strum(1 2 3 4 5), msec=6, vdec=5
+dw: strum(5, 4, 3, 2, 1), msec=5, vdec=3
+up: strum(1, 2, 3, 4, 5), msec=6, vdec=5
 
 [sequences]
 r1: dw/chord(5) - - up/chord(3) dw/chord(5) - - -

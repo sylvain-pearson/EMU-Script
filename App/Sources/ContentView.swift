@@ -58,7 +58,7 @@ struct ContentView: View {
 
                 ScrollView([.horizontal, .vertical], showsIndicators: true) {
                         MusicSheetView(document: $document, selection: $selection, refreshCounter: $refreshCounter)
-                            .onTapGesture { location in selectStep(at: location) }
+                        .onTapGesture { location in selectStep(at: location) }
                 }
                 .opacity(showTextEditor ? 0 : 1)
                 .scrollPosition($scrollPosition)
@@ -219,7 +219,7 @@ struct ContentView: View {
             let stepsPerMeasure = document.composition.stepsPerBeat * document.composition.beatsPerMeasure
             
             if (position % (stepsPerMeasure * self.scrollByCount) == 0) {
-                self.scrollPosition.scrollTo(x: CGFloat(position * self.stepWidth))
+                self.scrollPosition.scrollTo(x: CGFloat(position * self.stepWidth), y: 0)
             }
             
             self.progress = (Double((position % (stepsPerMeasure * self.scrollByCount)))) / Double(stepsPerMeasure * self.scrollByCount)

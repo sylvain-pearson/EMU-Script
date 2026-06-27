@@ -342,7 +342,7 @@ public class ScriptParser {
             
             if (char == "(" && result.count == 0) {
                 depth = 1
-                result.append(token)
+                result.append(token.trimmingCharacters(in: .whitespaces))
                 token = ""
             }
             else if (char == "(") {
@@ -351,7 +351,7 @@ public class ScriptParser {
             }
             else if (char == ")" && depth == 1) {
                 if (token.isEmpty == false) {
-                    result.append(token)
+                    result.append(token.trimmingCharacters(in: .whitespaces))
                 }
                 break
             }
@@ -365,8 +365,8 @@ public class ScriptParser {
                 token.append(char)
                 depth -= 1
             }
-            else if (char.isWhitespace && token.isEmpty == false && depth == 1) {
-                result.append(token)
+            else if (char == "," && token.isEmpty == false && depth == 1) {
+                result.append(token.trimmingCharacters(in: .whitespaces))
                 token = ""
             }
             else {
@@ -375,7 +375,7 @@ public class ScriptParser {
         }
         
         if (result.count == 0) {
-            result.append(token)
+            result.append(token.trimmingCharacters(in: .whitespaces))
         }
         
         return result
@@ -385,7 +385,7 @@ public class ScriptParser {
     // Split a string into a list of tokens.
     // The tokens separators are: whitespace, parenthesis, curly braces, square brakets
     //------------------------------------------------------------------------------------
-    func tokenise(text: String) -> [String] {
+    func tokenise(_ text: String) -> [String] {
         
         var textList: [String] = []
         var token = ""
@@ -431,7 +431,7 @@ public class ScriptParser {
     // Split a chord string into a list of tokens.
     // The tokens separator is the slash and slashes within parenthesis are ignored
     //------------------------------------------------------------------------------------
-    func tokeniseChord(text: String) -> [String] {
+    func tokeniseChord(_ text: String) -> [String] {
         
         var textList: [String] = []
         var token = ""
@@ -462,6 +462,43 @@ public class ScriptParser {
         }
         
         return textList
+    }
+    
+    //-----------------------------------------------------------------------------------
+    // Split a coma separated list that can contain functions calls
+    //------------------------------------------------------------------------------------
+    func splitComaSeparatedList(_ text: String) -> [String] {
+        
+        var textList: [String] = []
+        var token = ""
+        var inFunction = false
+        
+        for char in text {
+            if (char == "(") {
+                inFunction = true
+                token.append(String(char))
+            }
+            else if (inFunction && char == ")") {
+                inFunction = false
+                token.append(String(char))
+            }
+            else if (inFunction == false && char == ",") {
+                if (!token.isEmpty) {
+                    textList.append(token.trimmingCharacters(in: .whitespaces))
+                }
+                token = ""
+            }
+            else {
+                token.append(String(char))
+            }
+        }
+        
+        if (!token.isEmpty) {
+            textList.append(token.trimmingCharacters(in: .whitespaces))
+        }
+        
+        return textList
+
     }
     
     //-------------------------------------

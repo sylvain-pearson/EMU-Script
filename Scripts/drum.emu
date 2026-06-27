@@ -7,7 +7,7 @@ transposition: 0
 playlist: all, example
 
 [instruments]
-synth: "-", channel=4, octave=3, velocity=80
+nil: "drum", channel=4, octave=3, velocity=80
 drum: "drum", channel=1, velocity=90
 
 [all]

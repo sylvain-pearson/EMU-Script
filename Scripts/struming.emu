@@ -10,8 +10,8 @@ playlist: example
 guitar: "guitar", channel=4, octave=3, velocity=60
 
 [sounds]
-dw: strum(5 4 3 2 1), msec=5, vdec=3
-up: strum(1 2 3 4 5), msec=6, vdec=5
+dw: strum(5, 4, 3, 2, 1), msec=5, vdec=3
+up: strum(1, 2, 3, 4, 5), msec=6, vdec=5
 
 [sequences]
 r1: dw/chord(5) - - up/chord(3) dw/chord(5) - - -
