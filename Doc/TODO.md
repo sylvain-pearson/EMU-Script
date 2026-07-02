@@ -10,6 +10,11 @@
 - [x] Documentation update for release 1.1
 - [x] Music sheet vertical scrolling
 - [x] Use coma as a function arguments separator (instead of spaces)
+- [ ] Support for dark mode
+- [ ] Mute button should mute the instrument when clicked during playback
+- [ ] Support for ipad
+- [ ] Undo/redo support for ipad
+- [ ] Revisit the configuration menu for ipad
 - [ ] Create screen captures for app store (2880 × 1800px)
 - [ ] Release application package (version 1.1)
 

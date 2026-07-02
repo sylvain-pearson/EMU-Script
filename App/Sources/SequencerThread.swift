@@ -9,7 +9,10 @@
 import Foundation
 import CoreMIDI
 import MIDIKitIO
+
+#if os(macOS)
 import IOKit.pwr_mgt
+#endif
 
 struct Event {
     var midi: MIDIEvent? = nil
@@ -102,7 +105,10 @@ class SequencerThread: Thread {
     override func main()
     {
         let stepsAhead = 12
+        
+#if os(macOS)
         let noSleepId = disableSleep()
+#endif
     
         let startTimeStamp = mach_absolute_time() + (stepTickCount * UInt64(stepsAhead))
         let startTime = Date.now + (stepDuration * Double(stepsAhead))
@@ -141,7 +147,10 @@ class SequencerThread: Thread {
         print("Playback duration: \(duration) seconds")
         
         scrollTo(-1)
+        
+#if os(macOS)
         enableSleep(id: noSleepId)
+#endif
     }
     
     //--------------------------------------------------------------------------
@@ -386,6 +395,7 @@ class SequencerThread: Thread {
     //--------------------------------------------------
     // Prevents display sleep to occur during playback
     //--------------------------------------------------
+#if os(macOS)
     func disableSleep() -> IOPMAssertionID
     {
         var assertionID: IOPMAssertionID = 0
@@ -416,4 +426,5 @@ class SequencerThread: Thread {
             }
         }
     }
+#endif
 }

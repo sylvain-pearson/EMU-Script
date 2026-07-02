@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import AppKit
 import Foundation
 
 struct Selection {
@@ -29,7 +28,7 @@ struct ContentView: View {
     @State var sequencer : SequencerThread?
     @State var selection = Selection()
     
-    @State var showTextEditor : Bool = false
+    @State var showTextEditor : Bool = true
     @State var selectedText = AttributedTextSelection()
     @State var keyPressed : Character?
     @State var progress = -1.0
@@ -38,6 +37,12 @@ struct ContentView: View {
     
     @FocusState var isTextEditorFocused: Bool
     @State var isTextEditorDisabled = false
+    
+#if os(macOS)
+    @State private var sideBarVisibility = NavigationSplitViewVisibility.doubleColumn
+#else
+    @State private var sideBarVisibility = NavigationSplitViewVisibility.detailOnly
+#endif
     
     let chords = Chords()
     let measureHeight = 190
@@ -49,8 +54,8 @@ struct ContentView: View {
     // -------------------------------------------------------------------
     var body: some View {
         
-        NavigationSplitView {
-            Sidebar(document: $document, refresh: refresh)
+        NavigationSplitView(columnVisibility: $sideBarVisibility) {
+            Sidebar(document: $document, isEditing: $showTextEditor, refresh: refresh)
         }
         detail: {
             ZStack {
@@ -75,25 +80,29 @@ struct ContentView: View {
         
         // The toolbar
         .toolbar {
-            ToolbarItemGroup() {
+            
+            ToolbarItemGroup()  {
                 HStack {
-    
-                    Toggle(isOn: $showTextEditor){ Label("Text Editor", systemImage: "doc.text") }
-                        .onChange(of: showTextEditor) {
-                            onChangeOfTextEditor(showTextEditor)
-                        }
-                        .disabled((sequencer != nil && sequencer!.isExecuting))
+#if os(iOS)
+                    Button(action: toggleSidebar) { Label("Sidebar", systemImage: "sidebar.left") }
+#endif
+                    if (showTextEditor) {
+                        Button(action: toggleTextEditor) { Label("Text Editor", systemImage: "music.note.list") }
+                    }
+                    else {
+                        Button(action: toggleTextEditor) { Label("Text Editor", systemImage: "doc.text") }
+                    }
                     
                     Divider()
                     
                     Button(action: play) { Label("Play", systemImage: "play.fill") }
                         .keyboardShortcut(.defaultAction)
-                        .disabled((sequencer != nil && sequencer!.isExecuting) || showTextEditor)
+                        .disabled((sequencer != nil && sequencer!.isExecuting))
 
                     Button(action: stop) { Label("Stop", systemImage: "stop.fill") }
                         .keyboardShortcut(.cancelAction)
-                        .disabled(sequencer == nil || sequencer!.isFinished || showTextEditor)
-                    
+                        .disabled(sequencer == nil || sequencer!.isFinished)
+#if os(macOS)
                     Button(action: scrollLeft) { Label("Scroll Left", systemImage: "chevron.left") }
                         .keyboardShortcut(.leftArrow, modifiers: [])
                         .disabled((sequencer != nil && sequencer!.isExecuting) || (scrollPosition.x != nil && scrollPosition.x == 0) || showTextEditor)
@@ -102,7 +111,7 @@ struct ContentView: View {
                         .keyboardShortcut(.rightArrow, modifiers: [])
                         .disabled((sequencer != nil && sequencer!.isExecuting) || showTextEditor ||
                                   (scrollPosition.x != nil && Int(scrollPosition.x!) > (document.measuresCount-3)*getMeasureWidth()))
-                    
+#endif
                     Divider()
                     
                     Menu {
@@ -122,9 +131,12 @@ struct ContentView: View {
                 }
             }
         }
+#if os(macOS)
         .frame(minWidth: 1920 * 0.60, minHeight: 1080 * 0.60)
+        
         // App store required size. Hold Option key when doing the capture
         // .frame(minWidth: (2880) / 2, minHeight: (1800 - 104) / 2)
+#endif
     }
 
     // ---------------------------------
@@ -134,10 +146,25 @@ struct ContentView: View {
         return document.composition.beatsPerMeasure * document.composition.stepsPerBeat * stepWidth
     }
     
+    func toggleSidebar() {
+        if (sideBarVisibility == .detailOnly) {
+            sideBarVisibility = .doubleColumn
+        }
+        else {
+            sideBarVisibility = .detailOnly
+        }
+    }
+    
+    func toggleTextEditor() {
+        showTextEditor.toggle()
+        onChangeOfTextEditor(showTextEditor)
+    }
+    
     // -------------------------------------------------------
     // Start playing the composition in a background thread
     // -------------------------------------------------------
     func play() {
+        
         sequencer = SequencerThread(document: document, scrollFunc: self.scroll)
         if (sequencer != nil) {
             error = sequencer!.prepare()
@@ -265,6 +292,7 @@ struct ContentView: View {
         selection.measure = 0
     }
 }
+#if os(macOS)
 extension NSTextView {
     // HACK to work-around the smart quote issue
     open override var frame: CGRect {
@@ -282,6 +310,7 @@ extension NSTextView {
         }
     }
 }
+#endif
 
 #Preview {
     ContentView(document: .constant(EmuScriptDocument()))

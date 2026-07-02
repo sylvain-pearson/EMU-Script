@@ -16,6 +16,7 @@ struct EmuScriptApp: App {
         DocumentGroup(newDocument: EmuScriptDocument()) { file in
             ContentView(document: file.$document)
         }
+#if os(macOS)
         .commands {
             CommandGroup(replacing: .undoRedo) {
                EmptyView()
@@ -25,5 +26,6 @@ struct EmuScriptApp: App {
                 Link("Online Reference Manual", destination: URL(string: "https://sylvain-pearson.github.io/EMU-Script/Doc/Reference-Manual.html")!)
             }
         }
+#endif
     }
 }

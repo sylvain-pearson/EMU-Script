@@ -22,6 +22,7 @@ struct PlaylistRow: View {
                         
     var body: some View {
         HStack {
+            
             Toggle(isOn: $isSelected) {
                 Text(name)
             }
@@ -47,30 +48,29 @@ struct InstrumentRow: View {
                         
     var body: some View {
         HStack {
-               
+            
             Toggle(isOn: $isSelected) {
-                Text(name)
+                HStack {
+                    Text(name)
+                    Spacer()
+                    Toggle(isOn: $isMuted) {
+                        if (isMuted) {
+                            Image(systemName: "speaker.slash")
+                        }
+                        else {
+                            Image(systemName: "speaker.wave.2")
+                        }
+                    }.toggleStyle(.button)
+                }
             }
             .onChange(of: isSelected) { oldValue, newValue in
                 onChange(id, isSelected, isMuted)
-                isMuted = !isSelected
                 refreshMusicSheet()
             }
             .onChange(of: isMuted) { oldValue, newValue in
                 onChange(id, isSelected, isMuted)
                 refreshMusicSheet()
             }
-
-            Spacer()
-            
-            Toggle(isOn: $isMuted) {
-                if (isMuted) {
-                    Text("M")
-                }
-                else {
-                    Text("M").foregroundColor(.gray)
-                }
-            }.toggleStyle(.button).frame(width: 25)
         }
     }
 }
@@ -81,31 +81,44 @@ struct InstrumentRow: View {
 struct Sidebar: View {
 
     @Binding var document: EmuScriptDocument
+    @Binding var isEditing: Bool
     let refresh: () -> Void
     
     var propertiesTitle : String = ""
     
+#if os(macOS)
+    let macOS = true
+#else
+    let macOS = false
+#endif
+    
     var body: some View {
         
-        List {
-            // The playlist
-            Section(header: Text("Playlist").font(.headline)) {
-                ForEach (document.playlist) {
-                    PlaylistRow(name: $0.name, id: $0.id, isSelected: $0.isSelected,
-                                onChange: document.onPlaylistSelection,
-                                refreshMusicSheet: refresh)
+        if (macOS || isEditing == false) {
+            List {
+                // The playlist
+                Section(header: Text("Playlist").font(.headline)) {
+                    ForEach (document.playlist) {
+                        PlaylistRow(name: $0.name, id: $0.id, isSelected: $0.isSelected,
+                                    onChange: document.onPlaylistSelection,
+                                    refreshMusicSheet: refresh)
+                    }
+                }
+                // The list on instruments
+                Section(header: Text("Instruments").font(.headline)) {
+                    ForEach (document.instruments) {
+                        InstrumentRow(name: $0.name, id: $0.id, isSelected: $0.isSelected, isMuted: $0.isMuted,
+                                      onChange: document.onInstrumentSelection,
+                                      refreshMusicSheet: refresh)
+                    }
                 }
             }
-            // The list on instruments
-            Section(header: Text("Instruments").font(.headline)) {
-                ForEach (document.instruments) {
-                    InstrumentRow(name: $0.name, id: $0.id, isSelected: $0.isSelected, isMuted: $0.isMuted,
-                                  onChange: document.onInstrumentSelection,
-                                  refreshMusicSheet: refresh)
-                }
-            }
-        }.frame(minWidth: 250).listStyle(.sidebar)
+#if os(macOS)
+            .frame(minWidth: 250).listStyle(.sidebar)
+#endif
+        }
         
+#if os(macOS)
         // The Step properties
         if (document.parser.errors.isEmpty || document.properties.isSelection) {
             VStack(alignment: .leading, spacing: 3) {
@@ -114,15 +127,29 @@ struct Sidebar: View {
                 ForEach (document.properties.items) { property in
                     Text(String("- ") + property.name + property.separator + property.value)
                 }
-            }.padding(.all, 10)
-        } else {
-            VStack(alignment: .leading, spacing: 3) {
+            }
+            .padding(.all, 10)
+        }
+        else {
+            VStack(alignment: .leading , spacing: 3) {
                 Text("Error" + (document.parser.errors.count==1 ? "" : "s")).font(.headline)
                 ForEach (document.parser.errors.prefix(5)) { error in
                     Divider()
                     Text("- " + error.getMessageAndLineNumber())
                 }
-            }.padding(.all, 10)
+            }
+            .padding(.all, 10)
         }
+#else
+        if (isEditing) {
+            List {
+                Section(header: document.parser.errors.isEmpty ? Text("No errors"): Text("Errors")) {
+                    ForEach (document.parser.errors.prefix(8)) { error in
+                        Text(error.getMessageAndLineNumber())
+                    }
+                }
+            }
+        }
+#endif
     }
 }

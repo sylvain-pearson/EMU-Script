@@ -32,6 +32,7 @@ struct ScriptEditor : View {
                     text = document.onUpdate(document.textDocument)
                 }
             }
+#if os(macOS)
             .onKeyPress(action: { press in
                 if (press.modifiers.isEmpty || press.modifiers == .shift) {
                     if (isEdited == false && undoManager.canUndo() == false) {
@@ -72,9 +73,20 @@ struct ScriptEditor : View {
                     text = document.onUpdate(String(newValue.characters))
                 }
         }
+#else
+            // Minimal implementation for ipad with no undo/redo support 
+            .onChange(of: text) { oldValue, newValue in
+                let reloadDocument =  oldValue.characters.filter{ $0 == "\n" }.count != newValue.characters.filter{ $0 == "\n" }.count
+                text = document.onUpdate(String(newValue.characters), reload: reloadDocument)
+                if (reloadDocument) {
+                    reload += 1
+                }
+            }
+#endif
         .onChange(of: reload) {
             text = document.onUpdate(document.updatedDocument)
         }
+#if os(macOS)
         .toolbar {
             ToolbarItemGroup(placement: .principal) {
                 Spacer()
@@ -92,6 +104,11 @@ struct ScriptEditor : View {
                     .keyboardShortcut(.return, modifiers: [.command])
             }
         }
+#else
+        .toolbarVisibility(.hidden, for: .automatic)
+        .textInputAutocapitalization(.never)
+        .autocorrectionDisabled(true)
+#endif
     }
     
     //------------------------------------------------------------------
