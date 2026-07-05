@@ -547,24 +547,24 @@ public class ScriptParser {
                     var highligthedWord = AttributedString(word)
  
                     if (wordType == .comment) {
-                        highligthedWord.foregroundColor = .gray
+                        highligthedWord.foregroundColor = Color.scriptComment
                     }
                     else if (wordType == .text) {
-                        highligthedWord.foregroundColor = Color(hue: 0.3, saturation: 1, brightness: 0.65)
+                        highligthedWord.foregroundColor = Color.scriptText
                     }
                     else if (wordType == .number) {
-                        highligthedWord.foregroundColor = Color(hue: 0.07, saturation: 1, brightness: 0.6)
+                        highligthedWord.foregroundColor = Color.scriptNumber
                     }
                     else if (c != ":" && isReservedKeyword(word)) {
-                        highligthedWord.foregroundColor = Color(hue: 0.3, saturation: 1, brightness: 0.5)
+                        highligthedWord.foregroundColor = Color.scriptKeyword
                     }
                     else {
-                        highligthedWord.foregroundColor = .black
+                        highligthedWord.foregroundColor = .primary
                         if (c == "]" && isHeader) {
-                            highligthedWord.foregroundColor = Color(hue: 0.9, saturation: 1, brightness: 0.8)
+                            highligthedWord.foregroundColor = Color.scriptHeader
                         }
                         else if (c == ":") {
-                            highligthedWord.foregroundColor = Color(hue: 0.65, saturation: 1, brightness: 0.8)
+                            highligthedWord.foregroundColor = Color.scriptLinePrefix
                         }
                     }
                     
@@ -583,7 +583,7 @@ public class ScriptParser {
             
             if (c == "\n") {
                 if (errorLines.contains(lineNumber)) {
-                    textLine.backgroundColor = Color(hue: 0.15, saturation: 0.3, brightness: 1)
+                    textLine.backgroundColor = Color.scriptError // Color(hue: 0.15, saturation: 0.3, brightness: 1)
                 }
                 richText.append(textLine)
                 textLine = ""

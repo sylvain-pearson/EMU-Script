@@ -45,7 +45,9 @@ struct MusicSheetView : View {
     let measureHeight = 190
     let margin = 50
     
-    var body: some View { 
+    @Environment(\.colorScheme) var colorScheme
+    
+    var body: some View {
         Canvas(opaque: false, colorMode: .linear, rendersAsynchronously: false) { context, size in
             draw(context: context, size: size)
         }
@@ -295,7 +297,7 @@ struct MusicSheetView : View {
         }
         
         let width = Int(Float(step.length) * dx)
-        var fillColor = Color(.black)
+        var fillColor = Color.primary
         
         if (step.isError()) {
             fillColor = Color(cgColor: .init(gray: 0.1, alpha: 0.5))
@@ -311,7 +313,7 @@ struct MusicSheetView : View {
             if (gradiant > 36) {
                 gradiant = 36
             }
-            fillColor = Color(hue: Double(gradiant) / 36 * 0.16, saturation: 1, brightness: 0.95)
+            fillColor = Color(hue: Double(gradiant) / 36 * 0.16, saturation: 1, brightness: colorScheme == .light ? 0.95 : 0.75)
         }
 
         path = Path()
@@ -340,12 +342,19 @@ struct MusicSheetView : View {
                     if (noteWidth < 9) {
                         path = Path()
                         path.addArc(center: CGPoint(x: Int(x+10), y: y1+4), radius: 6, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
-                        context.fill(path, with: .color(.black))
+                        context.fill(path, with: .color(.musicSheetNote))
                                 
                         if (isSharp || isChordSelection) {
                             path = Path()
                             path.addArc(center: CGPoint(x: Int(x+10), y: y1+4), radius: 4, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
-                            context.fill(path, with: isChordSelection ? .color(.green) : .color(.white))
+                            context.fill(path, with: isChordSelection ? .color(.green) : .color(fillColor))
+                            
+                            if (isChordSelection) {
+                                context.fill(path, with: .color(.accentColor))
+                            }
+                            else {
+                                context.fill(path, with: .color(.musicSheetSharpNote))
+                            }
                         }
                     }
                     else {
@@ -353,13 +362,19 @@ struct MusicSheetView : View {
                         let roundCorner = CGSize(width: 5, height: 5)
                         let rect = CGRect(x: Int(x+4), y: y1-2, width: noteWidth, height: 12)
                         path.addRoundedRect(in: rect, cornerSize: roundCorner)
-                        context.fill(path, with: .color(.black))
+                        context.fill(path, with: .color(.musicSheetNote))
                         
                         if (isSharp || isChordSelection) {
                             path = Path()
                             let rect = CGRect(x: Int(x+6), y: y1, width: noteWidth-4, height: 8)
                             path.addRoundedRect(in: rect, cornerSize: roundCorner)
-                            context.fill(path, with: isChordSelection ? .color(.green) : .color(.white))
+                            
+                            if (isChordSelection) {
+                                context.fill(path, with: .color(.accentColor))
+                            }
+                            else {
+                                context.fill(path, with: .color(.musicSheetSharpNote))
+                            }
                         }
                     }
                     
@@ -382,14 +397,14 @@ struct MusicSheetView : View {
                 if (noteWidth < 9) {
                     path = Path()
                     path.addArc(center: CGPoint(x: Int(x+10), y: y+4), radius: 6, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
-                    context.fill(path, with: .color(.black))
+                    context.fill(path, with: .color(.primary))
                 }
                 else {
                     var path = Path()
                     let roundCorner = CGSize(width: 5, height: 5)
                     let rect = CGRect(x: Int(x+4), y: y-2, width: noteWidth, height: 12)
                     path.addRoundedRect(in: rect, cornerSize: roundCorner)
-                    context.fill(path, with: .color(.black))
+                    context.fill(path, with: .color(.primary))
                 }
             }
         }
@@ -399,7 +414,7 @@ struct MusicSheetView : View {
         
         if (!step.isSilence() && !step.sustained && !step.isSynth()) {
             let xOffset = noteWidth + 3
-            context.draw(Text(step.text).font(.title3).foregroundStyle(.black), at: CGPoint(x: Int(x)+xOffset, y: y-10), anchor: .leading)
+            context.draw(Text(step.text).font(.title3).foregroundStyle(.primary), at: CGPoint(x: Int(x)+xOffset, y: y-10), anchor: .leading)
         }
     }
     
@@ -424,7 +439,7 @@ struct MusicSheetView : View {
                     let offset = (Float(step.length > stepsPerBeat ? stepsPerBeat : step.length) * dx) / 2
                     
                     if (!step.sustained) {
-                        context.draw(Text(step.text).font(.title3).foregroundStyle(.black), at: CGPoint(x: Int(x+offset), y: y), anchor: .center)
+                        context.draw(Text(step.text).font(.title3).foregroundStyle(.primary), at: CGPoint(x: Int(x+offset), y: y), anchor: .center)
                     }
                 }
                 x = x + (Float(step.length) * dx)
@@ -453,7 +468,7 @@ struct MusicSheetView : View {
     
                 if (step.isText()) {
                     let y = y0
-                    var text = Text(step.text).font(.system(size: 14)).monospaced().foregroundStyle(.black)
+                    var text = Text(step.text).font(.system(size: 14)).monospaced().foregroundStyle(.primary)
                         
                     
                     if (selection.step != nil && step.isEqual(selection.step!)) {

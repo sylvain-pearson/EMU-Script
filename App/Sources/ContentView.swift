@@ -37,6 +37,7 @@ struct ContentView: View {
     
     @FocusState var isTextEditorFocused: Bool
     @State var isTextEditorDisabled = false
+    @Environment(\.colorScheme) var colorScheme
     
 #if os(macOS)
     @State private var sideBarVisibility = NavigationSplitViewVisibility.doubleColumn
@@ -78,6 +79,9 @@ struct ContentView: View {
             Text(error.getMessage())
         }.dialogIcon(Image(systemName: "exclamationmark.circle.fill"))
         
+        // Workaround for a SwiftUI bug (the toolbar appearing as light in dark mode)
+        .toolbarColorScheme(colorScheme, for: .automatic)
+
         // The toolbar
         .toolbar {
             
@@ -92,9 +96,8 @@ struct ContentView: View {
                     else {
                         Button(action: toggleTextEditor) { Label("Text Editor", systemImage: "doc.text") }
                     }
-                    
                     Divider()
-                    
+
                     Button(action: play) { Label("Play", systemImage: "play.fill") }
                         .keyboardShortcut(.defaultAction)
                         .disabled((sequencer != nil && sequencer!.isExecuting))
