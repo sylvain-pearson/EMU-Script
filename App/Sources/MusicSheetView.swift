@@ -219,7 +219,7 @@ struct MusicSheetView : View {
             let dy = 16
             var y = y0 + ((measureHeight - margin - 5 - (name.count * dy)) / 2)
             for letter in name {
-                context.draw(Text(String(letter)).font(.title3), at: CGPoint(x: x0-20, y: y), anchor: .center)
+                context.draw(Text(String(letter)).font(.system(size: 14)), at: CGPoint(x: x0-20, y: y), anchor: .center)
                 y += dy
             }
         }
@@ -236,11 +236,11 @@ struct MusicSheetView : View {
         while (x <= x0 + width)
         {
             if (x == x0) {
-                context.draw(Text(sectionName).font(.title3), at: CGPoint(x: x-4, y: 10), anchor: .leading)
+                context.draw(Text(sectionName).font(.system(size: 16)), at: CGPoint(x: x-4, y: 10), anchor: .leading)
                 measureNumber = measureNumber + 1
             }
             else if (x + measureWidth <= x0 + width) {
-                context.draw(Text(String(measureNumber)).font(.title3), at: CGPoint(x: x-4, y: 10), anchor: .leading)
+                context.draw(Text(String(measureNumber)).font(.system(size: 16)), at: CGPoint(x: x-4, y: 10), anchor: .leading)
                 measureNumber = measureNumber + 1
             }
             
@@ -414,7 +414,7 @@ struct MusicSheetView : View {
         
         if (!step.isSilence() && !step.sustained && !step.isSynth()) {
             let xOffset = noteWidth + 3
-            context.draw(Text(step.text).font(.title3).foregroundStyle(.primary), at: CGPoint(x: Int(x)+xOffset, y: y-10), anchor: .leading)
+            context.draw(Text(step.text).font(.system(size: 16)).foregroundStyle(.primary), at: CGPoint(x: Int(x)+xOffset, y: y-10), anchor: .leading)
         }
     }
     
@@ -439,7 +439,7 @@ struct MusicSheetView : View {
                     let offset = (Float(step.length > stepsPerBeat ? stepsPerBeat : step.length) * dx) / 2
                     
                     if (!step.sustained) {
-                        context.draw(Text(step.text).font(.title3).foregroundStyle(.primary), at: CGPoint(x: Int(x+offset), y: y), anchor: .center)
+                        context.draw(Text(step.text).font(.system(size: 16)).foregroundStyle(.primary), at: CGPoint(x: Int(x+offset), y: y), anchor: .center)
                     }
                 }
                 x = x + (Float(step.length) * dx)
