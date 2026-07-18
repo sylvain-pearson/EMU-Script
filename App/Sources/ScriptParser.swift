@@ -286,6 +286,39 @@ public class ScriptParser {
         self.errorLines.insert(err.lineNumber)
     }
 
+    //-----------------------------------------------
+    // Get a description of the first error message
+    //-----------------------------------------------
+    func getErrorMessage() -> String {
+        var msg = ""
+        
+        if (errors.count > 0) {
+            msg = errors[0].getMessage()
+            
+            var sectionName = ""
+            var label = ""
+            
+            for section in sections {
+                if (section.lineNumber < errors[0].lineNumber) {
+                    sectionName = section.name
+                    
+                    for line in section.textLines {
+                        if (line.lineNumber == errors[0].lineNumber) {
+                            label = line.key
+                            break
+                        }
+                    }
+                }
+            }
+      
+            if (sectionName.isEmpty == false) {
+                msg += "  Error at /\(sectionName)/\(label)"
+            }
+        }
+        
+        return msg
+    }
+    
     //----------------------------
     // Get the requested section
     //----------------------------
@@ -499,145 +532,5 @@ public class ScriptParser {
         
         return textList
 
-    }
-    
-    //-------------------------------------
-    // Add syntax highligting to a script
-    //-------------------------------------
-    func highlightText(_ text: String) -> AttributedString {
-        
-        var word = ""
-        var last: Character = " "
-        var wordType = TokenType.undefined
-        var richText = AttributedString()
-        var textLine = AttributedString()
-        var lineNumber : UInt16 = 1
-        var isHeader = false
-        
-        let addedNewLine = (text.hasSuffix("\n") == false)
-        
-        for c in text + (text.hasSuffix("\n") ? "" : "\n") {
-            if (c == "\"" && wordType == .undefined) {
-                textLine += AttributedString(String(c))
-                wordType = .text
-            }
-            else if (wordType == .text && c != "\""  && c != "\n") {
-                word += String(c)
-            }
-            else if (wordType == .comment && c != "\n") {
-                word += String(c)
-            }
-            else if (c == "/" && last == "/") {
-                textLine += AttributedString(String(c))
-                wordType = .comment
-            }
-            else if ((c.isNumber || (c >= "A" && c <= "G")) && wordType != .keyword) {
-                word += String(c)
-                wordType = .number
-            }
-            else if (c.isLetter || c.isNumber || (c == "-" && wordType == .keyword) ||  (c == "_" && wordType == .keyword)) {
-                word += String(c)
-                wordType = .keyword
-            }
-            else {
-                if (c == "[" && textLine == "") {
-                    isHeader = true
-                }
-                else if (!word.isEmpty || wordType == .text) {
-                    var highligthedWord = AttributedString(word)
- 
-                    if (wordType == .comment) {
-                        highligthedWord.foregroundColor = Color.scriptComment
-                    }
-                    else if (wordType == .text) {
-                        highligthedWord.foregroundColor = Color.scriptText
-                    }
-                    else if (wordType == .number) {
-                        highligthedWord.foregroundColor = Color.scriptNumber
-                    }
-                    else if (c != ":" && isReservedKeyword(word)) {
-                        highligthedWord.foregroundColor = Color.scriptKeyword
-                    }
-                    else {
-                        highligthedWord.foregroundColor = .primary
-                        if (c == "]" && isHeader) {
-                            highligthedWord.foregroundColor = Color.scriptHeader
-                        }
-                        else if (c == ":") {
-                            highligthedWord.foregroundColor = Color.scriptLinePrefix
-                        }
-                    }
-                    
-                    textLine += highligthedWord
-                    word = ""
-                    wordType = .undefined
-                }
-                
-                if (c == "\t") {
-                    textLine += AttributedString(String("   "))
-                }
-                else {
-                    textLine += AttributedString(String(c))
-                }
-            }
-            
-            if (c == "\n") {
-                if (errorLines.contains(lineNumber)) {
-                    textLine.backgroundColor = Color.scriptError // Color(hue: 0.15, saturation: 0.3, brightness: 1)
-                }
-                richText.append(textLine)
-                textLine = ""
-                lineNumber += 1
-                isHeader = false
-            }
-            last = c
-        }
-        
-        if (addedNewLine) {
-            richText.characters.removeLast()
-        }
-        
-        return richText
-    }
-
-    // ---------------------------------------------------------------------------------------
-    // Returns true, if the provided word is a reserved keyword (and returns false otherwise)
-    // ---------------------------------------------------------------------------------------
-    func isReservedKeyword(_ word: String) -> Bool {
-        var isReserved = false
-        
-        if (word == "chord" || word == "bass" || word == "root" || word == "arg" || word == "args") {
-            isReserved = true
-        }
-        else {
-            let name_ext = word.split(separator: "-")
-            let name = String(name_ext[0])
-            
-            if (name == "min" || name == "maj" || name == "dim" || name == "aug") {
-                isReserved = true
-            }
-            else if (name == "dom7" || name == "min7" || name == "maj7" || name == "dim7" || name == "aug7" || name == "sus7") {
-                isReserved = true
-            }
-            else if (name == "dom9" || name == "min9" || name == "maj9" || name == "dim9" || name == "aug9" || name == "sus9") {
-                isReserved = true
-            }
-            else if (name == "sus" || name == "sus2" || name == "sus4" || name == "min6" || name == "maj6") {
-                isReserved = true
-            }
-            else if (name == "m3" || name == "M3" || name == "P4" || name == "P5" || name == "m6" || name == "M6") {
-                isReserved = true
-            }
-            
-            if (isReserved && name_ext.count > 1) {
-                let ext = String(name_ext[1])
-                
-                if (ext == "m7" || ext == "M7" || ext == "m9" || ext == "M9" || ext == "b5") {
-                    isReserved = true
-                }
-            }
-        }
-        
-        return isReserved
     }
 }

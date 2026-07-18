@@ -38,7 +38,7 @@ struct NotePosition {
 // ------------------------------------------------------------------------
 final public class EmuScriptDocument: FileDocument  {
     
-    var textDocument: String
+    var text: String
     var parser : ScriptParser
     var instruments: [MusicalInstrument] = []
     var playlist: [PlaylistItem] = []
@@ -47,13 +47,11 @@ final public class EmuScriptDocument: FileDocument  {
     var ccNumbers: [String : Int] = [:]
     var strumOrArps: [String : StrumOrArp]  = [:]
     var chords = Chords()
-    var documentEdited = false
     var reloadCounter = 0
     var composition: MusicalComposition
     var measuresCount = 8
     var positions : [NotePosition] = []
     var properties : Properties = Properties()
-    var updatedDocument : String
     
     static public var readableContentTypes: [UTType] { [.emuscript] }
     
@@ -63,8 +61,7 @@ final public class EmuScriptDocument: FileDocument  {
     init() {
         self.composition = MusicalComposition()
         self.parser = ScriptParser()
-        self.documentEdited = true
-        self.textDocument = """
+        self.text = """
         [composition]
         title: "Untitled"
         by: "Someone"
@@ -80,7 +77,6 @@ final public class EmuScriptDocument: FileDocument  {
         synth: C D E F | G A B C'
         """
         
-        self.updatedDocument = self.textDocument
         loadDocument()
     }
     
@@ -95,15 +91,12 @@ final public class EmuScriptDocument: FileDocument  {
             throw CocoaError(.fileReadCorruptFile)
         }
 
-        self.textDocument = fileContent
+        self.text = fileContent
         self.composition = MusicalComposition()
         self.instruments = []
         self.playlist = []
         self.measuresCount = 0
         self.parser = ScriptParser()
-        self.documentEdited = true
-        
-        self.updatedDocument = self.textDocument
         loadDocument()
     }
 
@@ -133,22 +126,7 @@ final public class EmuScriptDocument: FileDocument  {
             }
         }
     }
-    
-    // -------------------------------------------------------------------
-    // This function is called when the user update the script
-    // -------------------------------------------------------------------
-    func onUpdate(_ text: String, reload : Bool = false) -> AttributedString {
-        self.documentEdited = true
-        self.updatedDocument = text
-        
-        if (reload) {
-            self.textDocument = text
-            loadDocument()
-        }
-    
-        return  parser.highlightText(text)
-    }
-    
+   
     // -------------------------------------------------------------
     // Get the main octave of the instrument as a MIDI value (0-7)
     // -------------------------------------------------------------
@@ -216,7 +194,7 @@ final public class EmuScriptDocument: FileDocument  {
         self.playlist = []
         self.measuresCount = 0
 
-        self.parser.parse(self.textDocument)
+        self.parser.parse(self.text)
         
         loadCompositionSection()
         loadInstrumentsSection()
@@ -253,7 +231,6 @@ final public class EmuScriptDocument: FileDocument  {
             }
         }
         
-        self.documentEdited = false
         self.properties = composition.getProperties()
 
         reloadCounter += 1
@@ -603,7 +580,7 @@ final public class EmuScriptDocument: FileDocument  {
             }
         }
     }
-    
+
     // ------------------------------------------
     // Load a musical section
     // -----------------------------------------
@@ -1046,14 +1023,9 @@ final public class EmuScriptDocument: FileDocument  {
     // -----------------------------------------------
     // A method required by the FileDocument protocol
     // -----------------------------------------------
-    public func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {   
-
-        if (self.documentEdited) {
-            self.textDocument = self.updatedDocument
-            loadDocument()
-        }
-        
-        let data = self.textDocument.data(using: .utf8)
+    public func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        loadDocument()
+        let data = self.text.data(using: .utf8)
         return .init(regularFileWithContents: data!)
     }
 }

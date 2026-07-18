@@ -113,7 +113,7 @@ struct ScriptError : Identifiable {
         case .invalidChord:
             message = String(localized: "Invalid chord: '\(info)'")
         case .invalidCC:
-            message = String(localized: "Invalid CC number: '\(info)'; should be a decimal number between 0.0 and 10.0)")
+            message = String(localized: "Invalid CC number: '\(info)'; must between 0.0 and 10.0)")
         case .syntaxError:
             message = String(localized: "Syntax error: '\(info)'.")
         case .parenthesisMismatch:

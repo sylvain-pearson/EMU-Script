@@ -14,6 +14,7 @@
 		E42B0A552F0FF8750069CF10 /* emu.icon in Resources */ = {isa = PBXBuildFile; fileRef = E42B0A542F0FF8750069CF10 /* emu.icon */; };
 		E42F6D1B2F461AA30020EC9F /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = E42F6D1A2F461AA30020EC9F /* LICENSE */; };
 		E43062A92F0EDE6D00015A3D /* MIDIKit in Frameworks */ = {isa = PBXBuildFile; productRef = E43062A82F0EDE6D00015A3D /* MIDIKit */; };
+		E4A5B96A2FFFCAE500B6650B /* HighlightedTextEditor in Frameworks */ = {isa = PBXBuildFile; productRef = E4A5B9692FFFCAE500B6650B /* HighlightedTextEditor */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4A5B96A2FFFCAE500B6650B /* HighlightedTextEditor in Frameworks */,
 				E43062A92F0EDE6D00015A3D /* MIDIKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -89,6 +91,7 @@
 			name = "EMU-Script";
 			packageProductDependencies = (
 				E43062A82F0EDE6D00015A3D /* MIDIKit */,
+				E4A5B9692FFFCAE500B6650B /* HighlightedTextEditor */,
 			);
 			productName = EmuScript;
 			productReference = E430626F2F0ED45E00015A3D /* EMU-Script.app */;
@@ -120,6 +123,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				E43062A72F0EDE6D00015A3D /* XCRemoteSwiftPackageReference "MIDIKit" */,
+				E4A5B9682FFFCAE500B6650B /* XCRemoteSwiftPackageReference "HighlightedTextEditor" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E43062702F0ED45E00015A3D /* Products */;
@@ -417,6 +421,14 @@
 				minimumVersion = 0.10.7;
 			};
 		};
+		E4A5B9682FFFCAE500B6650B /* XCRemoteSwiftPackageReference "HighlightedTextEditor" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kyle-n/HighlightedTextEditor";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -424,6 +436,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E43062A72F0EDE6D00015A3D /* XCRemoteSwiftPackageReference "MIDIKit" */;
 			productName = MIDIKit;
+		};
+		E4A5B9692FFFCAE500B6650B /* HighlightedTextEditor */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E4A5B9682FFFCAE500B6650B /* XCRemoteSwiftPackageReference "HighlightedTextEditor" */;
+			productName = HighlightedTextEditor;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

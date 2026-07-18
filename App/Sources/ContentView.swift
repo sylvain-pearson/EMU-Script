@@ -59,20 +59,22 @@ struct ContentView: View {
             Sidebar(document: $document, isEditing: $showTextEditor, refresh: refresh)
         }
         detail: {
-            ZStack {
+            ZStack  {
                 MusicSheetProgress(document: $document, scrollByCount: $scrollByCount, progress: $progress).opacity(showTextEditor ? 0 : 0.6)
-
+                
                 ScrollView([.horizontal, .vertical], showsIndicators: true) {
-                        MusicSheetView(document: $document, selection: $selection, refreshCounter: $refreshCounter)
+                    MusicSheetView(document: $document, selection: $selection, refreshCounter: $refreshCounter)
                         .onTapGesture { location in selectStep(at: location) }
                 }
                 .opacity(showTextEditor ? 0 : 1)
                 .scrollPosition($scrollPosition)
                 
-                ScriptEditor(document: $document, reload: $document.reloadCounter)
-                    .opacity(showTextEditor ? 1 : 0)
-                    .focused($isTextEditorFocused)
-                    .disabled(isTextEditorDisabled)
+               HStack {
+                    ScriptEditor(document: $document, reload: $document.reloadCounter)
+                        .opacity(showTextEditor ? 1 : 0)
+                        .focused($isTextEditorFocused)
+                        .disabled(isTextEditorDisabled)
+                }
             }
         }
         .alert(String(localized: "Sequencer Error"), isPresented: $showError) { }  message: {
@@ -84,17 +86,28 @@ struct ContentView: View {
 
         // The toolbar
         .toolbar {
-            
-            ToolbarItemGroup()  {
+#if os(macOS)
+            if (document.parser.errors.count > 0) {
+                ToolbarItemGroup(placement: .status)  {
+                    Button(action: reload) { Label("Text Editor", systemImage: "exclamationmark") } .foregroundStyle(.scriptError)
+                    Text(document.parser.getErrorMessage()).padding(.trailing, 10)
+                }
+            }
+#endif
+            ToolbarItemGroup  {
                 HStack {
+
 #if os(iOS)
                     Button(action: toggleSidebar) { Label("Sidebar", systemImage: "sidebar.left") }
+                    Spacer()
 #endif
+                    
                     if (showTextEditor) {
                         Button(action: toggleTextEditor) { Label("Text Editor", systemImage: "music.note.list") }
                     }
                     else {
                         Button(action: toggleTextEditor) { Label("Text Editor", systemImage: "doc.text") }
+                            .foregroundStyle(document.parser.errors.count > 0 ? .scriptError : .primary)
                     }
                     Divider()
 
@@ -135,10 +148,12 @@ struct ContentView: View {
             }
         }
 #if os(macOS)
-        .frame(minWidth: 1920 * 0.60, minHeight: 1080 * 0.60)
+        .frame(minWidth: 1920 * 0.60, minHeight: 1080 * 0.60, alignment: .topLeading)
         
         // App store required size. Hold Option key when doing the capture
         // .frame(minWidth: (2880) / 2, minHeight: (1800 - 104) / 2)
+#else
+        .frame(alignment: .topLeading)
 #endif
     }
 
@@ -222,6 +237,14 @@ struct ContentView: View {
     func refresh() {
         error = ScriptError()
         refreshCounter.toggle()
+    }
+    
+    // -------------------------------------
+    // Parse and validate the the document
+    // -------------------------------------
+    func reload() {
+        document.loadDocument()
+        refresh()
     }
 
     // -------------------------------------------------------------

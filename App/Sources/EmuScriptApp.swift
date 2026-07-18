@@ -18,9 +18,6 @@ struct EmuScriptApp: App {
         }
 #if os(macOS)
         .commands {
-            CommandGroup(replacing: .undoRedo) {
-               EmptyView()
-            }
             CommandGroup(replacing: .help) {
                 Link("Online User Manual", destination: URL(string: "https://sylvain-pearson.github.io/EMU-Script/Doc/User-Manual.html")!)
                 Link("Online Reference Manual", destination: URL(string: "https://sylvain-pearson.github.io/EMU-Script/Doc/Reference-Manual.html")!)

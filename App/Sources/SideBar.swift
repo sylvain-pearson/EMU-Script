@@ -86,40 +86,32 @@ struct Sidebar: View {
     
     var propertiesTitle : String = ""
     
-#if os(macOS)
-    let macOS = true
-#else
-    let macOS = false
-#endif
-    
     var body: some View {
         
-        if (macOS || isEditing == false) {
-            List {
-                // The playlist
-                Section(header: Text("Playlist").font(.headline)) {
-                    ForEach (document.playlist) {
-                        PlaylistRow(name: $0.name, id: $0.id, isSelected: $0.isSelected,
-                                    onChange: document.onPlaylistSelection,
-                                    refreshMusicSheet: refresh)
-                    }
-                }
-                // The list on instruments
-                Section(header: Text("Instruments").font(.headline)) {
-                    ForEach (document.instruments) {
-                        InstrumentRow(name: $0.name, id: $0.id, isSelected: $0.isSelected, isMuted: $0.isMuted,
-                                      onChange: document.onInstrumentSelection,
-                                      refreshMusicSheet: refresh)
-                    }
+        List {
+            // The playlist
+            Section(header: Text("Playlist").font(.headline)) {
+                ForEach (document.playlist) {
+                    PlaylistRow(name: $0.name, id: $0.id, isSelected: $0.isSelected,
+                                onChange: document.onPlaylistSelection,
+                                refreshMusicSheet: refresh)
                 }
             }
-#if os(macOS)
-            .frame(minWidth: 250).listStyle(.sidebar)
-#endif
+            // The list on instruments
+            Section(header: Text("Instruments").font(.headline)) {
+                ForEach (document.instruments) {
+                    InstrumentRow(name: $0.name, id: $0.id, isSelected: $0.isSelected, isMuted: $0.isMuted,
+                                  onChange: document.onInstrumentSelection,
+                                  refreshMusicSheet: refresh)
+                }
+            }
         }
+#if os(macOS)
+        .frame(minWidth: 250).listStyle(.sidebar)
+#endif
         
 #if os(macOS)
-        // The Step properties
+        // The Step or documentproperties
         if (document.parser.errors.isEmpty || document.properties.isSelection) {
             VStack(alignment: .leading, spacing: 3) {
                 Divider()
@@ -130,26 +122,7 @@ struct Sidebar: View {
             }
             .padding(.all, 10)
         }
-        else {
-            VStack(alignment: .leading , spacing: 3) {
-                Text("Error" + (document.parser.errors.count==1 ? "" : "s")).font(.headline)
-                ForEach (document.parser.errors.prefix(5)) { error in
-                    Divider()
-                    Text("- " + error.getMessageAndLineNumber())
-                }
-            }
-            .padding(.all, 10)
-        }
-#else
-        if (isEditing) {
-            List {
-                Section(header: document.parser.errors.isEmpty ? Text("No errors"): Text("Errors")) {
-                    ForEach (document.parser.errors.prefix(8)) { error in
-                        Text(error.getMessageAndLineNumber())
-                    }
-                }
-            }
-        }
 #endif
+
     }
 }

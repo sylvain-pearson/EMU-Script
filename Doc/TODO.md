@@ -10,18 +10,15 @@
 - [x] Documentation update for release 1.1
 - [x] Music sheet vertical scrolling
 - [x] Use coma as a function arguments separator (instead of spaces)
-- [ ] Support for dark mode
+- [x] Support for dark mode
+- [x] Support for ipad
 - [ ] Mute button should mute the instrument when clicked during playback
-- [ ] Support for ipad
-- [ ] Undo/redo support for ipad
 - [ ] Revisit the configuration menu for ipad
 - [ ] Create screen captures for app store (2880 × 1800px)
 - [ ] Release application package (version 1.1)
 
 ## Issues
-- [x] Music sheet width is not reduced when music sections are unselected
-- [ ] After startup, the focus is on the script editor
-- [ ] The document state is almost always "Edited"
+- [ ] Undo/redo not functional ipad
 
 ## Wishlist
 - [ ] Add menu items for toolbar functions

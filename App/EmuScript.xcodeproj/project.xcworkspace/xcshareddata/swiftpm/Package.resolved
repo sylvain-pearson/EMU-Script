@@ -1,6 +1,15 @@
 {
-  "originHash" : "aac4ba74d5fbfb6de0e4e604cf2026012b81b983b7122256272d164c66339481",
+  "originHash" : "5198ec9234f6a9d915abd4ceb91fd908ee707ce4db0e53a61ca00ed3e218bd1e",
   "pins" : [
+    {
+      "identity" : "highlightedtexteditor",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kyle-n/HighlightedTextEditor",
+      "state" : {
+        "revision" : "759d7b4bd2c10d0bbe93bc62d68572a3702049e3",
+        "version" : "2.1.2"
+      }
+    },
     {
       "identity" : "midikit",
       "kind" : "remoteSourceControl",
