@@ -112,16 +112,14 @@ struct Sidebar: View {
         
 #if os(macOS)
         // The Step or documentproperties
-        if (document.parser.errors.isEmpty || document.properties.isSelection) {
-            VStack(alignment: .leading, spacing: 3) {
-                Divider()
-                Text(document.properties.text).font(.headline).opacity(0.7)
-                ForEach (document.properties.items) { property in
-                    Text(String("- ") + property.name + property.separator + property.value)
-                }
+        VStack(alignment: .leading, spacing: 3) {
+            Divider()
+            Text(document.properties.text).font(.headline).opacity(0.7)
+            ForEach (document.properties.items) { property in
+                Text(String("- ") + property.name + property.separator + property.value)
             }
-            .padding(.all, 10)
         }
+        .padding(.all, 10)
 #endif
 
     }
