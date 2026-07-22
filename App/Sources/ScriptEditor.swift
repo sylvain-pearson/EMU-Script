@@ -70,7 +70,7 @@ struct ScriptEditor : View {
 #if os(macOS)
                     editor.textView.font = NSFont.userFixedPitchFont(ofSize: 16)
 #else
-                    editor.textView.font = UIFont.monospacedSystemFont(ofSize: 14, weight: .semibold)
+                    editor.textView.font = UIFont.monospacedSystemFont(ofSize: 16, weight: .regular)
 #endif
                 }
                 .onTextChange {

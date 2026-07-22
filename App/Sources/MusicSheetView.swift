@@ -19,7 +19,7 @@ struct MusicSheetProgress : View {
     @Binding var document: EmuScriptDocument
     @Binding var scrollByCount: Int
     @Binding var progress : Double
-    
+ 
     var body: some View {
         Canvas(opaque: false, colorMode: .linear, rendersAsynchronously: false) { context, size in
             if (progress >= 0) {
@@ -29,8 +29,20 @@ struct MusicSheetProgress : View {
                 path.addRect(CGRect(x: pos, y: 15, width: 1.5, height: 1000))
                 context.fill(path, with: .color(.blue))
             }
-        }.padding(.vertical, 25)
+        }
+        .padding(.vertical, 25)
+        .onGeometryChange(for: CGSize.self) { geometry in geometry.size} action: { viewSize in
+            let measureWidth = document.composition.beatsPerMeasure * document.composition.stepsPerBeat * stepWidth
+            let maxMeasuresInView = Int(viewSize.width) / measureWidth
+            if (maxMeasuresInView > 1) {
+                scrollByCount = maxMeasuresInView - 1
+            }
+            else {
+                scrollByCount = 1
+            }
+        }
     }
+
 }
 
 //---------------------------------------

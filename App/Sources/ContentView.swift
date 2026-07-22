@@ -96,12 +96,10 @@ struct ContentView: View {
 #endif
             ToolbarItemGroup  {
                 HStack {
-
 #if os(iOS)
                     Button(action: toggleSidebar) { Label("Sidebar", systemImage: "sidebar.left") }
                     Spacer()
 #endif
-                    
                     if (showTextEditor) {
                         Button(action: toggleTextEditor) { Label("Text Editor", systemImage: "music.note.list") }
                     }
@@ -118,7 +116,29 @@ struct ContentView: View {
                     Button(action: stop) { Label("Stop", systemImage: "stop.fill") }
                         .keyboardShortcut(.cancelAction)
                         .disabled(sequencer == nil || sequencer!.isFinished)
+                    
+                    Menu {
+                        Button(action: { metronomeUnit = 1 }) {
+                            Label("At Every Beat", systemImage: metronomeUnit == 1 ? "circle.fill" : "circle")
+                        }
+                        Button(action: { metronomeUnit = 2 }) {
+                            Label("Half Beat", systemImage: metronomeUnit == 2 ? "circle.fill" : "circle")
+                        }
+                        Button(action: { metronomeUnit = 3 }) {
+                            Label("3 per Beat", systemImage: metronomeUnit == 3 ? "circle.fill" : "circle")
+                        }
+                        Button(action: { metronomeUnit = 4 }) {
+                            Label("4 per Beat", systemImage: metronomeUnit == 4 ? "circle.fill" : "circle")
+                        }
+                    }
+                    label: {
+                        Label("More", systemImage: "timer")
+                    }
+                    .disabled((sequencer != nil && sequencer!.isExecuting))
+                    
 #if os(macOS)
+                    Divider()
+                    
                     Button(action: scrollLeft) { Label("Scroll Left", systemImage: "chevron.left") }
                         .keyboardShortcut(.leftArrow, modifiers: [])
                         .disabled((sequencer != nil && sequencer!.isExecuting) || (scrollPosition.x != nil && scrollPosition.x == 0) || showTextEditor)
@@ -128,22 +148,6 @@ struct ContentView: View {
                         .disabled((sequencer != nil && sequencer!.isExecuting) || showTextEditor ||
                                   (scrollPosition.x != nil && Int(scrollPosition.x!) > (document.measuresCount-3)*getMeasureWidth()))
 #endif
-                    Divider()
-                    
-                    Menu {
-                        Picker(selection: $scrollByCount,
-                               label: Text("Scroll by"),
-                               content: { Text("2").tag(2); Text("3").tag(3); Text("4").tag(4) }
-                        )
-                        Picker(selection: $metronomeUnit,
-                               label: Text("Metronome"),
-                               content: { Text("♩").tag(1); Text("♪").tag(2) }
-                        )
-                    }
-                    label: {
-                        Image(systemName: "gearshape.fill")
-                    }
-                    .disabled((sequencer != nil && sequencer!.isExecuting))
                 }
             }
         }
