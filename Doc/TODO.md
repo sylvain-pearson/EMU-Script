@@ -12,8 +12,9 @@
 - [x] Use coma as a function arguments separator (instead of spaces)
 - [x] Support for dark mode
 - [x] Support for ipad
-- [ ] Mute button should mute the instrument when clicked during playback
-- [ ] Revisit the configuration menu for ipad
+- [x] Mute button should mute the instrument when clicked during playback
+- [x] Revisit the configuration menu for ipad
+- [ ] Update control section (for loop)
 - [ ] Create screen captures for app store (2880 × 1800px)
 - [ ] Release application package (version 1.1)
 

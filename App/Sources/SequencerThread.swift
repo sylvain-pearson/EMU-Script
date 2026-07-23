@@ -17,6 +17,7 @@ import IOKit.pwr_mgt
 struct Event {
     var midi: MIDIEvent? = nil
     var timestamp: UInt64
+    var trackId: Int
 }
 
 // ----------------------------------------------------------------------------------
@@ -26,7 +27,7 @@ struct Event {
 class SequencerThread: Thread {
     
     var midiManager: MIDIManager
-    var midiOut : [UInt8 : MIDIOutputConnection] = [:]
+    var midiOut : [Int : MIDIOutputConnection] = [:]
     var document: EmuScriptDocument
     var scrollTo: (Int) -> Void
     var sequence : [[Event]] = []
@@ -53,7 +54,7 @@ class SequencerThread: Thread {
             for instrument in document.instruments {
                 let outputName = String("MuseOutput") + String(instrument.channel)
                 try midiManager.addOutputConnection(to: .none, tag: outputName)
-                midiOut[instrument.channel] = midiManager.managedOutputConnections[outputName]!
+                midiOut[instrument.trackId] = midiManager.managedOutputConnections[outputName]!
             }
         }
         catch {
@@ -74,7 +75,7 @@ class SequencerThread: Thread {
                 
                 for endpoint in midiManager.endpoints.inputs {
                     if (endpoint.name == instrument.endpoint || endpoint.displayName == instrument.endpoint) {
-                        midiOut[instrument.channel]!.add(inputs: [endpoint])
+                        midiOut[instrument.trackId]!.add(inputs: [endpoint])
                         found = true
                     }
                     else {
@@ -126,9 +127,10 @@ class SequencerThread: Thread {
             
             for event in events {
                 if let midiEvent = event.midi {
-                    if (!isCancelled) {
+                    let isMuted = document.isTrackMuted(event.trackId)
+                    if (!isCancelled && !isMuted) {
                         let timestamp = startTimeStamp + event.timestamp
-                        scheduleMidiEvent(midiEvent, timestamp: timestamp)
+                        scheduleMidiEvent(midiEvent, timestamp: timestamp, trackId: event.trackId)
                     }
                 }
             }
@@ -158,7 +160,7 @@ class SequencerThread: Thread {
     // Note: MIDIKit does not expose the event timestamp parameter in its API.
     //       As a workaround, we directly call the Core MIDI function.
     //--------------------------------------------------------------------------
-    func scheduleMidiEvent(_ midiEvent: MIDIEvent, timestamp: UInt64) {
+    func scheduleMidiEvent(_ midiEvent: MIDIEvent, timestamp: UInt64, trackId: Int) {
         
         var packet = MIDIPacket()
         packet.timeStamp = timestamp
@@ -180,7 +182,7 @@ class SequencerThread: Thread {
 
         var list = MIDIPacketList(numPackets: 1, packet: packet)
         
-        if let midiChannel = midiOut[UInt8(midiEvent.channel!)] {
+        if let midiChannel = midiOut[trackId] {
             let outputPortRef = midiChannel.coreMIDIOutputPortRef?.littleEndian ?? 0
               
             if (midiChannel.endpoints.count > 0) {
@@ -211,74 +213,77 @@ class SequencerThread: Thread {
         }
         
         for instrument in document.instruments {
-            if (!instrument.isMuted) {
-                let section = document.composition.getSection(name: sectionName)
-                if let measures = section.measures[instrument.name] {
-                    for n in 0..<measures.count {
-                        var t = 0
-                        for step in measures[n].steps {
-                            
-                            let index = (n*(document.composition.beatsPerMeasure * document.composition.stepsPerBeat))+t
-                            
-                            for cc in step.ccMessages {
-                                let timestamp = stepTickCount * UInt64(stepCount + index)
-                                let event = createChangeEvent(cc: cc, channel: instrument.channel, timestamp: timestamp)
-                                events[index].append(event)
-                            }
-                            
-                            var velocity: UInt7 = 0
-                            if (step.velocity > 127) {
-                                velocity = 127
-                            }
-                            else if (step.velocity > 0) {
-                                velocity = step.velocity.toUInt7
-                            }
-                            
-                            // Notes ON
-                            if (!step.sustained && !step.isError())
-                            {
-                                if (step.isArp()) {
-                                    // Arpeggiated notes
-                                    var duration = step.length
-                                    if (step.sustain) {
-                                        duration = section.getSustainedNoteDuration(instrumentName: instrument.name, measureNumber: n)
-                                    }
-                                    let arpEvents = createArpEvents(step: step, duration: duration, velocity: velocity, channel: instrument.channel, stepCount: stepCount + index)
-                                    events[index].append(contentsOf: arpEvents)
-                                }
-                                else if (step.isStrum()) {
-                                    // Strummed notes
-                                    let strumEvents = createStrumEvents(step: step, velocity: velocity, channel: instrument.channel, stepCount: stepCount + index)
-                                    events[index].append(contentsOf: strumEvents)
-                                }
-                                else {
-                                    // Normal playing style
-                                    for note in step.notes {
-                                        let event = Event(
-                                            midi: .noteOn(note.toUInt7, velocity: .midi1(velocity), channel: instrument.channel.toUInt4),
-                                            timestamp: stepTickCount * UInt64(stepCount + index)
-                                        )
-                                        events[index].append(event)
-                                    }
-                                }
-                            }
-                            
-                            if (!step.sustain && !step.isError()) {
-                                // Turn the note off
-                                for note in step.notes {
-                                    if (step.isMIDINote()) {
-                                        let event = Event(
-                                            midi: .noteOff(note.toUInt7, velocity: .midi1(velocity), channel: instrument.channel.toUInt4),
-                                            timestamp: (stepTickCount * UInt64(stepCount + index + step.length)) - (stepTickCount / 3)
-                                        )
-                                        
-                                        events[index].append(event)
-                                    }
-                                }
-                            }
-                            
-                            t += (step.length)
+            
+            let section = document.composition.getSection(name: sectionName)
+            if let measures = section.measures[instrument.name] {
+                for n in 0..<measures.count {
+                    var t = 0
+                    for step in measures[n].steps {
+                        
+                        let index = (n*(document.composition.beatsPerMeasure * document.composition.stepsPerBeat))+t
+                        
+                        for cc in step.ccMessages {
+                            let timestamp = stepTickCount * UInt64(stepCount + index)
+                            let event = createChangeEvent(cc: cc, instrument: instrument, timestamp: timestamp)
+                            events[index].append(event)
                         }
+                        
+                        var velocity: UInt7 = 0
+                        if (step.velocity > 127) {
+                            velocity = 127
+                        }
+                        else if (step.velocity > 0) {
+                            velocity = step.velocity.toUInt7
+                        }
+                        
+                        // Notes ON
+                        if (!step.sustained && !step.isError())
+                        {
+                            if (step.isArp()) {
+                                // Arpeggiated notes
+                                var duration = step.length
+                                if (step.sustain) {
+                                    duration = section.getSustainedNoteDuration(instrumentName: instrument.name, measureNumber: n)
+                                }
+                                let arpEvents = createArpEvents(step: step, duration: duration, velocity: velocity,
+                                                                instrument: instrument, stepCount: stepCount + index)
+                                events[index].append(contentsOf: arpEvents)
+                            }
+                            else if (step.isStrum()) {
+                                // Strummed notes
+                                let strumEvents = createStrumEvents(step: step, velocity: velocity, instrument: instrument,
+                                                                    stepCount: stepCount + index)
+                                events[index].append(contentsOf: strumEvents)
+                            }
+                            else {
+                                // Normal playing style
+                                for note in step.notes {
+                                    let event = Event(
+                                        midi: .noteOn(note.toUInt7, velocity: .midi1(velocity), channel: instrument.channel.toUInt4),
+                                        timestamp: stepTickCount * UInt64(stepCount + index),
+                                        trackId: instrument.trackId
+                                    )
+                                    events[index].append(event)
+                                }
+                            }
+                        }
+                        
+                        if (!step.sustain && !step.isError()) {
+                            // Turn the note off
+                            for note in step.notes {
+                                if (step.isMIDINote()) {
+                                    let event = Event(
+                                        midi: .noteOff(note.toUInt7, velocity: .midi1(velocity), channel: instrument.channel.toUInt4),
+                                        timestamp: (stepTickCount * UInt64(stepCount + index + step.length)) - (stepTickCount / 3),
+                                        trackId: instrument.trackId
+                                    )
+                                    
+                                    events[index].append(event)
+                                }
+                            }
+                        }
+                        
+                        t += (step.length)
                     }
                 }
             }
@@ -289,19 +294,21 @@ class SequencerThread: Thread {
     //-------------------------------------------------------
     // Create a Program Change or Control Change MIDI event
     //-------------------------------------------------------
-    func createChangeEvent(cc: MidiControl, channel: UInt8, timestamp: UInt64) -> Event
+    func createChangeEvent(cc: MidiControl, instrument: MusicalInstrument, timestamp: UInt64) -> Event
     {
         if (cc.isProgramChange) {
             let event = Event(
-                midi: .programChange(.init(program: UInt7(cc.value), bank: .bankSelect(UInt14(cc.id)), channel: channel.toUInt4)),
-                timestamp: timestamp
+                midi: .programChange(.init(program: UInt7(cc.value), bank: .bankSelect(UInt14(cc.id)), channel: instrument.channel.toUInt4)),
+                timestamp: timestamp,
+                trackId: instrument.trackId
             )
             return event
         }
         else {
             let event = Event(
-                midi: .cc(UInt7(cc.id), value: .midi1(UInt7(cc.value)), channel: channel.toUInt4),
-                timestamp: timestamp
+                midi: .cc(UInt7(cc.id), value: .midi1(UInt7(cc.value)), channel: instrument.channel.toUInt4),
+                timestamp: timestamp,
+                trackId: instrument.trackId
             )
             return event
         }
@@ -310,7 +317,7 @@ class SequencerThread: Thread {
     //---------------------------------------
     // Create arpeggiated notes MIDI events
     //---------------------------------------
-    func createArpEvents(step: Step, duration: Int, velocity: UInt7, channel: UInt8, stepCount: Int) -> [Event] {
+    func createArpEvents(step: Step, duration: Int, velocity: UInt7, instrument: MusicalInstrument, stepCount: Int) -> [Event] {
         var events : [Event] = []
         
         if (step.isArp()) {
@@ -323,13 +330,15 @@ class SequencerThread: Thread {
                     for note in step.getNotesInPlayingOrder() {
                         if (i < last) {
                             var event = Event(
-                                midi: .noteOn(note.toUInt7, velocity: .midi1(velocity), channel: channel.toUInt4),
-                                timestamp: stepTickCount * UInt64(stepCount + i)
+                                midi: .noteOn(note.toUInt7, velocity: .midi1(velocity), channel: instrument.channel.toUInt4),
+                                timestamp: stepTickCount * UInt64(stepCount + i),
+                                trackId: instrument.trackId
                             )
                             events.append(event)
                             event = Event(
-                                midi: .noteOff(note.toUInt7, velocity: .midi1(velocity), channel: channel.toUInt4),
-                                timestamp: (stepTickCount * UInt64(stepCount + i + Int(arp.duration))) - (stepTickCount / 3)
+                                midi: .noteOff(note.toUInt7, velocity: .midi1(velocity), channel: instrument.channel.toUInt4),
+                                timestamp: (stepTickCount * UInt64(stepCount + i + Int(arp.duration))) - (stepTickCount / 3),
+                                trackId: instrument.trackId
                             )
                             events.append(event)
                             i = i + Int(arp.step)
@@ -348,7 +357,7 @@ class SequencerThread: Thread {
     //------------------------------------
     // Create strummed notes MIDI events
     //------------------------------------
-    func createStrumEvents(step: Step, velocity: UInt7, channel: UInt8, stepCount: Int) -> [Event] {
+    func createStrumEvents(step: Step, velocity: UInt7, instrument: MusicalInstrument, stepCount: Int) -> [Event] {
         var events : [Event] = []
         
         if (step.isStrum()) {
@@ -360,8 +369,9 @@ class SequencerThread: Thread {
                 
                 for note in step.getNotesInPlayingOrder() {
                     let event = Event(
-                        midi: .noteOn(note.toUInt7, velocity: .midi1(UInt7(v)), channel: channel.toUInt4),
-                        timestamp: (stepTickCount * UInt64(stepCount)) + (strumDuration * UInt64(noteIndex))
+                        midi: .noteOn(note.toUInt7, velocity: .midi1(UInt7(v)), channel: instrument.channel.toUInt4),
+                        timestamp: (stepTickCount * UInt64(stepCount)) + (strumDuration * UInt64(noteIndex)),
+                        trackId: instrument.trackId
                     )
                     
                     events.append(event)

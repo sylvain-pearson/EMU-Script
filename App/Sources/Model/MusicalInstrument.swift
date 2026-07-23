@@ -15,6 +15,7 @@ struct MusicalInstrument: Identifiable, Hashable {
     
     let id = UUID()
     let name: String
+    var trackId: Int
     var endpoint: String = "MIDI Input"     // The MIDI endpoint
     var channel: UInt8 = 0                  // The MIDI channel (0-15)
     var octave: UInt8 = 0                   // The keyboard octave: 1, 2, 3 or 4

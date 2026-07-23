@@ -184,6 +184,20 @@ final public class EmuScriptDocument: FileDocument  {
         return count
     }
     
+    // ---------------------------
+    // Check if a track is muted
+    // ---------------------------
+    func isTrackMuted(_ trackId: Int) -> Bool {
+        var result = false        
+        for  instrument in instruments {
+            if (instrument.isMuted && instrument.trackId == trackId) {
+                result = true
+                break
+            }
+        }
+        return result
+    }
+    
     // -------------------------------------------------
     // Load all sections of the text document (script)
     // -------------------------------------------------
@@ -300,11 +314,14 @@ final public class EmuScriptDocument: FileDocument  {
     func loadInstrumentsSection()  {
 
         let sectionName = "instruments"
+        var trackId = 100
+        
         if let section = parser.getSection(name: sectionName)
         {
             for line in section.textLines
             {
-                var instrument = MusicalInstrument(name: line.key)
+                var instrument = MusicalInstrument(name: line.key, trackId: trackId)
+                trackId += 1
 
                 for keyValue in line.getValues(separator: ",")
                 {
