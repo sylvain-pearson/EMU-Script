@@ -4,12 +4,16 @@ by: "Sylvain Pearson"
 time: 4/4
 BPM: 100
 transposition: 0
-CC: modw=1
-playlist: example
+CC: modw=1, cutoff=74, resonance=42
+playlist: set-once, linear, curved, span
 
 [instruments]
-synth: "MIDI Input", channel=4, octave=2, velocity=80
-drum: "drum", channel=10, velocity=80
+synth: "MIDI Input", channel=4, octave=2, velocity=80, info="Nord Lead A1"
+drum: "drum", channel=10, velocity=70
+
+[sequences]
+drum-seq: kick kick/hh kick kick/hh
+synth-seq: . | 1 1 1 1 1 1 1 5 | * | * | * 
 
 [sounds]
 kick: midi(36)
@@ -17,12 +21,37 @@ hh: midi(42)
 toc: midi(37)
 
 [control]
-/synth/program: 8.8
-/synth/example/1/cc: modw=9.5
-/synth/example/4/cc: modw=1.5
-/drum/example/1/velocity: -40
-/drum/example/2..5/velocity: +20
+/synth/set-once: program=8.8, modw=95%, velocity=90
+/synth/set-once/4: modw=15%
+/drum/set-once/2: velocity=40
+/drum/set-once/2.75: velocity=100
 
-[example]
+/synth/linear: program=8.14
+/synth/linear: decrease(velocity, from=100, to=10)
+/synth/linear: increase(cutoff, from=20%, to=50%)
+/drum/linear:  increase(velocity, from=30, to=100)
+
+/synth/curved: program=8.14
+/synth/curved: increase(cutoff, from=0, to=100, curve=1)
+/synth/curved: decrease(resonance, from=120, to=20, curve=-1)
+
+/synth/span: program=8.14
+/synth/span/2: increase(cutoff, from=40, to=75, span=2)
+/synth/span/4: decrease(cutoff, from=75, to=40, span=2)
+/drum/span/1.5: decrease(velocity, from=75, to=60, span=2.5)
+
+[set-once]
 synth: . |  1 1' | 1 3 5 - | 1 1' | 1 3 5 -
-drum: toc toc toc toc | kick/hh (hh hh) kick (hh hh) | * | * | * 
+drum: drum-seq | ... 
+
+[linear]
+synth: synth-seq 
+drum: drum-seq | ...
+
+[curved]
+synth: synth-seq 
+drum: drum-seq | ...
+
+[span]
+synth: synth-seq
+drum: drum-seq | ...

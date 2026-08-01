@@ -184,6 +184,24 @@ final public class EmuScriptDocument: FileDocument  {
         return count
     }
     
+    // -----------------------------------------
+    // Verify if an instrument name is defined
+    // -----------------------------------------
+    func isAnInstrument(name: String) -> Bool {
+        var result = false
+        if (name == "chord" || name == "text") {
+            result = true
+        }
+        else {
+            for instrument in instruments {
+                if (instrument.name == name) {
+                    result = true
+                }
+            }
+        }
+        return result
+    }
+    
     // ---------------------------
     // Check if a track is muted
     // ---------------------------
@@ -296,7 +314,7 @@ final public class EmuScriptDocument: FileDocument  {
                     self.composition.autor = line.value.trimmingCharacters(in: ["\""])
                 }
                 else if (key == "cc") {
-                    self.ccNumbers.merge(parseCC(line)) { (x, y) in x }
+                    self.ccNumbers.merge(parseCCList(line)) { (x, y) in x }
                 }
                 else if (key != "info") {
                     parser.error(.unexpectedKeyword, info: line.key, at: line.lineNumber)
@@ -342,7 +360,7 @@ final public class EmuScriptDocument: FileDocument  {
                             }
                         }
                         else if (key == "velocity") {
-                            if let n = toNumber(value, min: 1, max: 127, name: "velocity", line: line.lineNumber) {
+                            if let n = to7bitsNumber(value, name: "velocity", line: line.lineNumber) {
                                 instrument.velocity = UInt8(n)
                             }
                         }
@@ -490,114 +508,178 @@ final public class EmuScriptDocument: FileDocument  {
                 
                 let target = line.getPath()
                 
+                var instrumentName = ""
+                if (target.count > 0) {
+                    instrumentName = String(target[0])
+                    if (!isAnInstrument(name: instrumentName)) {
+                        parser.error(.undefinedInstrument, info: instrumentName, at: line.lineNumber)
+                        break
+                    }
+                }
+                
+                var sectionName = (composition.sections.count > 0) ? composition.sections[0].name : ""
                 if (target.count > 1) {
-                    let instrumentName = String(target[0])
-                    let messageName = String(target[target.count-1])
-                    let messageValueIsSigned = line.value.contains("-") || line.value.contains("+")
-                    var messageMap : [String:Int] = [:]
-                    var sectionName = (composition.sections.count > 0) ? composition.sections[0].name : ""
-                    if (target.count > 2) {
-                        sectionName = String(target[1])
+                    sectionName = String(target[1])
+                    if (!composition.isASection(name: sectionName)) {
+                        parser.error(.undefinedSection, info: instrumentName, at: line.lineNumber)
+                        break
                     }
-                        
-                    var measures = composition.getSection(name: sectionName).getMeasures(instrumentName: instrumentName)
-                    
-                    if (measures.isEmpty) {
-                        measures = [Measure()]
-                        composition.getSection(name: sectionName).measures[instrumentName] = measures
+                }
+                
+                var measures = composition.getSection(name: sectionName).getMeasures(instrumentName: instrumentName)
+                if (measures.isEmpty) {
+                    measures = [Measure()]
+                    composition.getSection(name: sectionName).measures[instrumentName] = measures
+                }
+                
+                var measureStart : Float = 0
+                if (target.count > 2) {
+                    if let n = toFloat(target[2], min: 1, max: 99, name: "measure", line: line.lineNumber) {
+                        measureStart = n
                     }
-                    
-                    var measureStart = 1
-                    var measureEnd = (messageName == "velocity") ? measures.count : 1
-                    if (target.count > 3) {
-                        let measures = target[2].split(separator: "..")
-                        
-                        if let n = toNumber(String(measures[0]), min: 1, max: 99, name: "measure", line: line.lineNumber) {
-                            measureStart = n
-                        }
-                        
-                        if (measures.count == 2) {
-                            if let n = toNumber(String(measures[1]), min: 1, max: 99, name: "measure", line: line.lineNumber) {
-                                measureEnd = n
+                }
+                
+                var functionName = ""
+                var ccName = ""
+                if (line.value.contains("(") && line.value.hasSuffix(")") ) {
+                    var args = parser.parseFunction(text: line.value)
+                    if (args.count > 1) {
+                        functionName = args.removeFirst()
+                        ccName = args.removeFirst()
+                        line.value = ""
+                        for arg in args {
+                            if (!line.value.isEmpty) {
+                                line.value += ", "
                             }
-                        }
-                        else {
-                            measureEnd = measureStart
+                            line.value += arg
                         }
                     }
-                    
-                    var messageValue = 0
-                    if (messageName == "velocity") {
-                        if let n = toNumber(line.value, min: -50, max: 50, name: "velocity", line: line.lineNumber) {
-                            messageValue = n
-                        }
-                    }
-                    
-                    var messageId = 0
-                    if (messageName == "cc") {
-                        messageMap = parseCC(line)
-                    }
-                    else if (messageName == "program") {
-                        let msg = line.getValues(separator: ".")
-                        if (msg.count == 2) {
-                            if let n = toNumber(String(msg[0]), min: 1, max: 16384, name: "bank", line: line.lineNumber) {
-                                messageId = n - 1
-                            }
-                            if let n = toNumber(String(msg[1]), min: 1, max: 128, name: "program", line: line.lineNumber) {
-                                messageValue = n - 1
-                            }
-                        }
-                    }
-                    
-                    var m = 0
-                    for measure in measures {
-                        m += 1
-                        if (m >= measureStart && m <= measureEnd) {
-                            if (messageName == "velocity") {
-                                for step in measure.steps {
-                                    if (messageValueIsSigned) {
-                                        step.velocity += messageValue
-                                    }
-                                    else {
-                                        step.velocity = messageValue
-                                    }
-                                    if (step.velocity < 0) {
-                                        step.velocity = 0
-                                    }
-                                    else if (step.velocity > 127) {
-                                        step.velocity = 127
-                                    }
-                                }
-                            }
-                            else {
-                                if (measure.steps.count == 0) {
-                                    measure.steps.append(Step(transposition: composition.transposition))
-                                }
-                                if (messageName == "program") {
-                                    measure.steps[0].ccMessages.append(MidiControl(bank: UInt8(messageId), program: UInt8(messageValue)))
-                                }
-                                else  if (messageName == "cc") {
-                                    for cc in messageMap {
-                                        messageId = ccNumbers[cc.key] ?? 0
-                                        if (messageId != 0) {
-                                            measure.steps[0].ccMessages.append(MidiControl(id: UInt8(messageId), value: UInt8(cc.value)))
-                                        }
-                                        else  {
-                                            parser.error(.unexpectedKeyword, info: cc.key, at: line.lineNumber)
-                                        }
-                                    }
-                                }
-                                else {
-                                    parser.error(.unexpectedKeyword, info: messageName, at: line.lineNumber)
-                                }
-                            }
-                        }
-                    }
+                }
+                
+                var map : [String:String] = [:]
+                map = parseKeyValueList(line)
+                
+                if (functionName == "increase" || functionName == "decrease") {
+                    processControlFunction(measures: measures, measureNumber: measureStart, ccName: ccName, map: map, line: line.lineNumber)
+                }
+                else {
+                    processControlLine(measures: measures, measureNumber: measureStart, map: map, line: line.lineNumber)
                 }
             }
         }
     }
-
+    
+    // ------------------------------------------------------------------------------
+    // Add the velocity changes, program changes and/or CC to the requested mesures
+    // ------------------------------------------------------------------------------
+    func processControlLine(measures: [Measure], measureNumber: Float, map: [String:String] , line: UInt16) {
+        
+        var pos = 0
+        var doneOnce = false
+        let start = Int((measureNumber-1) * Float(composition.stepsPerBeat * composition.beatsPerMeasure))
+       
+        for measure in measures {
+            for step in measure.steps {
+                if (pos >= start) {
+                    for cc in map {
+                        if (cc.key == "velocity") {
+                            // Set tyhe velocity till the end of the musical section
+                            let velocity = to7bitsNumber(cc.value, name: cc.key, line: line) ?? 0
+                            step.velocity = velocity
+                        }
+                        else if (!doneOnce) {
+                            // Set the CC once at the specified position
+                            if (cc.key == "program") {
+                                let msg = cc.value.split(separator: ".")
+                                if (msg.count == 2) {
+                                    let bankId = toNumber(String(msg[0]), min: 1, max: 16384, name: "bank", line: line) ?? 0
+                                    let programId = toNumber(String(msg[1]), min: 1, max: 128, name: "program", line: line)  ?? 0
+                                    if (bankId > 0 && programId > 0) {
+                                        step.ccMessages.append(MidiControl(bank: UInt8(bankId-1), program: UInt8(programId-1)))
+                                    }
+                                }
+                            }
+                            else if let messageId = ccNumbers[cc.key] {
+                                let ccValue = to7bitsNumber(cc.value, name: cc.key, line: line) ?? 0
+                                step.ccMessages.append(MidiControl(id: UInt8(messageId), value: UInt8(ccValue)))
+                            }
+                        }
+                    }
+                    doneOnce = true
+                }
+                pos += step.length
+            }
+        }
+    }
+    
+    // ---------------------------------------------------------------------------------------
+    // Increase or decrease progressively the velocity or a specific CC over a period of time
+    // ---------------------------------------------------------------------------------------
+    func processControlFunction(measures: [Measure], measureNumber: Float, ccName: String, map: [String:String] , line: UInt16)  {
+        
+        var measureStart = measureNumber
+        var measureEnd : Float = 0
+        
+        if (measureStart == 0) {
+            // If no start is specified, start at the first measure.
+            measureStart = 1
+        }
+        
+        if (!map.keys.contains("span")) {
+            // If no span is specified: end at the last measure of the section.
+            measureEnd = Float(measures.count + 1)
+        }
+        else {
+            let duration = toFloat(map["span"]! , min: 1, max: 99, name: "span", line: line) ?? 0
+            measureEnd = Float(measureStart) + duration
+        }
+        
+        let fromValue = to7bitsNumber(map["from"] ?? "0", name: ccName, line: line) ?? 0
+        let toValue = to7bitsNumber(map["to"] ?? "127", name: ccName, line: line) ?? 0
+        let curveType = toNumber(map["curve"] ?? "0" , min: -2, max: 2, name: "curve", line: line) ?? 0
+        
+        let duration = Int((measureEnd - measureStart) * Float(composition.stepsPerBeat * composition.beatsPerMeasure))
+        let start = Int((measureStart-1) * Float(composition.stepsPerBeat * composition.beatsPerMeasure))
+        let curve = Curve(startValue: fromValue, endValue: toValue, duration: duration, type: curveType)
+        
+        var pos = 0
+     
+        if (ccName == "velocity") {
+            for measure in measures {
+                for step in measure.steps {
+                    if (pos >= start) {
+                        step.velocity = curve.getValue(at: pos - start)
+                    }
+                    pos += step.length
+                }
+            }
+        }
+        else {
+            var isDone = false
+            for measure in measures {
+                for step in measure.steps {
+                    if (pos >= start) {
+                        let messageId = ccNumbers[ccName] ?? 0
+                        if (messageId != 0) {
+                            step.ccMessages.append(MidiControl(id: UInt8(messageId), curve: curve))
+                        }
+                        else  {
+                            parser.error(.unexpectedKeyword, info: ccName, at: line)
+                        }
+                        isDone = true
+                        break
+                    }
+                    else {
+                        pos += step.length
+                    }
+                }
+                if (isDone) {
+                    break
+                }
+            }
+        }
+    }
+        
     // ------------------------------------------
     // Load a musical section
     // -----------------------------------------
@@ -627,12 +709,17 @@ final public class EmuScriptDocument: FileDocument  {
         for line in preProcess(section.textLines) {
             
             let instrumentName = line.key
-            var measures: [Measure]  = []
-            
             let text = line.value
-            let phrases = text.split(separator: "|")
+            
+            var measures: [Measure]  = []
             var measureNumber = 0
             
+            if (!isAnInstrument(name: instrumentName)) {
+                parser.error(.undefinedInstrument, info: instrumentName, at: line.lineNumber)
+                break
+            }
+            
+            let phrases = text.split(separator: "|")
             let octave = getInstrumentOctave(name: instrumentName)
             
             for phrase in phrases {
@@ -959,19 +1046,40 @@ final public class EmuScriptDocument: FileDocument  {
     // ------------------------------------------------
     // Parse a coma separated list of CC name=value
     // ------------------------------------------------
-    func parseCC(_ line: TextLine) -> [String : Int] {
+    func parseCCList(_ line: TextLine) -> [String : Int] {
         var result: [String : Int] = [:]
         
         for phrase in line.value.split(separator: ",") {
             let expression = phrase.split(separator: "=")
             if (expression.count == 2) {
                 let ccName = String(expression[0]).trimmingCharacters(in: .whitespaces)
-                if let ccValue = toCCValue(String(expression[1]), line: line.lineNumber) {
+                if let ccValue = to7bitsNumber(String(expression[1]), name: "CC", line: line.lineNumber) {
                     result[ccName] = ccValue
                 }
             }
             else {
-                parser.error(.ccSyntaxError, info: "", at: line.lineNumber)
+                parser.error(.keyValueError, info: "", at: line.lineNumber)
+            }
+        }
+        
+        return result
+    }
+   
+    // ------------------------------------------------
+    // Parse a coma separated key=value list
+    // ------------------------------------------------
+    func parseKeyValueList(_ line: TextLine) -> [String : String] {
+        var result: [String : String] = [:]
+        
+        for phrase in line.value.split(separator: ",") {
+            let expression = phrase.split(separator: "=")
+            if (expression.count == 2) {
+                let key = String(expression[0]).trimmingCharacters(in: .whitespaces)
+                let value = String(expression[1]).trimmingCharacters(in: .whitespaces)
+                result[key] = value
+            }
+            else {
+                parser.error(.keyValueError, info: "", at: line.lineNumber)
             }
         }
         
@@ -986,6 +1094,29 @@ final public class EmuScriptDocument: FileDocument  {
         let num = Int(text)
         if (num != nil) {
             result = num!
+        }
+
+        return result
+    }
+    
+    // --------------------------------------------------
+    // Convert a string to a float with error checking
+    // --------------------------------------------------
+    func toFloat(_ text: String, min: Int, max: Int, name: String, line: UInt16) -> Float? {
+        var result : Float? = nil
+        
+        if let num = Float(text) {
+            if (num < Float(min) || num > Float(max)) {
+                let info = String(localized: "Invalid \(name) number: '\(text)'; must be between \(min) and \(max))")
+                parser.error(.error, info: info, at: line)
+            }
+            else {
+                result = num
+            }
+        }
+        else {
+            let info = String(localized: "Invalid \(name) number: '\(text)'.")
+            parser.error(.error, info: info, at: line)
         }
 
         return result
@@ -1017,21 +1148,21 @@ final public class EmuScriptDocument: FileDocument  {
     // ----------------------------------------
     // Convert a string to a CC Value (0-127)
     // ----------------------------------------
-    func toCCValue(_ text: String, line: UInt16) -> Int? {
+    func to7bitsNumber(_ text: String, name: String, line: UInt16) -> Int? {
         var result : Int? = nil
         
-        if (text.contains(".")) {
-            if let num = Float(text) {
-                if (num >= 0 && num <= 10) {
-                    result = ((Int)(num * 127)) / 10
+        if (text.hasSuffix("%")) {
+            if let num = Int(text.prefix(text.count-1)) {
+                if (num >= 0 && num <= 100) {
+                    result = ((Int)(num * 127)) / 100
                 }
                 else {
-                    parser.error(.invalidCC, info: text, at: line)
+                    parser.error(.invalidPercent, info: text, at: line)
                 }
             }
         }
         else {
-            result = toNumber(text, min: 0, max: 127, name: "CC", line: line)
+            result = toNumber(text, min: 0, max: 127, name: name, line: line)
         }
         
         return result

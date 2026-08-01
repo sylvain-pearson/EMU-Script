@@ -15,20 +15,21 @@ enum ScriptErrorCode {
     case fileNotFound
     case missingSection
     case undefinedSection
+    case undefinedInstrument
     case invalidEndpoint
     case invalidNote
     case invalidKeyword
     case invalidDrum
     case invalidChord
     case invalidTransposition
-    case invalidCC
+    case invalidPercent
     case noteIsTooLow
     case noteIsTooHigh
     case unsupportedTimeSignature
     case parenthesisMismatch
     case squareBracketMismatch
     case syntaxError
-    case ccSyntaxError
+    case keyValueError
     case unexpectedKeyword
     case invalidKey
     case invalidSectionName
@@ -87,7 +88,9 @@ struct ScriptError : Identifiable {
         case .missingSection:
             message = String(localized: "The section '\(info)' is mandatory and cannot be found")
         case .undefinedSection:
-            message = String(localized: "The section '\(info)' cannot be found")
+            message = String(localized: "Invalid section name: '\(info)'")
+        case .undefinedInstrument:
+            message = String(localized: "Invalid instrument name: '\(info)'")
         case .invalidEndpoint:
             message = String(localized: "Invalid MIDI port: '\(info)'.\nYou can use one of the following ports or create a virtual port using MIDI Studio.\n \(details)")
         case .unexpectedKeyword:
@@ -112,16 +115,16 @@ struct ScriptError : Identifiable {
             message = String(localized: "Invalid keyword: '\(info)'")
         case .invalidChord:
             message = String(localized: "Invalid chord: '\(info)'")
-        case .invalidCC:
-            message = String(localized: "Invalid CC number: '\(info)'; must between 0.0 and 10.0)")
+        case .invalidPercent:
+            message = String(localized: "Invalid percent number: '\(info)'; must between 0 and 100)")
         case .syntaxError:
             message = String(localized: "Syntax error: '\(info)'.")
         case .parenthesisMismatch:
             message = String(localized: "Parenthesis mismatch")
         case .squareBracketMismatch:
             message = String(localized: "Square bracket mismatch")
-        case .ccSyntaxError:
-            message = String(localized: "Expected a CC name=number pair")
+        case .keyValueError:
+            message = String(localized: "Expected a key=value pair")
         default :
             message = String(localized: "Unexpected error")
         }

@@ -148,6 +148,8 @@ class SequencerThread: Thread {
         let duration = String(format: "%.2f", startTime.distance(to: Date.now))
         print("Playback duration: \(duration) seconds")
         
+        midiManager.removeAll()
+        
         scrollTo(-1)
         
 #if os(macOS)
@@ -224,8 +226,14 @@ class SequencerThread: Thread {
                         
                         for cc in step.ccMessages {
                             let timestamp = stepTickCount * UInt64(stepCount + index)
-                            let event = createChangeEvent(cc: cc, instrument: instrument, timestamp: timestamp)
-                            events[index].append(event)
+                            if (cc.curve != nil) {
+                                let ccEvents = createChangeEvents(cc: cc, instrument: instrument, timestamp: timestamp)
+                                events[index].append(contentsOf: ccEvents)
+                            }
+                            else {
+                                let event = createChangeEvent(cc: cc, instrument: instrument, timestamp: timestamp)
+                                events[index].append(event)
+                            }
                         }
                         
                         var velocity: UInt7 = 0
@@ -312,6 +320,39 @@ class SequencerThread: Thread {
             )
             return event
         }
+    }
+    
+    //-----------------------------------------------------
+    // Create a progression of Control Change MIDI events
+    //-----------------------------------------------------
+    func createChangeEvents(cc: MidiControl, instrument: MusicalInstrument, timestamp: UInt64) -> [Event]
+    {
+        var events : [Event] = []
+        
+        if let curve = cc.curve {
+            var firstValue = curve.startValue
+            var lastValue = curve.endValue
+            
+            if (curve.startValue > curve.endValue) {
+                firstValue = curve.endValue
+                lastValue = curve.startValue
+            }
+            
+            var x = firstValue
+            while (x <= lastValue) {
+                let t = curve.getTimeFor(value: x)
+                
+                let event = Event(
+                    midi: .cc(UInt7(cc.id), value: .midi1(UInt7(x)), channel: instrument.channel.toUInt4),
+                    timestamp: timestamp + UInt64(t * Double(stepTickCount)),
+                    trackId: instrument.trackId
+                )
+                events.append(event)
+                x += 1
+            }
+        }
+        
+        return events
     }
     
     //---------------------------------------

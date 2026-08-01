@@ -48,6 +48,19 @@ struct MusicalComposition {
         return 0
     }
     
+    // -------------------------------------
+    // Verify if a section name is defined
+    // -------------------------------------
+    func isASection(name: String) -> Bool {
+        var result = false
+        for section in sections {
+            if (section.name == name) {
+                result = true
+            }
+        }
+        return result
+    }
+    
     // ----------------------------
     // Return total measure count
     // ----------------------------

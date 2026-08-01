@@ -27,7 +27,7 @@ class Step : Identifiable {
     var ccMessages: [MidiControl]   // MIDI control messages
     var positions: [Int]            // Notes position on the staff (1 to 25)
     var text: String                // Text to be displayed
-    var velocity: Int               // 0 = none, 128 = full
+    var velocity: Int               // 0 = none, 127 = full
     var length: Int                 // 1 to 48 (in 4/4)
     var octave: UInt8               // The keyboard octave: 1 to 4 (or 0 if the step is a drum note)
     var sustain: Bool               // The note will be released in the next measure
