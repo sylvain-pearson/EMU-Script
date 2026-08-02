@@ -46,7 +46,14 @@ class MusicalSection {
             }
         }
     
-        return []
+        // If no measures exist for the instrument, we return a measure with a silence
+        let measure = Measure()
+        let silence = Step(transposition: 0)
+        silence.add(notes: ".", octave: 0)
+        measure.steps.append(silence)
+        measures[instrumentName] = [measure]
+        
+        return measures[instrumentName]!
     }
     
     // -----------------------------------------------------------------------
@@ -91,16 +98,18 @@ class MusicalSection {
     // -------------------------------------------
     func getChordAt(measureNumber: Int, position: Int) -> String {
         var chord = ""
-        let measures = getMeasures(instrumentName: "chord")
-        if (measureNumber <= measures.count) {
-            let measure = measures[measureNumber-1]
-            var stepPosition = 0
-            for step in measure.steps {
-                if (position >= stepPosition && position < stepPosition + step.length) {
-                    chord = step.text
-                    break
+        if (measures.keys.contains("chord")) {
+            let measures = getMeasures(instrumentName: "chord")
+            if (measureNumber <= measures.count) {
+                let measure = measures[measureNumber-1]
+                var stepPosition = 0
+                for step in measure.steps {
+                    if (position >= stepPosition && position < stepPosition + step.length) {
+                        chord = step.text
+                        break
+                    }
+                    stepPosition += step.length
                 }
-                stepPosition += step.length
             }
         }
         return chord

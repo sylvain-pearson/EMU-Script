@@ -526,11 +526,7 @@ final public class EmuScriptDocument: FileDocument  {
                     }
                 }
                 
-                var measures = composition.getSection(name: sectionName).getMeasures(instrumentName: instrumentName)
-                if (measures.isEmpty) {
-                    measures = [Measure()]
-                    composition.getSection(name: sectionName).measures[instrumentName] = measures
-                }
+                let measures = composition.getSection(name: sectionName).getMeasures(instrumentName: instrumentName)
                 
                 var measureStart : Float = 0
                 if (target.count > 2) {
