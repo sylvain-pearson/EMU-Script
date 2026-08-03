@@ -90,7 +90,7 @@ struct ContentView: View {
             if (document.parser.errors.count > 0) {
                 ToolbarItemGroup(placement: .status)  {
                     Button(action: reload) { Label("Text Editor", systemImage: "exclamationmark") } .foregroundStyle(.scriptError).bold()
-                    Text(document.parser.getErrorMessage()).padding(.trailing, 10)
+                    Text(document.parser.getErrorMessage()).padding(.trailing, 10).font(.title3)
                 }
             }
 #endif

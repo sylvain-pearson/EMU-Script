@@ -10,8 +10,8 @@ playlist: example
 gtr: "guitar", channel=4, octave=3, velocity=60
 
 [sounds]
-arp1: arp(1, 1, 1, 2), step=3, duration=3
-arp2: arp(1, 2, 3, 4, 3, 2), step=4, duration=7
+arp1: arp(1112, step=3, duration=3)
+arp2: arp(123432, step=4, duration=7)
 
 [example]
 gtr:  arp1/37 | - . arp2/1357 - | - | - 135

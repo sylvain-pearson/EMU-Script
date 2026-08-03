@@ -407,85 +407,94 @@ final public class EmuScriptDocument: FileDocument  {
         {
             for line in section.textLines
             {
-                let name = line.key
+                let soundName = line.key
                 var functionText = ""
                 var step = 6
                 var duration = 6
                 var msec = 10
                 var vdec = 3
                 
-                for keyValue in parser.splitComaSeparatedList(line.value) {
-                    if (keyValue.contains("(") && keyValue.contains(")")) {
-                        functionText = String(keyValue)
-                    }
-                    else {
-                        let array = keyValue.split(separator: "=")
-                        if (array.count == 2)
-                        {
-                            let key = String(array[0]).trimmingCharacters(in: .whitespaces)
-                            let value = String(array[1]).trimmingCharacters(in: .whitespaces)
-                            
-                            if (key == "duration") {
-                                if let n = toNumber(value, min: 2, max: 24, name: "duration", line: line.lineNumber) {
-                                    duration = n
-                                }
+                var functionName = ""
+                var firstArg = ""
+                if (line.value.contains("(") && line.value.hasSuffix(")") ) {
+                    var args = parser.parseFunction(text: line.value)
+                    if (args.count > 1) {
+                        functionName = args.removeFirst()
+                        firstArg = args.removeFirst()
+                        line.value = ""
+                        for arg in args {
+                            if (!line.value.isEmpty) {
+                                line.value += ", "
                             }
-                            else if (key == "msec") {
-                                if let n = toNumber(value, min: 3, max: 15, name: "msec", line: line.lineNumber) {
-                                    msec = n
-                                }
-                            }
-                            else if (key == "vdec") {
-                                if let n = toNumber(value, min: 0, max: 10, name: "vdec", line: line.lineNumber) {
-                                    vdec = n
-                                }
-                            }
-                            else if (key == "step") {
-                                if let n = toNumber(value, min: 2, max: 24, name: "step", line: line.lineNumber) {
-                                    step = n
-                                }
-                            }
-                            else {
-                                parser.error(.unexpectedKeyword, info: key, at: line.lineNumber)
-                            }
-                        }
-                        else {
-                            parser.error(.syntaxError, info: keyValue, at: line.lineNumber)
+                            line.value += arg
                         }
                     }
                 }
-                
-                var array = parser.parseFunction(text: functionText)
-                
-                if (array.count >= 2) {
-                    let fctName = array.removeFirst()
-                    let firstArg = array[0]
+
+                for keyValue in parser.splitComaSeparatedList(line.value) {
                     
-                    if (fctName == "midi") {
-                        var midiNote = MidiNote(name: name)
-                        if let n = toNumber(firstArg, min: 0, max: 127, name: "MIDI", line: line.lineNumber) {
-                            midiNote.value = n
-                        }
-                        midiNotes[name] = midiNote
-                    }
-                    else if (fctName == "arp" || fctName == "strum") {
-                        var sequence = [UInt8]()
-                        for arg in array {
-                            if let n = toNumber(arg, min: 1, max: 6, name: fctName, line: line.lineNumber) {
-                                sequence.append(UInt8(n))
+                    let array = keyValue.split(separator: "=")
+                    if (array.count == 2)
+                    {
+                        let key = String(array[0]).trimmingCharacters(in: .whitespaces)
+                        let value = String(array[1]).trimmingCharacters(in: .whitespaces)
+                        
+                        if (key == "duration") {
+                            if let n = toNumber(value, min: 2, max: 24, name: "duration", line: line.lineNumber) {
+                                duration = n
                             }
                         }
-                        if (fctName == "arp") {
-                            let arp = StrumOrArp(sequence: sequence, step: UInt8(step), duration: UInt8(duration))
-                            strumOrArps[name] = arp
+                        else if (key == "msec") {
+                            if let n = toNumber(value, min: 3, max: 15, name: "msec", line: line.lineNumber) {
+                                msec = n
+                            }
                         }
-                        else if (fctName == "strum") {
-                            let strum = StrumOrArp(sequence: sequence, msec: UInt8(msec), vdec: UInt8(vdec))
-                            strumOrArps[name] = strum
+                        else if (key == "vdec") {
+                            if let n = toNumber(value, min: 0, max: 10, name: "vdec", line: line.lineNumber) {
+                                vdec = n
+                            }
+                        }
+                        else if (key == "step") {
+                            if let n = toNumber(value, min: 2, max: 24, name: "step", line: line.lineNumber) {
+                                step = n
+                            }
+                        }
+                        else {
+                            parser.error(.unexpectedKeyword, info: key, at: line.lineNumber)
                         }
                     }
                     else {
-                        parser.error(.unexpectedKeyword, info: fctName, at: line.lineNumber)
+                        parser.error(.syntaxError, info: keyValue, at: line.lineNumber)
+                    }
+                }
+                               
+                if (functionName != "" && firstArg != "") {
+
+                    if (functionName == "midi") {
+                        var midiNote = MidiNote(name: soundName)
+                        if let n = toNumber(firstArg, min: 0, max: 127, name: "MIDI", line: line.lineNumber) {
+                            midiNote.value = n
+                        }
+                        midiNotes[soundName] = midiNote
+                    }
+                    else if (functionName == "arp" || functionName == "strum") {
+                        var sequence = [UInt8]()
+                        for c in firstArg {
+                            if let n = toNumber(String(c), min: 1, max: 6, name: functionName, line: line.lineNumber) {
+                                sequence.append(UInt8(n))
+                            }
+                        }
+                        if (functionName == "arp") {
+                            let arp = StrumOrArp(sequence: sequence, step: UInt8(step), duration: UInt8(duration))
+                            strumOrArps[soundName] = arp
+                        }
+                        else if (functionName == "strum") {
+                            let strum = StrumOrArp(sequence: sequence, msec: UInt8(msec), vdec: UInt8(vdec))
+                            strumOrArps[soundName] = strum
+                        }
+                    }
+                    else {
+                        parser.error(.unexpectedKeyword, info: functionName, at: line.lineNumber)
                     }
                 }
                 else {
