@@ -26,7 +26,7 @@ struct Curve {
         }
         
         if (self.type <= -2) {
-            // easeInQuad
+            // easeInCubic
             x = pow(x, 3.0)
         }
         else if (self.type == -1) {

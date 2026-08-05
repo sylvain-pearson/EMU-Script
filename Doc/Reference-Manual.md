@@ -241,11 +241,11 @@ The `[sounds]` section contains the definition of new sounds that can be used in
 
 - **midi**: a MIDI note number. Must be between 0 and 127. 
 - **arp**: an arpeggiated chord. It has 3 parameters: 
-    1. A list of comma-separated note indexes.
+    1. A concatenated list of note indexes (1 to 6), where 1 is the lowest note of the chord.
     2. **step**: the length of a step. Must be between 2 and 24, where 12 is the length of a quarter note.
     3. **duration**: the note duration. Must be between 2 and 24.
 - **strum**: a strummed chord. It has 3 parameters:
-    1. A list of comma-separated note indexes.
+    1. A concatenated list of note indexes.
     2. **msec**: the duration between each note, in milliseconds. Must be between 3 and 15.
     3. **vdec**: the percentage of velocity's decrease between each note. Must be between 0 and 10.
 
@@ -254,35 +254,55 @@ Here is an example:
 [sounds]
 kick: midi(35)
 hh: midi(44)
-dw: strum(5, 4, 3, 2, 1), msec=5, vdec=3
-up: strum(1, 2, 3, 4, 5), msec=6, vdec=5
-a1: arp(1, 1, 1, 2), step=3, duration=3
-a2: arp(1, 2, 3, 4, 3, 2), step=5, duration=8
+dw: strum(54321, msec=5, vdec=3)
+up: strum(12345, msec=6, vdec=5)
+a1: arp(1112, step=3, duration=3)
+a2: arp(123432, step=5, duration=8)
  
 [exemple]
-guitar: a1/37 | - | dw/61351 up/'61351 | up/'57257 | a2/2461
+guitar: a1/37 | - | dw/6135 up/'61351 | up/'57257 | a2/2461 | -
 drum: kick hh kick/hh hh | ...
 ```
 
 ## 6. The control section
-In the `[control]` section, you can control the sound of the instruments during playback. Each line of the section has the following format:
+In the `[control]` section, you can modify the sound of the instruments during playback. Each line of the section can have the following format:
 ```
-/instrument/section/measure/attribute: value
+/instrument/section/measure: attribute=value, ... ,attribute=value
 ```
 Where:
-- **instrument**: is the name of the instrument.
-- **section**: is the name of the musical sections. If no section is provided, then the change will be applied to the first section of the composition.
-- **measure**: is the number of the measure within the musical section or a range of measures (separated by two dots, such as `2..5`). If no measure number is provided, then the change will be applied to the first measure of the section.
+- **instrument**: the instrument name.
+- **section**: is the name of the musical section. If no section is provided, then the change will be applied to the first section of the composition.
+- **measure**: is a measure number, or a decimal number indicating a specific position within the section. If no measure number is provided, then the change will be applied at the first measure of the section.
 
 There are 3 attributes that can be specified:
-- **velocity**: temporarily increase or decrease the velocity of an instrument. The value must be a number between -50 and +50.
-- **cc**: send one or many control change messages (CC) to an instrument. The value is a comma-separated list of `keyword=number` pairs. The CC keywords must have been declared in the composition section. The CC numbers must be a number between 0 and 127 or a decimal number between 0.0 and 10.0 (where 10.0 is equivalent to 127).
 - **program**: change the current program (patch) of an instrument. A program identifier has two parts separated by a dot: the bank number (1 to 128) and the program number (1 to 128). 
+- **velocity**: the note's velocity, a number between 0 and 127 or a percentage between 0% and 100%.
+- **CC**: a CC keyword, as defined in the composition section. The CC value must be a number between 0 and 127 or a percentage between 0% and 100%.
 
 Here is an example:
 ```
 [control]
-/synth/program: 8.2
-/synth/intro/2/cc: modw=2.5, reverb=4.0
-/synth/outro/2..5/velocity: +20
+/synth: program=8.2
+/synth/intro/2: modw=25%, reverb=40%
+/synth/intro/2.5: velocity=90
 ```
+
+In the control section, it is also possible to programatically increase or decrease a CC or velocity attribute over a period of time. Here is an example:
+```
+[control]
+/synth/intro: increase(velocity, from=20, to=80)
+/synth/main/1.5: decrease(cutoff, from=50%, to=25%, span=2.25, curve=-1)
+```
+
+The *increase* and *decrease* function's arguments are:
+- **from**: the start value, a number between 0 and 127 or a percentage between 0% and 100%.
+- **to**: the end value, a number between 0 and 127 or a percentage between 0% and 100%.
+- **span**: the span of the change, in measures count. This parameter is optional. If not specified the change span till the end of the section. 
+- **curve**: the type of easing curve, a number between -2 and 2, where:
+    - **-2** is an **in-cubic** curve type
+    - **-1** is an **in-quad** curve type
+    - **0** is a linear progression (the default value)
+    - **1** is an **out-quad** curve type
+    - **2** is an **out-cubic** curve type 
+    
+![](assets/curves.jpg)
