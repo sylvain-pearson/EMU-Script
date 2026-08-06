@@ -288,6 +288,23 @@ struct MusicSheetView : View {
         }
     }
     
+    //-----------------------------------------------------
+    // Get the vertical offset to be used for sharp notes
+    //-----------------------------------------------------
+    func getSharpNoteOffset(_ step: Step, _ pos: Int) -> Int {
+        var sharpNoteOffset = 0
+        if (step.isSharpNote(pos: pos, note: "C") || step.isSharpNote(pos: pos, note: "G")) {
+            sharpNoteOffset = -7
+        }
+        else if (step.isSharpNote(pos: pos, note: "A")) {
+            sharpNoteOffset = -5
+        }
+        else if (step.isSharp(pos: pos)) {
+            sharpNoteOffset = -3
+        }
+        return sharpNoteOffset
+    }
+        
     //---------------------------------
     // Draw a note, interval or chord
     //---------------------------------
@@ -305,7 +322,7 @@ struct MusicSheetView : View {
             y = y + (measureHeight / 2) - 24
         }
         else if (step.positions.count > 0) {
-            y = y + measureHeight - (step.positions[0] * 10) - 4
+            y = y + measureHeight - (step.positions[0] * 10) - 4 + getSharpNoteOffset(step, 0)
         }
         
         let width = Int(Float(step.length) * dx)
@@ -347,7 +364,7 @@ struct MusicSheetView : View {
         {
             if (step.isSynth() && step.positions.count > 0) {
                 for n in 1...step.positions.count {
-                    let y1 = y0 + measureHeight - (step.positions[n-1] * 10) - 4
+                    let y1 = y0 + measureHeight - (step.positions[n-1] * 10) - 4 + getSharpNoteOffset(step, n-1)
                     let isSharp = step.isSharp(pos: n-1)
                     let isChordSelection = step.isChordNote(pos: n-1, chordName: selection.chord) && measureNumber == selection.measure
                     

@@ -98,6 +98,38 @@ class Step : Identifiable {
         return isSharp
     }
     
+    //-------------------------------------
+    // Verify if a specific note is sharp
+    //-------------------------------------
+    func isSharpNote(pos: Int, note: Character) -> Bool {
+        var isSharp = false
+        var midiNoteIndex = -1
+        
+        if (note == "C") {
+            midiNoteIndex = 1
+        }
+        else if ((note == "D")) {
+            midiNoteIndex = 3
+        }
+        else if ((note == "F")) {
+            midiNoteIndex = 6
+        }
+        else if ((note == "G")) {
+            midiNoteIndex = 8
+        }
+        else if ((note == "A")) {
+            midiNoteIndex = 10
+        }
+        
+        if (type == .synth) {
+            if (pos < notes.count) {
+                let note = notes[Int(pos)] - Int(transposition)
+                isSharp = (note % 12 == midiNoteIndex)
+            }
+        }
+        return isSharp
+    }
+    
     // ----------------------------------------------
     // Get the notes strumming or arpegio sequence
     // ----------------------------------------------
