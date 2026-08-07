@@ -333,7 +333,7 @@ class SequencerThread: Thread {
             var firstValue = curve.startValue
             var lastValue = curve.endValue
             
-            if (curve.startValue > curve.endValue) {
+            if (curve.startValue > curve.endValue) {
                 firstValue = curve.endValue
                 lastValue = curve.startValue
             }

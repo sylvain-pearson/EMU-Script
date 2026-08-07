@@ -288,20 +288,16 @@ struct MusicSheetView : View {
         }
     }
     
-    //-----------------------------------------------------
-    // Get the vertical offset to be used for sharp notes
-    //-----------------------------------------------------
+    //------------------------------------------------------
+    // Get the vertical offset to be used for a sharp note
+    //------------------------------------------------------
     func getSharpNoteOffset(_ step: Step, _ pos: Int) -> Int {
-        var sharpNoteOffset = 0
-        if (step.isSharpNote(pos: pos, note: "C") || step.isSharpNote(pos: pos, note: "G")) {
-            sharpNoteOffset = -7
+        
+        var sharpNoteOffset = -4
+        if (step.isSharp(pos: pos)) {
+            sharpNoteOffset = -9
         }
-        else if (step.isSharpNote(pos: pos, note: "A")) {
-            sharpNoteOffset = -5
-        }
-        else if (step.isSharp(pos: pos)) {
-            sharpNoteOffset = -3
-        }
+        
         return sharpNoteOffset
     }
         
@@ -322,7 +318,7 @@ struct MusicSheetView : View {
             y = y + (measureHeight / 2) - 24
         }
         else if (step.positions.count > 0) {
-            y = y + measureHeight - (step.positions[0] * 10) - 4 + getSharpNoteOffset(step, 0)
+            y = y + measureHeight - (step.positions[0] * 10) + getSharpNoteOffset(step, 0)
         }
         
         let width = Int(Float(step.length) * dx)
@@ -345,15 +341,14 @@ struct MusicSheetView : View {
             fillColor = Color(hue: Double(gradiant) / 36 * 0.16, saturation: 1, brightness: colorScheme == .light ? 0.95 : 0.75)
         }
 
-        path = Path()
+        var lineWidth = 3
         if (selection.step != nil && step.isEqual(selection.step!)) {
-            path.addRect(CGRect(x: Int(x+4), y: y+1, width: width-8, height: 6))
+            lineWidth += 2
         }
-        else {
-            path.addRect(CGRect(x: Int(x+4), y: y+2, width: width-8, height: 4))
-        }
-                   
-        context.fill(path, with: .color(fillColor))
+        path = Path()
+        path.move(to: CGPoint(x: Int(x+5), y: y+4))
+        path.addLine(to: CGPoint(x: Int(x)+width-4, y: y+4))
+        context.stroke(path, with: .color(fillColor), lineWidth: 3)
         
         var noteWidth = step.length + 2
         if (noteWidth > 24) {
@@ -364,18 +359,18 @@ struct MusicSheetView : View {
         {
             if (step.isSynth() && step.positions.count > 0) {
                 for n in 1...step.positions.count {
-                    let y1 = y0 + measureHeight - (step.positions[n-1] * 10) - 4 + getSharpNoteOffset(step, n-1)
+                    let y1 = y0 + measureHeight - (step.positions[n-1] * 10) + getSharpNoteOffset(step, n-1)
                     let isSharp = step.isSharp(pos: n-1)
                     let isChordSelection = step.isChordNote(pos: n-1, chordName: selection.chord) && measureNumber == selection.measure
                     
                     if (noteWidth < 9) {
                         path = Path()
-                        path.addArc(center: CGPoint(x: Int(x+10), y: y1+4), radius: 6, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
+                        path.addArc(center: CGPoint(x: Int(x+10), y: y1+4), radius: 5, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
                         context.fill(path, with: .color(.musicSheetNote))
                                 
                         if (isSharp || isChordSelection) {
                             path = Path()
-                            path.addArc(center: CGPoint(x: Int(x+10), y: y1+4), radius: 4, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
+                            path.addArc(center: CGPoint(x: Int(x+10), y: y1+4), radius: 3, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
                             context.fill(path, with: isChordSelection ? .color(.green) : .color(fillColor))
                             
                             if (isChordSelection) {
@@ -389,13 +384,13 @@ struct MusicSheetView : View {
                     else {
                         path = Path()
                         let roundCorner = CGSize(width: 5, height: 5)
-                        let rect = CGRect(x: Int(x+4), y: y1-2, width: noteWidth, height: 12)
+                        let rect = CGRect(x: Int(x+4), y: y1-1, width: noteWidth, height: 10)
                         path.addRoundedRect(in: rect, cornerSize: roundCorner)
                         context.fill(path, with: .color(.musicSheetNote))
                         
                         if (isSharp || isChordSelection) {
                             path = Path()
-                            let rect = CGRect(x: Int(x+6), y: y1, width: noteWidth-4, height: 8)
+                            let rect = CGRect(x: Int(x+6), y: y1+1, width: noteWidth-4, height: 6)
                             path.addRoundedRect(in: rect, cornerSize: roundCorner)
                             
                             if (isChordSelection) {
@@ -408,16 +403,15 @@ struct MusicSheetView : View {
                     }
                     
                     // Draw a dashed line beteen notes of an interval
-                    if (n > 1 && y - y1 > 15) {
-                        
+                    if (n > 1 && y - y1 > 10) {
                         var dx = 10
                         if (noteWidth > 12) {
                             dx = 4 + (noteWidth/2)
                         }
                         path = Path()
-                        path.move(to: CGPoint(x: Int(x)+dx, y: y-3))
-                        path.addLine(to: CGPoint(x: Int(x)+dx, y: y1+10))
-                        context.stroke(path, with: .color(fillColor), style: .init(lineWidth: 4, dash: [6, 4]))
+                        path.move(to: CGPoint(x: Int(x)+dx, y: y-2))
+                        path.addLine(to: CGPoint(x: Int(x)+dx, y: y1+9))
+                        context.stroke(path, with: .color(fillColor), style: .init(lineWidth: 2.5, dash: [8, 2]))
                     }
                     y = y1
                 }

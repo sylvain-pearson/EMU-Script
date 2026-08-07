@@ -408,7 +408,7 @@ final public class EmuScriptDocument: FileDocument  {
             for line in section.textLines
             {
                 let soundName = line.key
-                var functionText = ""
+                let functionText = ""
                 var step = 6
                 var duration = 6
                 var msec = 10
