@@ -1,7 +1,7 @@
 [composition]
 title: "Chords"
 by: "Sylvain Pearson"
-time: 3/4
+time: 6/8
 BPM: 100
 transposition: 0
 playlist: example
@@ -10,5 +10,5 @@ playlist: example
 synth: "MIDI Input", channel=1, octave=3, velocity=80
 
 [example]
-synth: maj(4) | min(3) | dom7(5) | maj(2) | min(1) | P4(2)
-text: "F | Em | G7 | D | Cm | perfect-fourth"
+synth: maj(4) min(3) | dom7(5) maj(2) | min(1) P4(2)
+text: "F Em | G7 D | Cm interval"

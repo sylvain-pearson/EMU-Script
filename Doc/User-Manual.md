@@ -21,22 +21,19 @@ EMU-Script is a document-based application. Upon starting, you will be prompted 
 
 Here is the main view of the application after the creation of a new document:
 
-![main-view](assets/main-view.png)
-
+![main-view](assets/script-editor.png)
 The user interface has four distinct parts:
-- **The sidebar** (on the left) lists the musical sections and instruments of the composition. The M button, at the right of an instrument, is used to mute or unmute the instrument before playback. At the bottom of the sidebar, you can view information about the composition, the current selection, or error messages.
-- **The toolbar** (top right) with a button to toggle between the music sheet and the script editor, a play button, a stop button, scroll buttons, a configuration button, undo/redo buttons, and a validation button.
-- **The music sheet** (on the right), which displays the staffs of the selected musical instruments and musical sections.
-- **The script editor** is displayed on the right when the document button is pushed:
+- **The sidebar** (on the left) lists the musical sections and instruments of the composition. The mute button, at the right of an instrument, is used to mute or unmute the instrument. At the bottom of the sidebar, you can view information about the composition or about the selected note or chord.
+- **The toolbar** (top right) has a button to toggle between the script editor and the music sheet, a play button, a stop button, a metronome button, and the scroll buttons.
+- **The script editor** (on the right) is displayed by default. You can click on the *staff+note* icon to switch to the music sheet.
+- **The music sheet** displays the measures of the selected musical instruments and musical sections.
 
-![script-editor](assets/script-editor.png)
+![script-editor](assets/main-view.png)
 The following keyboard shortcuts are available:
 - **ENTER**: start playback
 - **ESC**: stop the current playback
 - **Right arrow**: scroll the music sheet to the right.
 - **Left arrow**: scroll the music sheet to the left.
-- **Command+Z**: undo the last action of the script editor.
-- **Command+Shift+Z**: redo the last action of the script editor.
 
 ## 2. The Music Sheet
 The music sheet is a visual representation of the composition. From left to right, it displays the measures of the compositions. From top to bottom, it displays the following:
@@ -56,7 +53,6 @@ A staff has a range of two octaves (+ 2 whole tones). Here are the notes of the 
 The chromatic notes (sharp notes) have an outlined shape. Here are all the chromatic notes of a 6/8 staff in C major:
 
 ![chromatic-notes](assets/chromatic-notes.png)
-
 
 The color used for the horizontal line of the note is an indicator of the note pitch. The color has a gradient ranging from red (low pitches), orange (mid pitches), and yellow (high pitches). Here is the C major scale of a bass instrument:
 
@@ -236,8 +232,8 @@ playlist: example
 guitar: "guitar", channel=4, octave=3, velocity=60
 
 [sounds]
-dw: strum(5, 4, 3, 2, 1), msec=5, vdec=3
-up: strum(1, 2, 3, 4, 5), msec=6, vdec=5
+dw: strum(54321, msec=5, vdec=3)
+up: strum(12345, msec=6, vdec=5)
 
 [sequences]
 r1: dw/chord(5) - - up/chord(3) dw/chord(5) - - -

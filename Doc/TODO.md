@@ -9,20 +9,22 @@
 - [x] Support for ipad
 - [x] Mute button that can mute the instrument during playback
 - [x] Increase or decrease CC or velocity over a period of time
+- [x] Improved chromatic notes placement on the music sheet
 - [ ] Documentation update for release 1.1
 - [ ] Create screen captures for app store (2880 × 1800px)
 - [ ] Release application package (version 1.1)
 
 ## Issues
 - [ ] Undo/redo not functional ipad
+- [ ] Incorect note head for notes that continue on the next measure
 
 ## Wishlist
+- [ ] Export to PDF with a standard treble of bass staff. *See Swift UI  ImageRenderer class*
+- [ ] Per section setting of BPM
 - [ ] Refactoring of function parsing (create a class)
 - [ ] Improve errors display on MacOS
 - [ ] Add menu items for toolbar functions
-- [ ] Per section setting of BPM
 - [ ] Find and replace (script editor)
-- [ ] Export to PDF with a standard staff and note heads that can be: black (natural), gray (diatonic ♭/♯) or white (chromatic ♭/♯).  *See Swift UI  ImageRenderer class*
 - [ ] Export to MIDI file (using MIDIKit SwiftMIDIFile)
 - [ ] User-definable font size and color settings (script editor)
 - [ ] Practice mode (provide feedback for user's hits and misses)
