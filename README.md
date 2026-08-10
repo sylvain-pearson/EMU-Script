@@ -19,7 +19,7 @@ EMU-Script is a text-based, electronic music composition software for MacOS and 
 ## Release
 You can download the latest version of the application using this link: [version 1.1](https://github.com/sylvain-pearson/EMU-Script/releases/download/EMU_V1.1/EMU-Script.app.zip)
 What's new in this version:
-- Standard note names (A, B, D, D, E, F, G).
+- Standard note names (A, B, C, D, E, F, G).
 - Improved chords notation.
 - Increase/decrease velocity or CC over a period of time.
 - Vertical scrolling.

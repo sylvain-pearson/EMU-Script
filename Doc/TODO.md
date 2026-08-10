@@ -11,6 +11,9 @@
 
 ## Wishlist
 - [ ] Export to PDF with a standard treble of bass staff. *See Swift UI  ImageRenderer class*
+- [ ] Modulate a CC.
+- [ ] Change a CC or the velocity within a random range.
+- [ ] Legato and swing support
 - [ ] Per section setting of BPM
 - [ ] Refactoring of function parsing (create a class)
 - [ ] Improve errors display on MacOS
