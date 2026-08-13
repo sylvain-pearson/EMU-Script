@@ -348,7 +348,7 @@ struct MusicSheetView : View {
         path = Path()
         path.move(to: CGPoint(x: Int(x+5), y: y+4))
         path.addLine(to: CGPoint(x: Int(x)+width-4, y: y+4))
-        context.stroke(path, with: .color(fillColor), lineWidth: 3)
+        context.stroke(path, with: .color(fillColor), lineWidth: CGFloat(lineWidth))
         
         var noteWidth = step.length + 2
         if (noteWidth > 24) {
