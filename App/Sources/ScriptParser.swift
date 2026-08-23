@@ -217,7 +217,7 @@ public class ScriptParser {
                 line = String(line.split(separator: "//").first!)   // Remove any comment at the end of the line
             }
 
-            if (line.hasPrefix("[") && line.hasSuffix("]")) {
+            if (line.hasPrefix("[") && line.hasSuffix("]") && line.count > 2) {
                 if section != nil {
                     self.sections.append(section!)
                     if (section!.error.isErr()) {
