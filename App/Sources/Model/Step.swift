@@ -430,7 +430,7 @@ class Step : Identifiable {
                 if (pos < 0) {
                     self.error = .noteIsTooLow
                 }
-                else if (pos > 15) {
+                else if (pos > 16) {
                     self.error = .noteIsTooHigh
                 }
             }
