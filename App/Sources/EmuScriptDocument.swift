@@ -710,14 +710,19 @@ final public class EmuScriptDocument: FileDocument  {
     func loadMusicalSection(name: String, section: ScriptSection) {
 
         let musicalSection = MusicalSection(name: name, length: 4)
+        var measureNumbers : [String : Int] = [:]
         
         for line in preProcess(section.textLines) {
-            
+               
             let instrumentName = line.key
             let text = line.value
             
             var measures: [Measure]  = []
             var measureNumber = 0
+            
+            if let n = measureNumbers[line.key] {
+                measureNumber = n
+            }
             
             if (!isAnInstrument(name: instrumentName)) {
                 parser.error(.undefinedInstrument, info: instrumentName, at: line.lineNumber)
@@ -785,6 +790,8 @@ final public class EmuScriptDocument: FileDocument  {
                 }
             }
 
+            measureNumbers[line.key] = measureNumber
+            
             if (musicalSection.measures[instrumentName] == nil) {
                 musicalSection.measures[instrumentName] = measures
             }
@@ -928,8 +935,15 @@ final public class EmuScriptDocument: FileDocument  {
         }
         
         var mesasureCount = 0
+        var countsArray : [String : Int] = [:]
         for line in lines {
-            let count = line.value.split(separator: "|").count
+            var count = line.value.split(separator: "|").count
+            if let n = countsArray[line.key] {
+                count += n
+                countsArray[line.key] = count
+            }
+            countsArray[line.key] = count
+            
             if (count > mesasureCount) {
                 mesasureCount = count
             }
