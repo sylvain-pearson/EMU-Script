@@ -389,9 +389,15 @@ final public class EmuScriptDocument: FileDocument  {
     // Load the optional [sequences] section
     // -----------------------------------------
     func loadSequencesSection()  {
+        sequences = [:]
         if let section = parser.getSection(name: "sequences") {
             for line in section.textLines {
-                sequences[line.key] = line.value
+                if let sequence = sequences[line.key] {
+                    sequences[line.key] = sequence + " | " + line.value
+                }
+                else {
+                    sequences[line.key] = line.value
+                }
             }
         }
     }
