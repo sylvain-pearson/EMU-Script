@@ -2,15 +2,24 @@
 
 ## TODO
 - [x] Documentation update for release 1.1
+- [x] Zoom-in music sheet
 - [ ] Create screen captures for app store (2880 × 1800px)
 - [ ] Release application package (version 1.1)
 
 ## Issues
+- [x] Selected note is not highlighted
+- [x] Empty section names make the application crash
+- [x] Syntax error with note 7'
 - [ ] Undo/redo not functional ipad
+- [x] A sequence cannot be on multiple lines
 - [ ] Incorect note head for notes that continue on the next measure
+- [ ] Bug with triolets: [1 2 3] [3 4 5]
+- [x] Bug with ... when a track use multiple lines
 
 ## Wishlist
-- [ ] Export to PDF with a standard treble of bass staff. *See Swift UI  ImageRenderer class*
+- [ ] Staff with 1, 2 or 3 octaves of range
+- [ ] Copy a measure from another instrument
+- [ ] Export to PDF with a standard staff. *(ImageRenderer class)*
 - [ ] Modulate a CC.
 - [ ] Change a CC or the velocity within a random range.
 - [ ] Legato and swing support

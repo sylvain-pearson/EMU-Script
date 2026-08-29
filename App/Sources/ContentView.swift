@@ -33,7 +33,8 @@ struct ContentView: View {
     @State var keyPressed : Character?
     @State var progress = -1.0
     @State var scrollByCount = 3
-    @State var metronomeUnit = 1
+    @State var metronomeUnit = 2
+    @State var zoomFactor = 1.0
     
     @FocusState var isTextEditorFocused: Bool
     @State var isTextEditorDisabled = false
@@ -60,7 +61,9 @@ struct ContentView: View {
         }
         detail: {
             ZStack  {
-                MusicSheetProgress(document: $document, scrollByCount: $scrollByCount, progress: $progress).opacity(showTextEditor ? 0 : 0.6)
+                MusicSheetProgress(document: $document, scrollByCount: $scrollByCount, progress: $progress, zoomFactor: $zoomFactor)
+                    .opacity(showTextEditor ? 0 : 0.6)
+                    .scaleEffect(zoomFactor, anchor: .topLeading)
                 
                 ScrollView([.horizontal, .vertical], showsIndicators: true) {
                     MusicSheetView(document: $document, selection: $selection, refreshCounter: $refreshCounter)
@@ -68,6 +71,7 @@ struct ContentView: View {
                 }
                 .opacity(showTextEditor ? 0 : 1)
                 .scrollPosition($scrollPosition)
+                .scaleEffect(zoomFactor, anchor: .topLeading)
                 
                HStack {
                     ScriptEditor(document: $document, reload: $document.reloadCounter)
@@ -76,6 +80,7 @@ struct ContentView: View {
                         .disabled(isTextEditorDisabled)
                 }
             }
+            
         }
         .alert(String(localized: "Sequencer Error"), isPresented: $showError) { }  message: {
             Text(error.getMessage())
@@ -118,6 +123,25 @@ struct ContentView: View {
                         .disabled(sequencer == nil || sequencer!.isFinished)
                     
                     Menu {
+                        Button(action: { zoomFactor = 1 }) {
+                            Label("100%", systemImage: zoomFactor == 1 ? "circle.fill" : "circle")
+                        }
+                        Button(action: { zoomFactor = 1.1 }) {
+                            Label("110%", systemImage: zoomFactor == 1.1 ? "circle.fill" : "circle")
+                        }
+                        Button(action: { zoomFactor = 1.2 }) {
+                            Label("120%", systemImage: zoomFactor == 1.2 ? "circle.fill" : "circle")
+                        }
+                        Button(action: { zoomFactor = 1.3 }) {
+                            Label("130%", systemImage: zoomFactor == 1.3 ? "circle.fill" : "circle")
+                        }
+                    }
+                    label: {
+                        Label("Zoom", systemImage: "magnifyingglass")
+                    }
+                    .disabled((sequencer != nil && sequencer!.isExecuting) || showTextEditor)
+                    
+                    Menu {
                         Button(action: { metronomeUnit = 1 }) {
                             Label("At Every Beat", systemImage: metronomeUnit == 1 ? "circle.fill" : "circle")
                         }
@@ -132,9 +156,9 @@ struct ContentView: View {
                         }
                     }
                     label: {
-                        Label("More", systemImage: "timer")
+                        Label("Metronome", systemImage: "timer")
                     }
-                    .disabled((sequencer != nil && sequencer!.isExecuting))
+                    .disabled((sequencer != nil && sequencer!.isExecuting) || showTextEditor)
                     
 #if os(macOS)
                     Divider()

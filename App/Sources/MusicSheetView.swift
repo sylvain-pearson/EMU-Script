@@ -10,6 +10,7 @@ import Foundation
 import SwiftUI
 
 let stepWidth = 8
+var viewWidth = 1.0
 
 //------------------------------------------------------------------
 // This view displays a cursor on the current beat during playback
@@ -19,7 +20,8 @@ struct MusicSheetProgress : View {
     @Binding var document: EmuScriptDocument
     @Binding var scrollByCount: Int
     @Binding var progress : Double
- 
+    @Binding var zoomFactor : Double
+
     var body: some View {
         Canvas(opaque: false, colorMode: .linear, rendersAsynchronously: false) { context, size in
             if (progress >= 0) {
@@ -32,17 +34,25 @@ struct MusicSheetProgress : View {
         }
         .padding(.vertical, 25)
         .onGeometryChange(for: CGSize.self) { geometry in geometry.size} action: { viewSize in
-            let measureWidth = document.composition.beatsPerMeasure * document.composition.stepsPerBeat * stepWidth
-            let maxMeasuresInView = Int(viewSize.width) / measureWidth
-            if (maxMeasuresInView > 1) {
-                scrollByCount = maxMeasuresInView - 1
-            }
-            else {
-                scrollByCount = 1
-            }
+            viewWidth = viewSize.width
+            updateScrollByCount()
+        }
+        .onChange(of: zoomFactor) { 
+            updateScrollByCount()
         }
     }
 
+    func updateScrollByCount() {
+        let measureWidth = document.composition.beatsPerMeasure * document.composition.stepsPerBeat * stepWidth
+        let maxMeasuresInView = Int(viewWidth/zoomFactor) / measureWidth
+        
+        if (maxMeasuresInView > 1) {
+            scrollByCount = maxMeasuresInView - 1
+        }
+        else {
+            scrollByCount = 1
+        }
+    }
 }
 
 //---------------------------------------
@@ -107,6 +117,7 @@ struct MusicSheetView : View {
                         else {
                             drawInstrumentName(context: context, name: document.instruments[n].name, x0: x, y0: y)
                             drawStaff(context: context, x0: x, y0: y, width: width)
+                            // drawStandardStaff(context: context, x0: x, y0: y, width: width, octave: Int(document.instruments[n].octave))
                         }
                         
                         
@@ -144,7 +155,7 @@ struct MusicSheetView : View {
     }
 
     // ----------------------------------------------------------------------------
-    // Draw a staff having 4 horizontal lines and one vertical line per measure
+    // Draw a staff having 6 horizontal lines and one vertical line per measure
     // ----------------------------------------------------------------------------
     func drawStaff(context: GraphicsContext, x0: Int, y0: Int, width: Int) {
 
@@ -157,7 +168,7 @@ struct MusicSheetView : View {
         let y4 = y0 + measureHeight - (10 * 10) - 50     // high C
         let y5 = y0 + measureHeight - (12 * 10) - 50     // high E
         let y6 = y0 + measureHeight - (14 * 10) - 50     // high G
-        
+
         for y in [y1, y2, y3, y4, y5, y6] {
             var path = Path()
             path.move(to: CGPoint(x: x0, y: y))
@@ -187,7 +198,7 @@ struct MusicSheetView : View {
             x = x + measureWidth
         }
     }
-    
+
     // -----------------------------------------------------------------------------------
     // Draw a staff for drum, having 1 horizontal line and one vertical line per measure
     // -----------------------------------------------------------------------------------
