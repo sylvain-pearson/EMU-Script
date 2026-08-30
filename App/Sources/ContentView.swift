@@ -135,6 +135,12 @@ struct ContentView: View {
                         Button(action: { zoomFactor = 1.3 }) {
                             Label("130%", systemImage: zoomFactor == 1.3 ? "circle.fill" : "circle")
                         }
+                        Button(action: { zoomFactor = 1.4 }) {
+                            Label("140%", systemImage: zoomFactor == 1.4 ? "circle.fill" : "circle")
+                        }
+                        Button(action: { zoomFactor = 1.5 }) {
+                            Label("150%", systemImage: zoomFactor == 1.5 ? "circle.fill" : "circle")
+                        }
                     }
                     label: {
                         Label("Zoom", systemImage: "magnifyingglass")
