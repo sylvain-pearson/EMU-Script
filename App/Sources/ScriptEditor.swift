@@ -39,14 +39,14 @@ public extension Sequence where Iterator.Element == HighlightRule {
             HighlightRule(pattern: numberRegex,
                 formattingRule: TextFormattingRule(key: .foregroundColor, value: acolor(Color.scriptNumber))
             ),
-            HighlightRule(pattern: commentRegex,
-                formattingRule: TextFormattingRule(key: .foregroundColor, value: acolor(Color.scriptComment))
-            ),
             HighlightRule(pattern: textRegex,
                 formattingRule: TextFormattingRule(key: .foregroundColor, value: acolor(Color.scriptText))
             ),
             HighlightRule(pattern: linePrefixRegex,
                 formattingRule: TextFormattingRule(key: .foregroundColor, value: acolor(Color.scriptLinePrefix))
+            ),
+            HighlightRule(pattern: commentRegex,
+                formattingRule: TextFormattingRule(key: .foregroundColor, value: acolor(Color.scriptComment))
             ),
         ]
     }
