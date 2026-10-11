@@ -1,5 +1,5 @@
 //
-//  SequencerThread.swift
+//  Sequencer.swift
 //  EmuScript
 //
 //  Copyright (c) 2026 Sylvain Pearson - Licensed under the MIT license
@@ -20,11 +20,12 @@ struct Event {
     var trackId: Int
 }
 
+
 // ----------------------------------------------------------------------------------
 // The sequencer thread class plays the notes of a composition using a thread that
 // sends MIDI messages to the MIDI instruments through MIDI channels
 // ----------------------------------------------------------------------------------
-class SequencerThread: Thread {
+class MidiSequencer: Thread {
     
     var midiManager: MIDIManager
     var midiOut : [Int : MIDIOutputConnection] = [:]
@@ -34,6 +35,8 @@ class SequencerThread: Thread {
     var scriptErroror = ScriptError()
     var stepDuration : Double
     var stepTickCount: UInt64
+
+    static var recorder = MidiRecorder()
     
     // ----------------------------------------------------------------------------
     // The class initializer that creates the MIDI manager and the MIDI endpoints
@@ -44,9 +47,9 @@ class SequencerThread: Thread {
         self.scrollTo = scrollFunc
 
         self.stepDuration = Double(60.0) / Double(document.composition.BPM) / Double(document.composition.stepsPerBeat)
-        self.stepTickCount =  SequencerThread.millisecondsToTicks(self.stepDuration * 1000)
+        self.stepTickCount =  MidiSequencer.millisecondsToTicks(self.stepDuration * 1000)
         
-        midiManager = MIDIManager(clientName: "MuseMIDIManager", model: "Muse", manufacturer: "spearson")
+        midiManager = MIDIManager(clientName: "EmuMidiManager", model: "EMU-Script", manufacturer: "spearson")
         
         do {
             try midiManager.start()
@@ -95,11 +98,14 @@ class SequencerThread: Thread {
                     sequence += events
                 }
             }
+            
+            // prepareMidiEventListener()
+            
         }
         
         return scriptErroror
     }
-
+    
     // ------------------------------------------------------------------
     // The background processing function that generate the MIDI events
     // ------------------------------------------------------------------
@@ -114,6 +120,8 @@ class SequencerThread: Thread {
         let startTimeStamp = mach_absolute_time() + (stepTickCount * UInt64(stepsAhead))
         let startTime = Date.now + (stepDuration * Double(stepsAhead))
         var stepCount = 0
+        
+        MidiSequencer.recorder.start(startTimestamp: startTimeStamp, stepTickCount: stepTickCount)
         
         // The playback is delayed by 12 steps (1 beat)
         // The Kernel handle the MIDI events delivery
@@ -406,7 +414,7 @@ class SequencerThread: Thread {
             if let strum = step.playing {
                 var v = velocity
                 var noteIndex = 0
-                let strumDuration = SequencerThread.millisecondsToTicks(Double(strum.duration))
+                let strumDuration = MidiSequencer.millisecondsToTicks(Double(strum.duration))
                 
                 for note in step.getNotesInPlayingOrder() {
                     let event = Event(

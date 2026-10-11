@@ -25,7 +25,7 @@ struct ContentView: View {
     @State var error = ScriptError()
     @State var scrollPosition = ScrollPosition(edge: .top)
     @State var stepCountProgress = 0
-    @State var sequencer : SequencerThread?
+    @State var sequencer : MidiSequencer?
     @State var selection = Selection()
     
     @State var showTextEditor : Bool = true
@@ -217,7 +217,7 @@ struct ContentView: View {
     // -------------------------------------------------------
     func play() {
         
-        sequencer = SequencerThread(document: document, scrollFunc: self.scroll)
+        sequencer = MidiSequencer(document: document, scrollFunc: self.scroll)
         if (sequencer != nil) {
             error = sequencer!.prepare()
             if (error.isErr()) {
