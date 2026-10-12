@@ -64,14 +64,15 @@ struct ContentView: View {
                 MusicSheetProgress(document: $document, scrollByCount: $scrollByCount, progress: $progress, zoomFactor: $zoomFactor)
                     .opacity(showTextEditor ? 0 : 0.6)
                     .scaleEffect(zoomFactor, anchor: .topLeading)
-                
-                ScrollView([.horizontal, .vertical], showsIndicators: true) {
-                    MusicSheetView(document: $document, selection: $selection, refreshCounter: $refreshCounter)
-                        .onTapGesture { location in selectStep(at: location) }
+                ScrollView([.vertical], showsIndicators: false) {
+                    ScrollView([.horizontal], showsIndicators: false) {
+                        MusicSheetView(document: $document, selection: $selection, refreshCounter: $refreshCounter, zoomFactor: $zoomFactor)
+                            .onTapGesture { location in selectStep(at: location) }
+                            .scaleEffect(zoomFactor, anchor: .topLeading)
+                    }
+                    .opacity(showTextEditor ? 0 : 1)
+                    .scrollPosition($scrollPosition)
                 }
-                .opacity(showTextEditor ? 0 : 1)
-                .scrollPosition($scrollPosition)
-                .scaleEffect(zoomFactor, anchor: .topLeading)
                 
                HStack {
                     ScriptEditor(document: $document, reload: $document.reloadCounter)
@@ -80,7 +81,6 @@ struct ContentView: View {
                         .disabled(isTextEditorDisabled)
                 }
             }
-            
         }
         .alert(String(localized: "Sequencer Error"), isPresented: $showError) { }  message: {
             Text(error.getMessage())
@@ -123,23 +123,17 @@ struct ContentView: View {
                         .disabled(sequencer == nil || sequencer!.isFinished)
                     
                     Menu {
+                        Button(action: { zoomFactor = 0.8 }) {
+                            Label("80%", systemImage: zoomFactor == 0.8 ? "circle.fill" : "circle")
+                        }
                         Button(action: { zoomFactor = 1 }) {
                             Label("100%", systemImage: zoomFactor == 1 ? "circle.fill" : "circle")
-                        }
-                        Button(action: { zoomFactor = 1.1 }) {
-                            Label("110%", systemImage: zoomFactor == 1.1 ? "circle.fill" : "circle")
                         }
                         Button(action: { zoomFactor = 1.2 }) {
                             Label("120%", systemImage: zoomFactor == 1.2 ? "circle.fill" : "circle")
                         }
-                        Button(action: { zoomFactor = 1.3 }) {
-                            Label("130%", systemImage: zoomFactor == 1.3 ? "circle.fill" : "circle")
-                        }
                         Button(action: { zoomFactor = 1.4 }) {
                             Label("140%", systemImage: zoomFactor == 1.4 ? "circle.fill" : "circle")
-                        }
-                        Button(action: { zoomFactor = 1.5 }) {
-                            Label("150%", systemImage: zoomFactor == 1.5 ? "circle.fill" : "circle")
                         }
                     }
                     label: {
@@ -245,7 +239,8 @@ struct ContentView: View {
         var newPosition = 0
         
         if (scrollPosition.x != nil) {
-            newPosition = Int(scrollPosition.x!) + (document.composition.beatsPerMeasure * document.composition.stepsPerBeat * self.scrollByCount * self.stepWidth)
+            let stepCount = document.composition.beatsPerMeasure * document.composition.stepsPerBeat * self.scrollByCount
+            newPosition = Int(scrollPosition.x!) + Int((CGFloat(stepCount) * CGFloat(self.stepWidth) * CGFloat(self.zoomFactor)))
         }
         self.scrollPosition.scrollTo(x: CGFloat(newPosition))
     }
@@ -257,7 +252,8 @@ struct ContentView: View {
         var newPosition = 0
         
         if (scrollPosition.x != nil) {
-            newPosition = Int(scrollPosition.x!) - (document.composition.beatsPerMeasure * document.composition.stepsPerBeat * self.scrollByCount * self.stepWidth)
+            let stepCount = document.composition.beatsPerMeasure * document.composition.stepsPerBeat * self.scrollByCount
+            newPosition = Int(scrollPosition.x!) - Int((CGFloat(stepCount) * CGFloat(self.stepWidth) * CGFloat(self.zoomFactor)))
             if (newPosition < 0) {
                 newPosition = 0
             }
@@ -306,7 +302,7 @@ struct ContentView: View {
             let stepsPerMeasure = document.composition.stepsPerBeat * document.composition.beatsPerMeasure
             
             if (position % (stepsPerMeasure * self.scrollByCount) == 0) {
-                self.scrollPosition.scrollTo(x: CGFloat(position * self.stepWidth), y: 0)
+                self.scrollPosition.scrollTo(x: CGFloat(position) * CGFloat(self.stepWidth) * CGFloat(self.zoomFactor), y: 0)
             }
             
             self.progress = (Double((position % (stepsPerMeasure * self.scrollByCount)))) / Double(stepsPerMeasure * self.scrollByCount)

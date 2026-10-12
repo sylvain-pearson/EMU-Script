@@ -26,7 +26,8 @@ struct MusicSheetProgress : View {
         Canvas(opaque: false, colorMode: .linear, rendersAsynchronously: false) { context, size in
             if (progress >= 0) {
                 var path = Path()
-                let width = document.composition.beatsPerMeasure * document.composition.stepsPerBeat * stepWidth * scrollByCount
+                let measureWidth = document.composition.beatsPerMeasure * document.composition.stepsPerBeat * stepWidth
+                let width = measureWidth * scrollByCount
                 let pos = (Double(width) * progress) + 51 + Double(stepWidth)
                 path.addRect(CGRect(x: pos, y: 15, width: 1.5, height: 1000))
                 context.fill(path, with: .color(.blue))
@@ -43,8 +44,8 @@ struct MusicSheetProgress : View {
     }
 
     func updateScrollByCount() {
-        let measureWidth = document.composition.beatsPerMeasure * document.composition.stepsPerBeat * stepWidth
-        let maxMeasuresInView = Int(viewWidth/zoomFactor) / measureWidth
+        let measureWidth = (document.composition.beatsPerMeasure * document.composition.stepsPerBeat * stepWidth)
+        let maxMeasuresInView = Int(viewWidth / Double(measureWidth) / zoomFactor)
         
         if (maxMeasuresInView > 1) {
             scrollByCount = maxMeasuresInView - 1
@@ -63,6 +64,7 @@ struct MusicSheetView : View {
     @Binding var document: EmuScriptDocument
     @Binding var selection : Selection
     @Binding var refreshCounter : Bool
+    @Binding var zoomFactor : Double
     
     let measureHeight = 190
     let margin = 50
@@ -73,8 +75,8 @@ struct MusicSheetView : View {
         Canvas(opaque: false, colorMode: .linear, rendersAsynchronously: false) { context, size in
             draw(context: context, size: size)
         }
-        .frame(width: (Double(getMeasureWidth()) * Double(document.getSelectedMeasuresCount() + 4)) + Double(margin * 2),
-               height: Double(measureHeight + margin) * max(4, Double(document.getSelectedInstrumentsCount())))
+        .frame(width: (Double(getMeasureWidth()) * Double(document.getSelectedMeasuresCount() + 4) * max(zoomFactor,1)) + Double(margin * 2),
+               height: Double(measureHeight) * max(zoomFactor, 1) * max(4, Double(document.getSelectedInstrumentsCount())))
     }
     
     // ---------------------------------
