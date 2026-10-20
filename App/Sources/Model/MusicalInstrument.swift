@@ -19,6 +19,7 @@ struct MusicalInstrument: Identifiable, Hashable {
     var endpoint: String = "MIDI Input"     // The MIDI endpoint
     var channel: UInt8 = 0                  // The MIDI channel (0-15)
     var octave: UInt8 = 0                   // The keyboard octave: 1, 2, 3 or 4
+    var octaveRange: Int = 1                // The octave range of the instrument (from 1 to 3)
     var velocity: UInt8 = 100               // The MIDI velocity: 0-127
     var isSelected = true
     var isMuted = false

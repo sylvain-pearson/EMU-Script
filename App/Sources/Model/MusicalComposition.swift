@@ -85,6 +85,32 @@ struct MusicalComposition {
         return MusicalSection(name: "Error", length: 1)
     }
     
+    // ------------------------------------------------------------
+    // Get the lowest and higest staff position of an instrument.
+    // The staff positions are from 0 to 20, covering 3 octaves.
+    // ------------------------------------------------------------
+    func getInstrumentRange(instrumentName: String) -> (Int,Int) {
+        var lowestPos = 7
+        var highestPos = 13
+        
+        for section in sections {
+            for measure in section.getMeasures(instrumentName: instrumentName) {
+                for step in measure.steps {
+                    for pos in step.positions {
+                        if (pos < lowestPos) {
+                            lowestPos = pos
+                        }
+                        else if (pos > highestPos) {
+                            highestPos = pos
+                        }
+                    }
+                }
+            }
+        }
+        
+        return (lowestPos, highestPos)
+    }
+    
     // -------------------------------------------
     // Set the time signature of the composition
     // -------------------------------------------

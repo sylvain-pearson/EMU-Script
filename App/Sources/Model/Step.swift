@@ -76,7 +76,7 @@ class Step : Identifiable {
         if (type == .synth) {
             if (pos < positions.count) {
                 
-                let n = Character("1").asciiValue! + UInt8((positions[Int(pos)] + 4) % 7)
+                let n = Character("1").asciiValue! + UInt8((positions[Int(pos)]) % 7)
                 let note = (isSharp(pos: pos) ? "#" : "") + String(UnicodeScalar(n))
                 isChordNote = Chords().isChordNote(chord: chordName, note: note)
             }
@@ -377,9 +377,9 @@ class Step : Identifiable {
         ]
         
         let posMap = [
-            -4, -4, -3, -3, -2, -1, -1,  0,  0,  1,  1,  2,
-            3,   3,  4,  4,  5,  6,  6,  7,  7,  8,  8,  9,
-            10, 10, 11, 11, 12, 13, 13, 14, 14, 15, 15, 16
+            0,   0,  1,  1,  2,  3,  3,  4,  4,  5,  5,  6,
+            7,   7,  8,  8,  9, 10, 10, 11, 11, 12, 12, 13,
+            14, 14, 15, 15, 16, 17, 17, 18, 18, 19, 19, 20
         ]
         
         let textList = ["1", "#1", "2", "#2", "3", "4", "#4", "5", "#5", "6", "#6", "7"]
@@ -425,14 +425,6 @@ class Step : Identifiable {
             if (text != "") {
                 self.text.append(text)
                 self.text.append(" ")
-            }
-            if let pos = self.positions.last {
-                if (pos < 0) {
-                    self.error = .noteIsTooLow
-                }
-                else if (pos > 16) {
-                    self.error = .noteIsTooHigh
-                }
             }
         }
         

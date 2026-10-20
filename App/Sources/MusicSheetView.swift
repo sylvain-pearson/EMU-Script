@@ -66,8 +66,8 @@ struct MusicSheetView : View {
     @Binding var refreshCounter : Bool
     @Binding var zoomFactor : Double
     
-    let measureHeight = 190
-    let margin = 50
+    let xMargin = 50
+    var measureHeights : [String: Double] = [:]
     
     @Environment(\.colorScheme) var colorScheme
     
@@ -75,8 +75,8 @@ struct MusicSheetView : View {
         Canvas(opaque: false, colorMode: .linear, rendersAsynchronously: false) { context, size in
             draw(context: context, size: size)
         }
-        .frame(width: (Double(getMeasureWidth()) * Double(document.getSelectedMeasuresCount() + 4) * max(zoomFactor,1)) + Double(margin * 2),
-               height: Double(measureHeight) * max(zoomFactor, 1) * max(4, Double(document.getSelectedInstrumentsCount())))
+        .frame(width: (Double(getMeasureWidth()) * Double(document.getSelectedMeasuresCount() + 4) * max(zoomFactor,1)) + Double(xMargin * 2),
+               height: MusicSheetView.getViewHeight(document: document) * max(zoomFactor, 1))
     }
     
     // ---------------------------------
@@ -86,12 +86,49 @@ struct MusicSheetView : View {
         return document.composition.beatsPerMeasure * document.composition.stepsPerBeat * stepWidth
     }
     
+    // ---------------------------------
+    // Calculate the view height
+    // ---------------------------------
+    static func getViewHeight(document: EmuScriptDocument) -> Double {
+        var height = 0
+        var n = 0
+        
+        for instrument in document.instruments {
+            if (instrument.isSelected) {
+                let range = document.composition.getInstrumentRange(instrumentName: instrument.name)
+                var octaveRange = 0
+                
+                if (range.0 < 5) {
+                    // 3 octaves staff
+                    octaveRange = 3
+                }
+                else if (range.1 > 13) {
+                    // 2 octaves staff
+                    octaveRange = 2
+                }
+                else {
+                    // 1 octave staff
+                    octaveRange = 1
+                }
+                
+                let noteRange = (octaveRange * 7) + 2
+                height += (noteRange * 10)
+                height += 30
+                
+                document.instruments[n].octaveRange = octaveRange
+            }
+            n += 1
+        }
+        
+        return Double(height)
+    }
+    
     // ------------------------------------------------------
     // Draw the staffs and notes of the composition
     // ------------------------------------------------------
     func draw(context: GraphicsContext, size: CGSize) {
 
-        var x = margin
+        var x = xMargin
         var measureNumber = 1
         let measureWidth = getMeasureWidth()
         
@@ -102,7 +139,7 @@ struct MusicSheetView : View {
             let width = sectionLength * measureWidth
             
             if (item.isSelected) {
-                var y = margin
+                var y = 30
                 var lyricsDone = false
                 var instrumentNumber = 1
                 
@@ -112,41 +149,45 @@ struct MusicSheetView : View {
                         let isDrum = document.instruments[n].isDrum()
                         instrumentNumber += 1
                         
+                        let octaveRange = document.instruments[n].octaveRange
+                        let noteRange = (octaveRange * 7) + 2
+                        let staffHeight = noteRange * 10
+                        
+                        drawInstrumentName(context: context, name: document.instruments[n].name, x0: x, y0: y, y1: y + staffHeight)
+                        y = y + staffHeight
+                        
                         if (isDrum) {
-                            drawInstrumentName(context: context, name: document.instruments[n].name, x0: x, y0: y-50)
-                            drawCompactStaff(context: context, x0: x, y0: y-20, width: width)
+                            
+                            drawCompactStaff(context: context, x0: x, y0: y, width: width)
                         }
                         else {
-                            drawInstrumentName(context: context, name: document.instruments[n].name, x0: x, y0: y)
-                            drawStaff(context: context, x0: x, y0: y, width: width)
-                            // drawStandardStaff(context: context, x0: x, y0: y, width: width, octave: Int(document.instruments[n].octave))
+                            drawStaff(context: context, x0: x, y0: y, width: width, octaveRange: document.instruments[n].octaveRange)
                         }
-                        
                         
                         let instrumentName = document.instruments[n].name
                         if let measures = document.composition.getSection(name: item.name).measures[instrumentName] {
-                            drawNotes(context: context, x0: x, y0: y-50, measures: measures, measureNumber: measureNumber, isCompact: isDrum)
+                            var y0  = y
+                            if (octaveRange < 3 && isDrum == false) {
+                                y0 = y0 + 70
+                            }
+                            drawNotes(context: context, x0: x, y0: y0, measures: measures, measureNumber: measureNumber, isCompact: isDrum)
                         }
                         
                         if (lyricsDone == false && !isDrum) {
                             // Draw lyrics
                             lyricsDone = true
                             if let measures = document.composition.getSection(name: item.name).measures["text"] {
-                                drawLyrics(context: context, x0: x, y0: y+measureHeight+4, measures: measures)
+                                drawLyrics(context: context, x0: x, y0: y, measures: measures)
+                                y = y + 15
                             }
                         }
                         
-                        if (isDrum) {
-                            y += (measureHeight/2)
-                        }
-                        else {
-                            y += measureHeight + (margin/2)
-                        }
+                        y = y + 10
                     }
                 }
                 
                 if let measures = document.composition.getSection(name: item.name).measures["chord"] {
-                    drawChords(context: context, x0: x, y0: y-5, measures: measures)
+                    drawChords(context: context, x0: x, y0: y+10, measures: measures)
                 }
                 
                 drawMeasureNumbers(context: context, x0: x, width: width, sectionName: item.name, measureNumber: &measureNumber)
@@ -156,70 +197,80 @@ struct MusicSheetView : View {
         }
     }
 
-    // ----------------------------------------------------------------------------
-    // Draw a staff having 6 horizontal lines and one vertical line per measure
-    // ----------------------------------------------------------------------------
-    func drawStaff(context: GraphicsContext, x0: Int, y0: Int, width: Int) {
-
+    // ----------------------------------------
+    // Draw a staff having 1, 2 or 3 octaves
+    // ----------------------------------------
+    func drawStaff(context: GraphicsContext, x0: Int, y0: Int, width: Int, octaveRange: Int) {
+        
         let beatsPerMeasure = document.composition.beatsPerMeasure
         let measureWidth = getMeasureWidth()
+        let noteHeight = 10
+        let octaveHeight = 7 * noteHeight
         
-        let y1 = y0 + measureHeight - (3 * 10) - 50      // low C
-        let y2 = y0 + measureHeight - (5 * 10) - 50      // low E
-        let y3 = y0 + measureHeight - (7 * 10) - 50      // low G
-        let y4 = y0 + measureHeight - (10 * 10) - 50     // high C
-        let y5 = y0 + measureHeight - (12 * 10) - 50     // high E
-        let y6 = y0 + measureHeight - (14 * 10) - 50     // high G
-
-        for y in [y1, y2, y3, y4, y5, y6] {
-            var path = Path()
-            path.move(to: CGPoint(x: x0, y: y))
-            path.addLine(to: CGPoint(x: width+x0, y: y))
-            context.stroke(path, with: .color(.gray), lineWidth: 1)
-        }
-        
-        var x = x0
-        while (x <= x0 + width)
-        {
-            var path = Path()
-            path.move(to: CGPoint(x: x, y: y1 + 22))
-            path.addLine(to: CGPoint(x: x, y: y1))
-            context.stroke(path, with: .color(.gray), lineWidth: 1)
-
-            x = x + (measureWidth / beatsPerMeasure)
-        }
-        
-        x = x0
-        while (x <= x0 + width)
-        {
-            var path = Path()
-            path.move(to: CGPoint(x: x, y: y1 + 22))
-            path.addLine(to: CGPoint(x: x, y: y6))
-            context.stroke(path, with: .color(.gray), lineWidth: 1)
+        var n = 0
+        while (n < octaveRange) {
             
+            let y1 = y0 - (n * octaveHeight) - 20      // C
+            let y2 = y1 - 20                           // E
+            let y3 = y2 - 20                           // G
+            
+            // Draw the vertical lines
+            for y in [y1, y2, y3] {
+                var path = Path()
+                path.move(to: CGPoint(x: x0, y: y))
+                path.addLine(to: CGPoint(x: width+x0, y: y))
+                context.stroke(path, with: .color(.gray), lineWidth: 1)
+            }
+            
+            // Draw the beat indicators
+            var x = x0
+            while (x <= x0 + width)
+            {
+                var path = Path()
+                path.move(to: CGPoint(x: x, y: y2+6))
+                path.addLine(to: CGPoint(x: x, y: y2-6))
+                context.stroke(path, with: .color(.gray), lineWidth: 1)
+                x = x + (measureWidth / beatsPerMeasure)
+            }
+            
+            n += 1
+        }
+        
+        // Draw the vertical lines
+        var x = x0
+        let top = y0 - (octaveRange * octaveHeight) + 10
+        let bottom = y0 - 20
+        while (x <= x0 + width)
+        {
+            var path = Path()
+            path.move(to: CGPoint(x: x, y: top))
+            path.addLine(to: CGPoint(x: x, y: bottom))
+            context.stroke(path, with: .color(.gray), lineWidth: 1)
+
             x = x + measureWidth
         }
     }
-
-    // -----------------------------------------------------------------------------------
-    // Draw a staff for drum, having 1 horizontal line and one vertical line per measure
-    // -----------------------------------------------------------------------------------
+    
+    // -------------------------------------------------------
+    // Draw a compact staff having just one horizontal line
+    // -------------------------------------------------------
     func drawCompactStaff(context: GraphicsContext, x0: Int, y0: Int, width: Int) {
    
         let beatsPerMeasure = document.composition.beatsPerMeasure
         let measureWidth = getMeasureWidth()
+        let y = y0 - 41
         
         var path = Path()
-        path.move(to: CGPoint(x: x0, y: y0))
-        path.addLine(to: CGPoint(x: width+x0, y: y0))
+        path.move(to: CGPoint(x: x0, y: y))
+        path.addLine(to: CGPoint(x: width+x0, y: y))
         context.stroke(path, with: .color(.gray), lineWidth: 1)
                
         var x = x0
         while (x <= x0 + width)
         {
             var path = Path()
-            path.move(to: CGPoint(x: x, y: y0))
-            path.addLine(to: CGPoint(x: x, y: y0 + margin + 10))
+            path.move(to: CGPoint(x: x, y: y - 20))
+            path.addLine(to: CGPoint(x: x, y: y + 20))
             context.stroke(path, with: .color(.gray), lineWidth: 1)
             x = x + measureWidth
         }
@@ -228,8 +279,8 @@ struct MusicSheetView : View {
         while (x <= x0 + width)
         {
             var path = Path()
-            path.move(to: CGPoint(x: x, y: y0 + 18))
-            path.addLine(to: CGPoint(x: x, y: y0))
+            path.move(to: CGPoint(x: x, y: y - 6))
+            path.addLine(to: CGPoint(x: x, y: y + 6))
             context.stroke(path, with: .color(.gray), lineWidth: 1)
 
             x = x + (measureWidth / beatsPerMeasure)
@@ -239,12 +290,13 @@ struct MusicSheetView : View {
     // --------------------------------------------
     // Draw the staff's instrument name vertically
     // --------------------------------------------
-    func drawInstrumentName(context: GraphicsContext, name: String, x0: Int, y0: Int) {
+    func drawInstrumentName(context: GraphicsContext, name: String, x0: Int, y0: Int, y1: Int) {
         if (x0 < 100) {
             let dy = 16
-            var y = y0 + ((measureHeight - margin - 5 - (name.count * dy)) / 2)
+            let height = y1 - y0
+            var y = y1 - (height/2) - (name.count * dy/2) + 12
             for letter in name {
-                context.draw(Text(String(letter)).font(.system(size: 14)), at: CGPoint(x: x0-20, y: y), anchor: .center)
+                context.draw(Text(String(letter)).font(.system(size: 14)), at: CGPoint(x: x0-22, y: y), anchor: .center)
                 y += dy
             }
         }
@@ -261,11 +313,11 @@ struct MusicSheetView : View {
         while (x <= x0 + width)
         {
             if (x == x0) {
-                context.draw(Text(sectionName).font(.system(size: 16)), at: CGPoint(x: x-4, y: 10), anchor: .leading)
+                context.draw(Text(sectionName).font(.system(size: 16)), at: CGPoint(x: x-4, y: 20), anchor: .leading)
                 measureNumber = measureNumber + 1
             }
             else if (x + measureWidth <= x0 + width) {
-                context.draw(Text(String(measureNumber)).font(.system(size: 16)), at: CGPoint(x: x-4, y: 10), anchor: .leading)
+                context.draw(Text(String(measureNumber)).font(.system(size: 16)), at: CGPoint(x: x-4, y: 20), anchor: .leading)
                 measureNumber = measureNumber + 1
             }
             
@@ -328,10 +380,10 @@ struct MusicSheetView : View {
         var y = y0
         
         if (isCompact) {
-            y = y + (measureHeight / 2) - 24
+            y = y - 45
         }
         else if (step.positions.count > 0) {
-            y = y + measureHeight - (step.positions[0] * 10) + getSharpNoteOffset(step, 0)
+            y = y - ((step.positions[0]+2) * 10) + getSharpNoteOffset(step, 0)
         }
         
         let width = Int(Float(step.length) * dx)
@@ -341,7 +393,7 @@ struct MusicSheetView : View {
             fillColor = Color(cgColor: .init(gray: 0.1, alpha: 0.5))
         }
         else if (step.octave == 0 && step.isSynth() == false) {
-            fillColor = Color(cgColor: .init(gray: 0.5, alpha: 0.5))
+            fillColor = .black //Color(cgColor: .init(gray: 0.7, alpha: 1))
         }
         else {
             var gradiant : Int = step.notes[0] + Int(document.composition.transposition) - 43
@@ -354,14 +406,18 @@ struct MusicSheetView : View {
             fillColor = Color(hue: Double(gradiant) / 36 * 0.16, saturation: 1, brightness: colorScheme == .light ? 0.95 : 0.75)
         }
 
-        var lineWidth = 3
+        var lineWidth = 4
         if (selection.step != nil && step.isEqual(selection.step!)) {
             lineWidth += 2
         }
+        
         path = Path()
         path.move(to: CGPoint(x: Int(x+5), y: y+4))
         path.addLine(to: CGPoint(x: Int(x)+width-4, y: y+4))
         context.stroke(path, with: .color(fillColor), lineWidth: CGFloat(lineWidth))
+        
+        // Store first note position
+        document.positions.append(NotePosition(x: Int(x), y: y-14, width: width, height: 20, step: step))
         
         var noteWidth = step.length + 2
         if (noteWidth > 24) {
@@ -372,7 +428,7 @@ struct MusicSheetView : View {
         {
             if (step.isSynth() && step.positions.count > 0) {
                 for n in 1...step.positions.count {
-                    let y1 = y0 + measureHeight - (step.positions[n-1] * 10) + getSharpNoteOffset(step, n-1)
+                    let y1 = y0 - ((step.positions[n-1]+2) * 10) + getSharpNoteOffset(step, n-1)
                     let isSharp = step.isSharp(pos: n-1)
                     let isChordSelection = step.isChordNote(pos: n-1, chordName: selection.chord) && measureNumber == selection.measure
                     
@@ -429,28 +485,11 @@ struct MusicSheetView : View {
                     y = y1
                 }
             }
-            else {  // drum
-                if (noteWidth < 9) {
-                    path = Path()
-                    path.addArc(center: CGPoint(x: Int(x+10), y: y+4), radius: 6, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
-                    context.fill(path, with: .color(.primary))
-                }
-                else {
-                    var path = Path()
-                    let roundCorner = CGSize(width: 5, height: 5)
-                    let rect = CGRect(x: Int(x+4), y: y-2, width: noteWidth, height: 12)
-                    path.addRoundedRect(in: rect, cornerSize: roundCorner)
-                    context.fill(path, with: .color(.primary))
-                }
-            }
         }
-        
-        let height = (isCompact ? measureHeight / 2 : measureHeight) - (margin/2)
-        document.positions.append(NotePosition(x: Int(x), y: y0+(margin/2), width: width, height: height, step: step))
-        
+  
         if (!step.isSilence() && !step.sustained && !step.isSynth()) {
-            let xOffset = noteWidth + 3
-            context.draw(Text(step.text).font(.system(size: 16)).foregroundStyle(.primary), at: CGPoint(x: Int(x)+xOffset, y: y-10), anchor: .leading)
+            let xOffset = 5 // noteWidth + 3
+            context.draw(Text(step.text).font(.system(size: 16)).monospaced().foregroundStyle(.primary), at: CGPoint(x: Int(x)+xOffset, y: y-8), anchor: .leading)
         }
     }
     
@@ -471,11 +510,11 @@ struct MusicSheetView : View {
             var stepCount = 0
             for step in measure.steps {
                 if (step.isText()) {
-                    let y = y0 - 40
+                    let y = y0 + 15
                     let offset = (Float(step.length > stepsPerBeat ? stepsPerBeat : step.length) * dx) / 2
                     
                     if (!step.sustained) {
-                        context.draw(Text(step.text).font(.system(size: 16)).foregroundStyle(.primary), at: CGPoint(x: Int(x+offset), y: y), anchor: .center)
+                        context.draw(Text(step.text).font(.system(size: 14)).foregroundStyle(.primary), at: CGPoint(x: Int(x+offset), y: y), anchor: .center)
                     }
                 }
                 x = x + (Float(step.length) * dx)
