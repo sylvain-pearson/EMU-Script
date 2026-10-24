@@ -1,11 +1,10 @@
 # EMU-Script
 
 ## TODO
-- [x] Documentation update for release 1.1
 - [x] Zoom-in music sheet
-- [x] Release application package (version 1.1)
-- [ ] Staff with 1, 2, 3 or 4 octaves of range
-- [ ] Staff shared between 2 instruments (grand staff)
+- [x] Staff with 1, 2 or 3 octaves of range
+- [x] improved error display
+- [ ] Documentation update for release 1.2
 - [ ] Create screen captures for app store (2880 × 1800px)
 
 ## Issues
@@ -14,7 +13,8 @@
 - [ ] Bug with triolets: [1 2 3] [3 4 5]
 
 ## Wishlist
-- [ ] Copy a measure from another instrument (idem)
+- [ ] Copy a measure from another instrument
+- [ ] Staff shared between 2 instruments (grand staff)
 - [ ] Export to PDF with a standard staff. *(ImageRenderer class)*
 - [ ] Modulate a CC.
 - [ ] Change a CC or the velocity within a random range.

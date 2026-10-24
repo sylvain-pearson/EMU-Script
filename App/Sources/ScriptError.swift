@@ -69,14 +69,6 @@ struct ScriptError : Identifiable {
         return (self.code != .ok)
     }
     
-    func getMessageAndLineNumber() -> String {
-        var message = getMessage()
-        if (self.lineNumber > 0) {
-            message += String(localized: " (Error at line \(self.lineNumber))")
-        }
-        return message
-    }
-    
     func getMessage() -> String {
         var message: String = ""
         

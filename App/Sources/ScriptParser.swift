@@ -273,8 +273,10 @@ public class ScriptParser {
     //------------------------------------
     func error(_ code: ScriptErrorCode, info: String, at: UInt16 = 0) {
         let err = ScriptError(code: code, info: info, lineNumber: at)
-        self.errors.append(err)
-        self.errorLines.insert(at)
+        if (isNewError(err)) {
+            self.errors.append(err)
+            self.errorLines.insert(at)
+        }
     }
     
     //---------------------------------
@@ -282,28 +284,43 @@ public class ScriptParser {
     //---------------------------------
     func error(_ err: ScriptError) {
         let err = ScriptError(code: err.code, info: err.info, lineNumber: err.lineNumber)
-        self.errors.append(err)
-        self.errorLines.insert(err.lineNumber)
+        if (isNewError(err)) {
+            self.errors.append(err)
+            self.errorLines.insert(err.lineNumber)
+        }
     }
 
     //-----------------------------------------------
-    // Get a description of the first error message
+    // Verify if an error has already been reported
     //-----------------------------------------------
-    func getErrorMessage() -> String {
+    func isNewError(_ err: ScriptError) -> Bool {
+        var isNew = true
+        for error in errors {
+            if (error.code == err.code && error.info == err.info) {
+                isNew = false
+            }
+        }
+        return isNew
+    }
+    
+    //-----------------------------------------------
+    // Get a description of an error message
+    //-----------------------------------------------
+    func formatErrorMessage(error: ScriptError) -> String {
         var msg = ""
         
         if (errors.count > 0) {
-            msg = errors[0].getMessage()
+            msg = error.getMessage()
             
             var sectionName = ""
             var label = ""
             
             for section in sections {
-                if (section.lineNumber < errors[0].lineNumber) {
+                if (section.lineNumber < error.lineNumber) {
                     sectionName = section.name
                     
                     for line in section.textLines {
-                        if (line.lineNumber == errors[0].lineNumber) {
+                        if (line.lineNumber == error.lineNumber) {
                             label = line.key
                             break
                         }
@@ -312,7 +329,11 @@ public class ScriptParser {
             }
       
             if (sectionName.isEmpty == false) {
-                msg += "  Error at /\(sectionName)/\(label)"
+                msg += String(localized: "\nError at /\(sectionName)/\(label)")
+            }
+            
+            if (error.lineNumber > 0) {
+                msg += String(localized: " (line \(error.lineNumber))")
             }
         }
         

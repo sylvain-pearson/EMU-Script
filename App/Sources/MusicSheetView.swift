@@ -424,71 +424,70 @@ struct MusicSheetView : View {
             noteWidth = 24
         }
         
-        if (!step.sustained )
+        // Draw the notes heads
+        if (!step.sustained && step.isSynth() && step.positions.count > 0)
         {
-            if (step.isSynth() && step.positions.count > 0) {
-                for n in 1...step.positions.count {
-                    let y1 = y0 - ((step.positions[n-1]+2) * 10) + getSharpNoteOffset(step, n-1)
-                    let isSharp = step.isSharp(pos: n-1)
-                    let isChordSelection = step.isChordNote(pos: n-1, chordName: selection.chord) && measureNumber == selection.measure
+            for n in 1...step.positions.count {
+                let y1 = y0 - ((step.positions[n-1]+2) * 10) + getSharpNoteOffset(step, n-1)
+                let isSharp = step.isSharp(pos: n-1)
+                let isChordSelection = step.isChordNote(pos: n-1, chordName: selection.chord) && measureNumber == selection.measure
+                
+                if (noteWidth < 9) {
+                    path = Path()
+                    path.addArc(center: CGPoint(x: Int(x+10), y: y1+4), radius: 5, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
+                    context.fill(path, with: .color(.musicSheetNote))
                     
-                    if (noteWidth < 9) {
+                    if (isSharp || isChordSelection) {
                         path = Path()
-                        path.addArc(center: CGPoint(x: Int(x+10), y: y1+4), radius: 5, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
-                        context.fill(path, with: .color(.musicSheetNote))
-                                
-                        if (isSharp || isChordSelection) {
-                            path = Path()
-                            path.addArc(center: CGPoint(x: Int(x+10), y: y1+4), radius: 3, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
-                            context.fill(path, with: isChordSelection ? .color(.green) : .color(fillColor))
-                            
-                            if (isChordSelection) {
-                                context.fill(path, with: .color(.accentColor))
-                            }
-                            else {
-                                context.fill(path, with: .color(.musicSheetSharpNote))
-                            }
-                        }
-                    }
-                    else {
-                        path = Path()
-                        let roundCorner = CGSize(width: 5, height: 5)
-                        let rect = CGRect(x: Int(x+4), y: y1-1, width: noteWidth, height: 10)
-                        path.addRoundedRect(in: rect, cornerSize: roundCorner)
-                        context.fill(path, with: .color(.musicSheetNote))
+                        path.addArc(center: CGPoint(x: Int(x+10), y: y1+4), radius: 3, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
+                        context.fill(path, with: isChordSelection ? .color(.green) : .color(fillColor))
                         
-                        if (isSharp || isChordSelection) {
-                            path = Path()
-                            let rect = CGRect(x: Int(x+6), y: y1+1, width: noteWidth-4, height: 6)
-                            path.addRoundedRect(in: rect, cornerSize: roundCorner)
-                            
-                            if (isChordSelection) {
-                                context.fill(path, with: .color(.accentColor))
-                            }
-                            else {
-                                context.fill(path, with: .color(.musicSheetSharpNote))
-                            }
+                        if (isChordSelection) {
+                            context.fill(path, with: .color(.accentColor))
+                        }
+                        else {
+                            context.fill(path, with: .color(.musicSheetSharpNote))
                         }
                     }
-                    
-                    // Draw a dashed line beteen notes of an interval
-                    if (n > 1 && y - y1 > 10) {
-                        var dx = 10
-                        if (noteWidth > 12) {
-                            dx = 4 + (noteWidth/2)
-                        }
-                        path = Path()
-                        path.move(to: CGPoint(x: Int(x)+dx, y: y-2))
-                        path.addLine(to: CGPoint(x: Int(x)+dx, y: y1+9))
-                        context.stroke(path, with: .color(fillColor), style: .init(lineWidth: 2.5, dash: [8, 2]))
-                    }
-                    y = y1
                 }
+                else {
+                    path = Path()
+                    let roundCorner = CGSize(width: 5, height: 5)
+                    let rect = CGRect(x: Int(x+4), y: y1-1, width: noteWidth, height: 10)
+                    path.addRoundedRect(in: rect, cornerSize: roundCorner)
+                    context.fill(path, with: .color(.musicSheetNote))
+                    
+                    if (isSharp || isChordSelection) {
+                        path = Path()
+                        let rect = CGRect(x: Int(x+6), y: y1+1, width: noteWidth-4, height: 6)
+                        path.addRoundedRect(in: rect, cornerSize: roundCorner)
+                        
+                        if (isChordSelection) {
+                            context.fill(path, with: .color(.accentColor))
+                        }
+                        else {
+                            context.fill(path, with: .color(.musicSheetSharpNote))
+                        }
+                    }
+                }
+                
+                // Draw a dashed line beteen notes of an interval
+                if (n > 1 && y - y1 > 10) {
+                    var dx = 10
+                    if (noteWidth > 12) {
+                        dx = 4 + (noteWidth/2)
+                    }
+                    path = Path()
+                    path.move(to: CGPoint(x: Int(x)+dx, y: y-2))
+                    path.addLine(to: CGPoint(x: Int(x)+dx, y: y1+9))
+                    context.stroke(path, with: .color(fillColor), style: .init(lineWidth: 2.5, dash: [8, 2]))
+                }
+                y = y1
             }
         }
   
         if (!step.isSilence() && !step.sustained && !step.isSynth()) {
-            let xOffset = 5 // noteWidth + 3
+            let xOffset = 5 
             context.draw(Text(step.text).font(.system(size: 16)).monospaced().foregroundStyle(.primary), at: CGPoint(x: Int(x)+xOffset, y: y-8), anchor: .leading)
         }
     }

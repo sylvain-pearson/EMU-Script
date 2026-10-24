@@ -74,12 +74,19 @@ struct ContentView: View {
                     .scrollPosition($scrollPosition)
                 }
                 
-               HStack {
-                    ScriptEditor(document: $document, reload: $document.reloadCounter)
+               ZStack(alignment: .bottom) {
+                   ScriptEditor(document: $document, reload: $document.reloadCounter)
                         .opacity(showTextEditor ? 1 : 0)
                         .focused($isTextEditorFocused)
                         .disabled(isTextEditorDisabled)
-                }
+                   HStack {
+                       ForEach (document.parser.errors.prefix(4)) {
+                           Text(document.parser.formatErrorMessage(error: $0))
+                               .font(.system(size: 14)).monospaced()
+                               .padding().background(.scriptErrorWindow).cornerRadius(10)
+                       }
+                   }.padding(7)
+               }
             }
         }
         .alert(String(localized: "Sequencer Error"), isPresented: $showError) { }  message: {
@@ -91,14 +98,6 @@ struct ContentView: View {
 
         // The toolbar
         .toolbar {
-#if os(macOS)
-            if (document.parser.errors.count > 0) {
-                ToolbarItemGroup(placement: .status)  {
-                    Button(action: reload) { Label("Text Editor", systemImage: "exclamationmark") } .foregroundStyle(.scriptError).bold()
-                    Text(document.parser.getErrorMessage()).padding(.trailing, 10).font(.title3)
-                }
-            }
-#endif
             ToolbarItemGroup  {
                 HStack {
 #if os(iOS)
@@ -110,7 +109,6 @@ struct ContentView: View {
                     }
                     else {
                         Button(action: toggleTextEditor) { Label("Text Editor", systemImage: "doc.text") }
-                            .foregroundStyle(document.parser.errors.count > 0 ? .scriptError : .primary)
                     }
                     Divider()
 

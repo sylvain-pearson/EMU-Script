@@ -92,15 +92,6 @@ struct ScriptEditor : View {
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled(true)
 #endif
-            
-#if os(iOS)
-            if (document.parser.errors.count > 0) {
-                HStack {
-                    Image(systemName: "exclamationmark").foregroundStyle(.scriptError).bold()
-                    Text(document.parser.errors.count > 0 ? document.parser.getErrorMessage() : "").padding(10)
-                }
-            }
-#endif
         }
     }
 }
