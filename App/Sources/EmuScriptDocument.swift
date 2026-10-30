@@ -717,12 +717,14 @@ final public class EmuScriptDocument: FileDocument  {
 
         let musicalSection = MusicalSection(name: name, length: 4)
         var measureNumbers : [String : Int] = [:]
+
+        var prepocessor = Preprocessor(self)
         
-        for line in preProcess(section.textLines) {
+        for line in prepocessor.preProcess(section.textLines) {
                
             let instrumentName = line.key
             let text = line.value
-            
+
             var measures: [Measure]  = []
             var measureNumber = 0
             
@@ -837,7 +839,7 @@ final public class EmuScriptDocument: FileDocument  {
             }
         }
 
-        if (timeCount > 0) {
+        if (Int(timeCount) > 0) {
             return composition.stepsPerBeat * composition.beatsPerMeasure / Int(timeCount)
         }
         else {
@@ -925,147 +927,6 @@ final public class EmuScriptDocument: FileDocument  {
         }
         
         return step
-    }
-    
-    // ---------------------------------
-    // Do the text lines preprocessing
-    // ---------------------------------
-    func preProcess(_ lineArray: [TextLine]) -> [TextLine] {
-        let lines = lineArray
-
-        // Replace sequences (up to 3 level of nesting)
-        for _ in [1, 2, 3] {
-            for line in lines {
-                line.value = preProcess1(line.value)
-            }
-        }
-        
-        var mesasureCount = 0
-        var countsArray : [String : Int] = [:]
-        for line in lines {
-            var count = line.value.split(separator: "|").count
-            if let n = countsArray[line.key] {
-                count += n
-                countsArray[line.key] = count
-            }
-            countsArray[line.key] = count
-            
-            if (count > mesasureCount) {
-                mesasureCount = count
-            }
-        }
-        
-        // Replace ... and *
-        for line in lines {
-            line.value = preProcess2(line.value, measureCount: mesasureCount)
-        }
-        
-        return lines
-    }
-    
-    // -------------------------------------------------------------
-    // The first preprocessing phase: the replacement of sequences
-    // -------------------------------------------------------------
-    func preProcess1(_ text: String) -> String
-    {
-        let phrases = text.split(separator: "|")
-        var result = ""
-        var m = 1
-        
-        // Process the sequences
-        for phrase in phrases {
-            if (result != "") {
-                result += " | "
-            }
-            
-            var newPhrase = String(phrase)
-            let words = phrase.split(separator: "(")
-            let id = String(words[0]).trimmingCharacters(in: .whitespacesAndNewlines)
-            
-            if (sequences[id] != nil) {
-                // Found a sequence do the replacement of arg(n) parameters
-                newPhrase = sequences[id]!
-                
-                var n = 0
-                for argValue in parser.parseFunction(text: String(phrase)) {
-                    let argName = String("arg(\(n))")
-                    newPhrase = newPhrase.replacingOccurrences(of: argName, with: argValue)
-                    n = n + 1
-                }
-                
-                // Do the replacement of args parameter
-                if (words.count == 2) {
-                    let args = String(words[1]).trimmingCharacters(in: .whitespacesAndNewlines)
-                    if (args.hasSuffix(")")) {
-                        newPhrase = newPhrase.replacingOccurrences(of: "args", with: args.dropLast())
-                    }
-                }
-            }
-            
-            result += newPhrase
-            m += 1
-        }
-            
-        return result.trimmingCharacters(in: ["\""])
-    }
-
-    // --------------------------------------------------------------
-    // The second preprocessing phase: the replacement of * and ...
-    // --------------------------------------------------------------
-    func preProcess2(_ text: String, measureCount: Int) -> String
-    {
-        var phrases = text.split(separator: "|")
-        var result = ""
-        var m = 1
-        
-        // Process the measures repetition
-        for phrase in phrases {
-            if (result != "") {
-                result += " | "
-            }
-            
-            var newPhrase = String(phrase)
-            let words = phrase.split(separator: "(")
-            let id = String(words[0]).trimmingCharacters(in: .whitespacesAndNewlines)
-
-            if (id == "*") {
-                if (m > 1) {
-                    newPhrase = String(phrases[m-2])
-                    phrases[m-1] = phrases[m-2]
-                }
-                else {
-                    newPhrase = "."
-                }
-            }
-            else if (id == "...") {
-                let measureCountBefore3dots = m - 1
-                let measureCountAfter3dots = phrases.count - m
-                var index = 0
-                newPhrase = ""
-                
-                while (m <= measureCount - measureCountAfter3dots) {
-                    if (!newPhrase.isEmpty) {
-                        newPhrase += " | "
-                    }
-                    newPhrase += phrases[index]
-                    m += 1
-                    index += 1
-                    
-                    if (index >= measureCountBefore3dots) {
-                        index = 0
-                    }
-                }
-                
-                if (measureCountBefore3dots == 0) {
-                    newPhrase = "."
-                }
-            }
-            
-            result += newPhrase
-            m += 1
-        }
-        
-        return result.trimmingCharacters(in: ["\""])
     }
     
     // ------------------------------------------------
