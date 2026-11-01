@@ -98,12 +98,8 @@ struct ContentView: View {
 
         // The toolbar
         .toolbar {
-            ToolbarItemGroup  {
+            ToolbarItemGroup(placement: .secondaryAction)  {
                 HStack {
-#if os(iOS)
-                    Button(action: toggleSidebar) { Label("Sidebar", systemImage: "sidebar.left") }
-                    Spacer()
-#endif
                     if (showTextEditor) {
                         Button(action: toggleTextEditor) { Label("Text Editor", systemImage: "music.note.list") }
                     }
@@ -111,15 +107,23 @@ struct ContentView: View {
                         Button(action: toggleTextEditor) { Label("Text Editor", systemImage: "doc.text") }
                     }
                     Divider()
-
+                    
                     Button(action: play) { Label("Play", systemImage: "play.fill") }
                         .keyboardShortcut(.defaultAction)
                         .disabled((sequencer != nil && sequencer!.isExecuting))
-
+                    
                     Button(action: stop) { Label("Stop", systemImage: "stop.fill") }
                         .keyboardShortcut(.cancelAction)
                         .disabled(sequencer == nil || sequencer!.isFinished)
-                    
+#if os(iOS)
+                    Divider()
+                    Button(action: toggleSidebar) { Label("Sidebar", systemImage: "sidebar.left") }
+#endif
+                }
+            }
+            
+            ToolbarItemGroup  {
+                HStack {
                     Menu {
                         Button(action: { zoomFactor = 0.8 }) {
                             Label("80%", systemImage: zoomFactor == 0.8 ? "circle.fill" : "circle")

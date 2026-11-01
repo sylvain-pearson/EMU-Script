@@ -90,7 +90,7 @@ struct MusicSheetView : View {
     // Calculate the view height
     // ---------------------------------
     static func getViewHeight(document: EmuScriptDocument) -> Double {
-        var height = 0
+        var height = 10
         var n = 0
         
         for instrument in document.instruments {
