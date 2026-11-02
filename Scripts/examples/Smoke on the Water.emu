@@ -1,0 +1,79 @@
+[composition]
+title: "Smoke on the Water"
+by: "Deep Purple"
+BPM: 115
+time: 4/4
+transposition: -2  
+playlist: count, intro, verse, chorus, verse, chorus, outro
+
+[instruments]
+piano: "piano", channel=1, octave=3, velocity=99, info="Arturia Piano - Hey Kids" 
+guitar: "MIDI Input", channel=4, octave=3, velocity=80, info="Electric Guitar + fuzz"
+guitar2: "MIDI Input", channel=4, octave=2, velocity=80, info="Electric Guitar + fuzz"
+bass:  "bass", channel=11, octave=2, velocity=90, info="MODO Bass + pick playing style"
+drum: "drum", channel=12, velocity=120, info="MODO Drum - Studio Drum"
+
+[control]
+/guitar/count: program=8.9
+
+[sequences] 
+g1: EA GC AD (. EA) | (.) GC (#A#D) AD - | EA GC AD- (GC) | - EA - - - arg(1) arg(1) arg(1)
+g2: 'AEA CGC DAD (. 'AEA) | (.) CGC (#D#A#D) DAD - | 'AEA CGC DAD- (CGC) | - 'AEA - - - - - arg(1) 
+x2: args args  
+x8: args args args args args args args args  
+b1: x8(A) | x8(A) | A A A A D' D' D' C'
+d1: h h  h h  h h  h h
+d2: h h  sh h  h h  sh h
+d3: bh h  bsh h  bh h  bsh h
+d4: bh h  sh h  bh h  sh h
+d5: bh h  sh h s s (4 4 3 3)
+d6: (bh h h h) (sh h h h) (s s s -) (s s s s)
+  
+[count]
+drum: i i i i  
+   
+[intro]
+guitar: g1(-)
+guitar2: . | . | . | .   
+bass: . | . | . | .   
+drum: . | . | . | .   
+
+guitar: g1(-) | g1(.)
+guitar2: g1(-) | g1(.)
+bass:  . | . | . | . | . | . | . | . . . . . #F F #G
+drum: . | . | . | d1 | *| * | * | d2
+
+guitar: g2(-) | g2(G)
+bass: b1 | - C' A A A A #F G | b1 | - C' A A A #F G #G
+drum: d2 | * | * | d3 | * | * | * | *
+
+[verse]
+piano: A DA G (CE G) | - CE - - . . D E | (#D) D- E D - - E C | ('A) 'A- ((E C)) 'A- 
+bass: x2(A A A' -) | A A E' C' - D' #D' E' | A A A' - G' D' G G | - A B C' A' E' D' C' 
+
+piano: (. G) CEG (G E CEG E) | A C . EAC | EAC EAC (DGB E) ('BDF E) | (CE) CE ('A) 'A .
+bass: x2(A A A' -) | x2(A A A' -)  | A A A' - G' D' G | A E' #D' D' C' A G #G
+
+piano: . CEA (A G CEA G) | A CEA- . (C) | (D C) #D 'BD (C (E #D)) | E CEGA CEGA ((E C) 'A)
+bass: x2(A A A' -)  | A A' G' E' D' C' A G | A A A' - G' D' G - | A - A' G' E' D' C' D'
+drum: d4 | * | * | * | * | * | * | * 
+
+piano: (. E) CEG (G E CEG E) | CEG CEG . (EAC E') | (G E) CE (D) E ((C 'A)) | - . . .
+bass: x2(A A A' -)  | A A D' E' G' A' D' E' | A A A' - G' D' G | A A A' G' E' D' C' A
+drum: d4 | * | * | * | * | * | * | d5
+
+[chorus]
+piano: D#F - - (E D) | DF 'BD | . A C' A C' A G A | . | D#F - - (E D) | DF 'BD
+guitar: . | . | . |  . A C' A C' A G - | . | .
+guitar2: A - - (G #F) | G F | . A C' A C' A G A | . A C' A C' A G - | A - - (G #F) | G F 
+bass: D' | B | A - C' A C' A G A | - A C' A C' A G - | D' | B - - - - #F G #G
+drum: bc h sh h  bh bh sh h | bc h sh h  bh bh sh (s s) | bc h sh h  sh h h c 
+      bh h sh h  bh bh sh h | bc h sh h  bh bh sh   h   | bc h sh h  bh bh sh (s s) 
+
+guitar: g2(-) | g2(-) 
+bass: b1 | - C' A A A A #F G | b1 | - A A A A' G' (E' D') C'
+drum: d2 | * | * | * | * | * | * | d6
+
+[outro]
+guitar: g2(-)
+bass: x2(A A A' A') | x2(A A A' A') | A A A' A' D' D' D' C' | - A - - - - - -
