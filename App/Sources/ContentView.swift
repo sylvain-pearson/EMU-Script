@@ -64,6 +64,8 @@ struct ContentView: View {
                 MusicSheetProgress(document: $document, scrollByCount: $scrollByCount, progress: $progress, zoomFactor: $zoomFactor)
                     .opacity(showTextEditor ? 0 : 0.6)
                     .scaleEffect(zoomFactor, anchor: .topLeading)
+                    .allowsHitTesting(false)
+                    .zIndex(1)
                 ScrollView([.vertical], showsIndicators: false) {
                     ScrollView([.horizontal], showsIndicators: false) {
                         MusicSheetView(document: $document, selection: $selection, refreshCounter: $refreshCounter, zoomFactor: $zoomFactor)

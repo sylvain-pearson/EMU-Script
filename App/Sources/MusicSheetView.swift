@@ -68,9 +68,7 @@ struct MusicSheetView : View {
     
     let xMargin = 50
     var measureHeights : [String: Double] = [:]
-    
-    @Environment(\.colorScheme) var colorScheme
-    
+      
     var body: some View {
         Canvas(opaque: false, colorMode: .linear, rendersAsynchronously: false) { context, size in
             draw(context: context, size: size)
@@ -403,7 +401,7 @@ struct MusicSheetView : View {
             if (gradiant > 36) {
                 gradiant = 36
             }
-            fillColor = Color(hue: Double(gradiant) / 36 * 0.16, saturation: 1, brightness: colorScheme == .light ? 0.95 : 0.75)
+            fillColor = Color(hue: Double(gradiant) / 36 * 0.16, saturation: 1, brightness: 0.95)
         }
 
         var lineWidth = 4
