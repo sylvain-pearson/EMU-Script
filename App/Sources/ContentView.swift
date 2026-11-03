@@ -69,6 +69,7 @@ struct ContentView: View {
                         MusicSheetView(document: $document, selection: $selection, refreshCounter: $refreshCounter, zoomFactor: $zoomFactor)
                             .onTapGesture { location in selectStep(at: location) }
                             .scaleEffect(zoomFactor, anchor: .topLeading)
+                            .background(.musicSheet)
                     }
                     .opacity(showTextEditor ? 0 : 1)
                     .scrollPosition($scrollPosition)

@@ -296,7 +296,7 @@ struct MusicSheetView : View {
             let height = y1 - y0
             var y = y1 - (height/2) - (name.count * dy/2) + 12
             for letter in name {
-                context.draw(Text(String(letter)).font(.system(size: 14)), at: CGPoint(x: x0-22, y: y), anchor: .center)
+                context.draw(Text(String(letter)).font(.system(size: 14)).foregroundStyle(.black), at: CGPoint(x: x0-22, y: y), anchor: .center)
                 y += dy
             }
         }
@@ -313,11 +313,11 @@ struct MusicSheetView : View {
         while (x <= x0 + width)
         {
             if (x == x0) {
-                context.draw(Text(sectionName).font(.system(size: 16)), at: CGPoint(x: x-4, y: 20), anchor: .leading)
+                context.draw(Text(sectionName).font(.system(size: 16)).foregroundStyle(.black), at: CGPoint(x: x-4, y: 20), anchor: .leading)
                 measureNumber = measureNumber + 1
             }
             else if (x + measureWidth <= x0 + width) {
-                context.draw(Text(String(measureNumber)).font(.system(size: 16)), at: CGPoint(x: x-4, y: 20), anchor: .leading)
+                context.draw(Text(String(measureNumber)).font(.system(size: 16)).foregroundStyle(.black), at: CGPoint(x: x-4, y: 20), anchor: .leading)
                 measureNumber = measureNumber + 1
             }
             
@@ -393,7 +393,7 @@ struct MusicSheetView : View {
             fillColor = Color(cgColor: .init(gray: 0.1, alpha: 0.5))
         }
         else if (step.octave == 0 && step.isSynth() == false) {
-            fillColor = .black //Color(cgColor: .init(gray: 0.7, alpha: 1))
+            fillColor = .black
         }
         else {
             var gradiant : Int = step.notes[0] + Int(document.composition.transposition) - 43
@@ -446,7 +446,7 @@ struct MusicSheetView : View {
                             context.fill(path, with: .color(.accentColor))
                         }
                         else {
-                            context.fill(path, with: .color(.musicSheetSharpNote))
+                            context.fill(path, with: .color(.musicSheet))
                         }
                     }
                 }
@@ -466,7 +466,7 @@ struct MusicSheetView : View {
                             context.fill(path, with: .color(.accentColor))
                         }
                         else {
-                            context.fill(path, with: .color(.musicSheetSharpNote))
+                            context.fill(path, with: .color(.musicSheet))
                         }
                     }
                 }
@@ -488,7 +488,7 @@ struct MusicSheetView : View {
   
         if (!step.isSilence() && !step.sustained && !step.isSynth()) {
             let xOffset = 5 
-            context.draw(Text(step.text).font(.system(size: 16)).monospaced().foregroundStyle(.primary), at: CGPoint(x: Int(x)+xOffset, y: y-8), anchor: .leading)
+            context.draw(Text(step.text).font(.system(size: 16)).monospaced().foregroundStyle(.black), at: CGPoint(x: Int(x)+xOffset, y: y-8), anchor: .leading)
         }
     }
     
@@ -513,7 +513,7 @@ struct MusicSheetView : View {
                     let offset = (Float(step.length > stepsPerBeat ? stepsPerBeat : step.length) * dx) / 2
                     
                     if (!step.sustained) {
-                        context.draw(Text(step.text).font(.system(size: 14)).foregroundStyle(.primary), at: CGPoint(x: Int(x+offset), y: y), anchor: .center)
+                        context.draw(Text(step.text).font(.system(size: 14)).foregroundStyle(.black), at: CGPoint(x: Int(x+offset), y: y), anchor: .center)
                     }
                 }
                 x = x + (Float(step.length) * dx)
@@ -542,7 +542,7 @@ struct MusicSheetView : View {
     
                 if (step.isText()) {
                     let y = y0
-                    var text = Text(step.text).font(.system(size: 14)).monospaced().foregroundStyle(.primary)
+                    var text = Text(step.text).font(.system(size: 14)).monospaced().foregroundStyle(.black)
                         
                     
                     if (selection.step != nil && step.isEqual(selection.step!)) {
