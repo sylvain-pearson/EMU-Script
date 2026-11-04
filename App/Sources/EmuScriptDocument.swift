@@ -216,6 +216,26 @@ final public class EmuScriptDocument: FileDocument  {
         return result
     }
     
+    // -------------------------------------------
+    // Get a CC number specific to an instrument
+    // -------------------------------------------
+    func getCC(_ ccName: String, instrumentName: String) -> Int {
+        var ccNumber = 0
+        let key = instrumentName + "." + ccName
+        
+        if (ccNumbers.keys.contains(key)) {
+            ccNumber = ccNumbers[key]!
+        }
+        else {
+            let key = "all." + ccName
+            if (ccNumbers.keys.contains(key)) {
+                ccNumber = ccNumbers[key]!
+            }
+        }
+
+        return ccNumber
+    }
+    
     // -------------------------------------------------
     // Load all sections of the text document (script)
     // -------------------------------------------------
@@ -224,6 +244,7 @@ final public class EmuScriptDocument: FileDocument  {
         self.composition = MusicalComposition()
         self.instruments = []
         self.playlist = []
+        self.ccNumbers = [:]
         self.measuresCount = 0
 
         self.parser.parse(self.text)
@@ -238,6 +259,7 @@ final public class EmuScriptDocument: FileDocument  {
             loadMusicalSection(name: sectionName)
         }
         
+        loadCCSection()
         loadControlSection()
         
         measuresCount = 0
@@ -313,9 +335,11 @@ final public class EmuScriptDocument: FileDocument  {
                 else if (key == "by") {
                     self.composition.autor = line.value.trimmingCharacters(in: ["\""])
                 }
+                /*
                 else if (key == "cc") {
                     self.ccNumbers.merge(parseCCList(line)) { (x, y) in x }
                 }
+                 */
                 else if (key != "info") {
                     parser.error(.unexpectedKeyword, info: line.key, at: line.lineNumber)
                 }
@@ -511,6 +535,31 @@ final public class EmuScriptDocument: FileDocument  {
     }
     
     // -------------------------------------------
+    // Load the optional [CC] section
+    // -------------------------------------------
+    func loadCCSection() {
+        let sectionName = "CC"
+        
+        if let section = parser.getSection(name: sectionName)
+        {
+            for line in section.textLines {
+                let instrumentName = line.key
+                let map = parseCCList(line)
+                
+                if (isAnInstrument(name: instrumentName) == false && instrumentName != "all"){
+                    parser.error(.undefinedInstrument, info: instrumentName, at: line.lineNumber)
+                }
+                else {
+                    for cc in map {
+                        let key = instrumentName + "." + cc.key
+                        self.ccNumbers[key] = cc.value
+                    }
+                }
+            }
+        }
+    }
+    
+    // -------------------------------------------
     // Load the optional [control] section
     // -------------------------------------------
     func loadControlSection()
@@ -567,14 +616,13 @@ final public class EmuScriptDocument: FileDocument  {
                     }
                 }
                 
-                var map : [String:String] = [:]
-                map = parseKeyValueList(line)
-                
-                if (functionName == "increase" || functionName == "decrease") {
-                    processControlFunction(measures: measures, measureNumber: measureStart, ccName: ccName, map: map, line: line.lineNumber)
+                if (functionName == "change") {
+                    processControlFunction(measures: measures, measureNumber: measureStart, ccName: ccName,
+                                           line: line, instrumentName: instrumentName)
                 }
                 else {
-                    processControlLine(measures: measures, measureNumber: measureStart, map: map, line: line.lineNumber)
+                    processControlLine(measures: measures, measureNumber: measureStart,
+                                       line: line, instrumentName: instrumentName)
                 }
             }
         }
@@ -583,19 +631,22 @@ final public class EmuScriptDocument: FileDocument  {
     // ------------------------------------------------------------------------------
     // Add the velocity changes, program changes and/or CC to the requested mesures
     // ------------------------------------------------------------------------------
-    func processControlLine(measures: [Measure], measureNumber: Float, map: [String:String] , line: UInt16) {
+    func processControlLine(measures: [Measure], measureNumber: Float, line: TextLine, instrumentName: String) {
         
         var pos = 0
         var doneOnce = false
         let start = Int((measureNumber-1) * Float(composition.stepsPerBeat * composition.beatsPerMeasure))
        
+        var map : [String:String] = [:]
+        map = parseKeyValueList(line)
+        
         for measure in measures {
             for step in measure.steps {
                 if (pos >= start) {
                     for cc in map {
                         if (cc.key == "velocity") {
                             // Set tyhe velocity till the end of the musical section
-                            let velocity = to7bitsNumber(cc.value, name: cc.key, line: line) ?? 0
+                            let velocity = to7bitsNumber(cc.value, name: cc.key, line: line.lineNumber) ?? 0
                             step.velocity = velocity
                         }
                         else if (!doneOnce) {
@@ -603,16 +654,22 @@ final public class EmuScriptDocument: FileDocument  {
                             if (cc.key == "program") {
                                 let msg = cc.value.split(separator: ".")
                                 if (msg.count == 2) {
-                                    let bankId = toNumber(String(msg[0]), min: 1, max: 16384, name: "bank", line: line) ?? 0
-                                    let programId = toNumber(String(msg[1]), min: 1, max: 128, name: "program", line: line)  ?? 0
+                                    let bankId = toNumber(String(msg[0]), min: 1, max: 16384, name: "bank", line: line.lineNumber) ?? 0
+                                    let programId = toNumber(String(msg[1]), min: 1, max: 128, name: "program", line: line.lineNumber)  ?? 0
                                     if (bankId > 0 && programId > 0) {
                                         step.ccMessages.append(MidiControl(bank: UInt8(bankId-1), program: UInt8(programId-1)))
                                     }
                                 }
                             }
-                            else if let messageId = ccNumbers[cc.key] {
-                                let ccValue = to7bitsNumber(cc.value, name: cc.key, line: line) ?? 0
-                                step.ccMessages.append(MidiControl(id: UInt8(messageId), value: UInt8(ccValue)))
+                            else {
+                                let messageId = getCC(cc.key, instrumentName: instrumentName)
+                                let ccValue = to7bitsNumber(cc.value, name: cc.key, line: line.lineNumber) ?? 0
+                                if (messageId == 0) {
+                                    parser.error(.unexpectedKeyword, info: cc.key, at: line.lineNumber)
+                                }
+                                else {
+                                    step.ccMessages.append(MidiControl(id: UInt8(messageId), value: UInt8(ccValue)))
+                                }
                             }
                         }
                     }
@@ -626,10 +683,12 @@ final public class EmuScriptDocument: FileDocument  {
     // ---------------------------------------------------------------------------------------
     // Increase or decrease progressively the velocity or a specific CC over a period of time
     // ---------------------------------------------------------------------------------------
-    func processControlFunction(measures: [Measure], measureNumber: Float, ccName: String, map: [String:String] , line: UInt16)  {
+    func processControlFunction(measures: [Measure], measureNumber: Float, ccName: String, line: TextLine, instrumentName: String)  {
         
         var measureStart = measureNumber
         var measureEnd : Float = 0
+        var map : [String:String] = [:]
+        map = parseKeyValueList(line)
         
         if (measureStart == 0) {
             // If no start is specified, start at the first measure.
@@ -641,13 +700,13 @@ final public class EmuScriptDocument: FileDocument  {
             measureEnd = Float(measures.count + 1)
         }
         else {
-            let duration = toFloat(map["span"]! , min: 1, max: 99, name: "span", line: line) ?? 0
+            let duration = toFloat(map["span"]! , min: 1, max: 99, name: "span", line: line.lineNumber) ?? 0
             measureEnd = Float(measureStart) + duration
         }
         
-        let fromValue = to7bitsNumber(map["from"] ?? "0", name: ccName, line: line) ?? 0
-        let toValue = to7bitsNumber(map["to"] ?? "127", name: ccName, line: line) ?? 0
-        let curveType = toNumber(map["curve"] ?? "0" , min: -2, max: 2, name: "curve", line: line) ?? 0
+        let fromValue = to7bitsNumber(map["from"] ?? "0", name: ccName, line: line.lineNumber) ?? 0
+        let toValue = to7bitsNumber(map["to"] ?? "127", name: ccName, line: line.lineNumber) ?? 0
+        let curveType = toNumber(map["curve"] ?? "0" , min: -2, max: 2, name: "curve", line: line.lineNumber) ?? 0
         
         let duration = Int((measureEnd - measureStart) * Float(composition.stepsPerBeat * composition.beatsPerMeasure))
         let start = Int((measureStart-1) * Float(composition.stepsPerBeat * composition.beatsPerMeasure))
@@ -670,12 +729,12 @@ final public class EmuScriptDocument: FileDocument  {
             for measure in measures {
                 for step in measure.steps {
                     if (pos >= start) {
-                        let messageId = ccNumbers[ccName] ?? 0
+                        let messageId = getCC(ccName, instrumentName: instrumentName)
                         if (messageId != 0) {
                             step.ccMessages.append(MidiControl(id: UInt8(messageId), curve: curve))
                         }
                         else  {
-                            parser.error(.unexpectedKeyword, info: ccName, at: line)
+                            parser.error(.unexpectedKeyword, info: ccName, at: line.lineNumber)
                         }
                         isDone = true
                         break
@@ -718,7 +777,7 @@ final public class EmuScriptDocument: FileDocument  {
         let musicalSection = MusicalSection(name: name, length: 4)
         var measureNumbers : [String : Int] = [:]
 
-        var prepocessor = Preprocessor(self)
+        let prepocessor = Preprocessor(self)
         
         for line in prepocessor.preProcess(section.textLines) {
                

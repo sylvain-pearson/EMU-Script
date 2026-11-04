@@ -17,7 +17,6 @@ The `[composition]` section is mandatory and provides the following information
 - **time**: the time signature. Possible values are 2/4, 3/4, 4/4, 5/4, 6/8, or 7/8.
 - **BPM**: the beat per minute. Must be a number between 40 and 140.
 - **transposition**: the transposition, in semitones. Must be a number between -7 and +7.
-- **CC**: a map of MIDI Control Change keywords and CC numbers. The keywords defined here can then be referenced in the `[control]` section.
 - **playlist**: a list of musical sections, in playing order, that defines the structure of the composition.
 
 Here is an example:
@@ -28,7 +27,6 @@ Here is an example:
     BPM: 93
     time: 4/4
     transposition: -5
-    CC: modw=1, reverb=16, delay=19
     playlist: intro, A, B, A, B, outro
 ```
 
@@ -220,6 +218,23 @@ Here is a musical section that is equivalent to the previous example:
     drum: B h B h | B h B h | B h B h | B h B h | B Sh B c
 ```
 
+### 3.7 Unison
+If there are some parts of a composition that need to be played in unison, a specific notation can be used to avoid code duplication. You simply have to specify the name of the instrument, and its measure will be inserted.
+
+Here is an example:
+```
+    [outro]
+    winds: E' - (A B C' D') | E'- (C') E'- (C') | E' C' A E | C' A E C 
+    brass: winds | ...
+``` 
+
+Here is a musical section that is equivalent to the previous example:
+```
+    [outro]
+    winds: E' - (A B C' D') | E'- (C') E'- (C') | E' C' A E | C' A E C 
+    brass: E' - (A B C' D') | E'- (C') E'- (C') | E' C' A E | C' A E C
+```
+
 ## 4. The sequences section
 The `[sequences]` section lists the sequences that can be inserted in musical sections. A sequence defines a few measures of music that can be parameterized and that is not bound to a specific instrument. The parameters of a sequence can be accessed using the `arg(n)` and `args`, build-in functions. Here is an example:
 ```
@@ -264,7 +279,15 @@ guitar: a1/37 | - | dw/6135 up/'61351 | up/'57257 | a2/2461 | -
 drum: kick hh kick/hh hh | ...
 ```
 
-## 6. The control section
+## 6. The CC section
+The `[CC]` section contains the definition of the MIDI Control Change messages used in the composition. A CC definition can be specific to an instrument or apply to `all` instruments. The CC keywords defined here can then be referenced in the `[control]` section. Here is an example of a CC section:
+```
+[CC]
+synth: cutoff=74, resonance=42
+all: modw=1
+```
+
+## 7. The control section
 In the `[control]` section, you can modify the sound of the instruments during playback. Each line of the section can have the following format:
 ```
 /instrument/section/measure: attribute=value, ... ,attribute=value
@@ -277,7 +300,7 @@ Where:
 There are 3 attributes that can be specified:
 - **program**: change the current program (patch) of an instrument. A program identifier has two parts separated by a dot: the bank number (1 to 128) and the program number (1 to 128). 
 - **velocity**: the note's velocity, a number between 0 and 127 or a percentage between 0% and 100%.
-- **CC**: a CC keyword, as defined in the composition section. The CC value must be a number between 0 and 127 or a percentage between 0% and 100%.
+- **CC**: a CC keyword, as defined in the CC section. The CC value must be a number between 0 and 127 or a percentage between 0% and 100%.
 
 Here is an example:
 ```
@@ -290,11 +313,11 @@ Here is an example:
 In the control section, it is also possible to programatically increase or decrease a CC or velocity attribute over a period of time. Here is an example:
 ```
 [control]
-/synth/intro: increase(velocity, from=20, to=80)
-/synth/main/1.5: decrease(cutoff, from=50%, to=25%, span=2.25, curve=-1)
+/synth/intro: change(velocity, from=20, to=80)
+/synth/main/1.5: change(cutoff, from=50%, to=25%, span=2.25, curve=-1)
 ```
 
-The *increase* and *decrease* function's arguments are:
+The *change* function's arguments are:
 - **from**: the start value, a number between 0 and 127 or a percentage between 0% and 100%.
 - **to**: the end value, a number between 0 and 127 or a percentage between 0% and 100%.
 - **span**: the span of the change, in measures count. This parameter is optional. If not specified the change span till the end of the section. 

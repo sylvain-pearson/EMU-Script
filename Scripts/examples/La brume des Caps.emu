@@ -3,8 +3,7 @@ title: "La brume des Caps"
 by: "Sylvain Pearson"
 time: 4/4
 BPM: 85
-transposition: +4
-CC: areverb=16, adelay=19, amorph=71, acolor=74, atime=76, amotion=77, avolume=85   // Arturia 
+transposition: +4 
 playlist: init, intro, A, B, inter, A, B, outro
 
 [instruments]
@@ -14,8 +13,11 @@ flute: "woodwinds", octave=2, velocity=80, channel=7, info="Arturia Aw - Air"
 pad: "brass", octave=2, velocity=80, channel=6, info="Arturia Ab - Tuba and Horn"
 drum: "drum", velocity=80, channel=12, info="Icon Drum"
 
+[CC]
+pad: morph=71, color=74, time=76, motion=77
+
 [control]
-/pad/init: atime=10%
+/pad/init: time=10%
 
 [sequences]
 arp: arg(1) arg(3) arg(2) arg(1) arg(3) arg(2) arg(1) arg(3)

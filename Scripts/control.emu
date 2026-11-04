@@ -4,7 +4,6 @@ by: "Sylvain Pearson"
 time: 4/4
 BPM: 100
 transposition: 0
-CC: modw=1, cutoff=74, resonance=42
 playlist: set-once, linear, curved, span
 
 [instruments]
@@ -20,6 +19,10 @@ kick: midi(36)
 hh: midi(42)
 toc: midi(37)
 
+[CC]
+synth: cutoff=74, resonance=42
+all: modw=1
+
 [control]
 /synth/set-once: program=8.8, modw=95%, velocity=90
 /synth/set-once/4: modw=15%
@@ -27,18 +30,18 @@ toc: midi(37)
 /drum/set-once/2.75: velocity=100
 
 /synth/linear: program=8.14
-/synth/linear: decrease(velocity, from=100, to=10)
-/synth/linear: increase(cutoff, from=20%, to=50%)
-/drum/linear:  increase(velocity, from=30, to=100)
+/synth/linear: change(velocity, from=100, to=10)
+/synth/linear: change(cutoff, from=20%, to=50%)
+/drum/linear:  change(velocity, from=30, to=100)
 
 /synth/curved: program=8.14
-/synth/curved: increase(cutoff, from=0, to=100, curve=1)
-/synth/curved: decrease(resonance, from=120, to=20, curve=-1)
+/synth/curved: change(cutoff, from=0, to=100, curve=1)
+/synth/curved: change(resonance, from=120, to=20, curve=-1)
 
 /synth/span: program=8.14
-/synth/span/2: increase(cutoff, from=40, to=75, span=2)
-/synth/span/4: decrease(cutoff, from=75, to=40, span=2)
-/drum/span/1.5: decrease(velocity, from=75, to=60, span=2.5)
+/synth/span/2: change(cutoff, from=40, to=75, span=2)
+/synth/span/4: change(cutoff, from=75, to=40, span=2)
+/drum/span/1.5: change(velocity, from=75, to=60, span=2.5)
 
 [set-once]
 synth: . |  1 1' | 1 3 5 - | 1 1' | 1 3 5 -
