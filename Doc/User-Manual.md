@@ -116,8 +116,8 @@ pad: "brass", octave=2, velocity=80, channel=6
 drum: "drum", velocity=80, channel=12
 
 [sequences]
-arp: arg(1) arg(3) arg(2) arg(1) arg(3) arg(2) arg(1) arg(3) 
-s1: arg(1) - - - - - - arg(2)
+arp: $1 $3 $2 $1  $3 $2 $1 $3
+s1: $1 - - - - - - $2
 d1: B (. h) h (B h)  
 d2: B (o h) h (Bo h)
 

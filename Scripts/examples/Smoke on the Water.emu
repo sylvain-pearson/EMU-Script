@@ -17,10 +17,10 @@ drum: "drum", channel=12, velocity=120, info="MODO Drum - Studio Drum"
 /guitar/count: program=8.9
 
 [sequences] 
-g1: EA GC AD (. EA) | (.) GC (#A#D) AD - | EA GC AD- (GC) | - EA - - - arg(1) arg(1) arg(1)
-g2: 'AEA CGC DAD (. 'AEA) | (.) CGC (#D#A#D) DAD - | 'AEA CGC DAD- (CGC) | - 'AEA - - - - - arg(1) 
-x2: args args  
-x8: args args args args args args args args  
+g1: EA GC AD (. EA) | (.) GC (#A#D) AD - | EA GC AD- (GC) | - EA - - - $1 $1 $1
+g2: 'AEA CGC DAD (. 'AEA) | (.) CGC (#D#A#D) DAD - | 'AEA CGC DAD- (CGC) | - 'AEA - - - - - $1
+x2: $1 $1
+x8: $1 $1 $1 $1 $1 $1 $1 $1
 b1: x8(A) | x8(A) | A A A A D' D' D' C'
 d1: h h  h h  h h  h h
 d2: h h  sh h  h h  sh h

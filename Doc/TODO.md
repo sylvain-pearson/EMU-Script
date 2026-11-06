@@ -3,7 +3,11 @@
 ## TODO
 - [x] Zoom-in music sheet
 - [x] Staff with 1, 2 or 3 octaves of range
-- [x] improved error display
+- [x] Improved error display
+- [x] Per instrument CC definitions
+- [x] Insert the measure of another instrument (unison)
+- [x] Music sheet with a clear background, even in dark mode
+- [x] New syntax for sequence parameter
 - [ ] Documentation update for release 1.2
 - [ ] Create screen captures for app store (2880 × 1800px)
 

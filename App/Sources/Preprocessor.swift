@@ -86,17 +86,9 @@ public class Preprocessor {
                 
                 var n = 0
                 for argValue in document.parser.parseFunction(text: String(phrase)) {
-                    let argName = String("arg(\(n))")
+                    let argName = String("$\(n)")
                     newPhrase = newPhrase.replacingOccurrences(of: argName, with: argValue)
                     n = n + 1
-                }
-                
-                // Do the replacement of args parameter
-                if (words.count == 2) {
-                    let args = String(words[1]).trimmingCharacters(in: .whitespacesAndNewlines)
-                    if (args.hasSuffix(")")) {
-                        newPhrase = newPhrase.replacingOccurrences(of: "args", with: args.dropLast())
-                    }
                 }
             }
             

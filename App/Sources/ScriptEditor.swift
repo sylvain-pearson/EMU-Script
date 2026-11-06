@@ -15,9 +15,10 @@ private let numberRegex = try! NSRegularExpression(pattern: "(?<!\\w)[A-G0-9]+(?
 private let commentRegex = try! NSRegularExpression(pattern: "//.+", options: [])
 private let textRegex = try! NSRegularExpression(pattern: "\\\"[^\\\"]+\\\"", options: [])
 private let linePrefixRegex = try! NSRegularExpression(pattern: "[a-zA-Z0-9\\-/_\\.]+:", options: [])
+private let paramRegex = try! NSRegularExpression(pattern: "\\$[1-9]", options: [])
 
 private let keywordRegex = try! NSRegularExpression(
-    pattern: "(?<!\\w)(chord|root|bass|arg|args|min[679]*|maj[679]*|sus[24]*|dom[79]*|dim[79]*|aug[79]*|m7|M7|m9|M9|b5|m3|M3|P4|P5|m6|M6)(?![\\w\\-_])",
+    pattern: "(?<!\\w)(chord|root|bass|min[679]*|maj[679]*|sus[24]*|dom[79]*|dim[79]*|aug[79]*|m7|M7|m9|M9|b5|m3|M3|P4|P5|m6|M6)(?![\\w\\-_])",
     options: []
 )
 
@@ -47,6 +48,9 @@ public extension Sequence where Iterator.Element == HighlightRule {
             ),
             HighlightRule(pattern: commentRegex,
                 formattingRule: TextFormattingRule(key: .foregroundColor, value: acolor(Color.scriptComment))
+            ),
+            HighlightRule(pattern: paramRegex,
+                formattingRule: TextFormattingRule(key: .foregroundColor, value: acolor(Color.scriptParameter))
             ),
         ]
     }

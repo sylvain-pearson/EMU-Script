@@ -236,15 +236,15 @@ Here is a musical section that is equivalent to the previous example:
 ```
 
 ## 4. The sequences section
-The `[sequences]` section lists the sequences that can be inserted in musical sections. A sequence defines a few measures of music that can be parameterized and that is not bound to a specific instrument. The parameters of a sequence can be accessed using the `arg(n)` and `args`, build-in functions. Here is an example:
+The `[sequences]` section lists the sequences that can be inserted in musical sections. A sequence defines a few measures of music that can be parameterized and that are not bound to a specific instrument. The parameters of a sequence are accessed using the dollar sign symbol, followed by the parameter number (1 to 9). Here is an example:
 ```
 [sequences]
-seq1: arg(1) arg(3) arg(2) arg(1)
-seq2: 2 - 3 4 | 5- (4) 3 - | args
+seq1: $1 $3 $2 $1
+seq2: 2 - 3 4 | 5- (4) 3 - | $1
 seq3: . 3 4 5 | 4 3 36 -
 
 [intro1]
-piano: seq1(3, 5, 7) | seq2(2, 1) | seq3
+piano: seq1(3, 5, 7) | seq2(2 1) | seq3
 
 [intro2]
 piano: 3 7 5 3 | 2 - 3 4 | 5- (4) 3 - | 2 1 | . 3 4 5 | 4 3 36 -
