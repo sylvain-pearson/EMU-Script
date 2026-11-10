@@ -12,9 +12,9 @@ EMU-Script is a text-based, electronic music composition software for MacOS.
 - Specific notation for drum instruments.
 
 ## Documentation
-- The user manual can be found [here](https://sylvain-pearson.github.io/EMU-Script/Doc/User-Manual.html)
-- The reference manual can be found [here](https://sylvain-pearson.github.io/EMU-Script/Doc/Reference-Manual.html)
-- An overview video is available on [youtube](https://www.youtube.com/@EMU-Script) (version 1.0)
+- The user manual can be found [here](https://sylvain-pearson.github.io/EMU-Script/manuals/User-Manual.html)
+- The reference manual can be found [here](https://sylvain-pearson.github.io/EMU-Script/manuals/Reference-Manual.html)
+- The EMU-Script [web site](https://sylvain-pearson.github.io/EMU-Script)
 
 ## Release
 You can download the latest version of the application using this link: [version 1.1](https://github.com/sylvain-pearson/EMU-Script/releases/download/EMU_V1.1/EMU-Script.app.zip)
