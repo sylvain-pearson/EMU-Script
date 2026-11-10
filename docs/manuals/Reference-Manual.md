@@ -1,0 +1,331 @@
+![emu-icon](assets/emu-icon.png) 
+
+# Reference Manual
+An EMU-Script must contain at least 3 sections: the `[composition]` section, the `[instruments]` section, and at least one musical section. The other types of sections are optional. All sections of a script share the same structure:
+```
+    [section-name]
+    attribute-1: value
+    ...
+    attribute-x: value
+```
+For a section name or attribute to be valid, it must begin with a letter and can only contain alphanumeric characters, hyphens, and underscores. 
+
+## 1. The composition section
+The `[composition]` section is mandatory and provides the following information:
+- **title**: the title of the composition. Must be quoted.
+- **by**: the author's name. Must be quoted
+- **time**: the time signature. Possible values are 2/4, 3/4, 4/4, 5/4, 6/8, or 7/8.
+- **BPM**: the beat per minute. Must be a number between 40 and 140.
+- **transposition**: the transposition, in semitones. Must be a number between -7 and +7.
+- **playlist**: a list of musical sections, in playing order, that defines the structure of the composition.
+
+Here is an example:
+```
+    [composition]
+    title: "Fly on the Windscreen"
+    by: "Depeche Mode"
+    BPM: 93
+    time: 4/4
+    transposition: -5
+    playlist: intro, A, B, A, B, outro
+```
+
+## 2. The intruments section
+This mandatory section contains the configuration of the instruments used in the composition.  Each instrument defined in this section has a dedicated audio track and music staff. Here is the information that can be specified for an instrument:
+- **name**: the name of the instrument (specified before the colon)
+- **port**: the name of the MIDI port, within quotes.
+- **channel**: the MIDI channel used by the instrument. A number between 1 and 16.
+- **octave**: the octave of reference of the instrument. A number between 1 and 4 (bass clef = 2, treble clef = 3). This field must be omitted for drum-based instruments.
+- **velocity**: the default velocity of MIDI notes. Must be a number between 0 and 127.
+
+Here is an example:
+```
+    [instruments]
+    piano: "piano", channel=1, octave=3, velocity=99 
+    synth: "MIDI Input", channel=2, octave=3, velocity=80 
+    bass:  "bass", channel=11, octave=2, velocity=90
+    drum: "drum", channel=12, velocity=120
+```
+
+The port `MIDI Input` is the port assigned to instruments connected to the computer using a USB cable.
+
+## 3. The musical sections
+Musical sections are the core building blocks of a musical composition. A musical section can be played many times in a composition and can also have some form of variation, such as:
+
+- A section can be repeated but with different endings.
+- A section can be repeated with different lyrics.
+
+When a section name ends with a number, it means that the section is a variation of another section. For instance, if a section name is `A1`, it means that the content of the section will be merged with the content of its "parent" section `[A]` (you will find an example in section 3.5).
+
+### 3.1 Diatonic notes
+In an EMU-Script, the notes of a major scale are always 1, 2, 3, 4, 5, 6, and 7. If you prefer, you can use the alphabetic equivalents instead: C, D, E, F, G, A, and B. 
+
+The transposition defined in the `[composition]` section is used to set the tonality and therefore the key of a composition. A transposition of 0 means that we are composing in C major, a transposition of +5 means that we are composing in F major, etc. The actual note played by the sequencer also depends on the reference octave of the instrument. 
+
+There are some modifiers that can be applied to diatonic notes:
+- **`#`**: The sharp sign, used as a prefix, increases the pitch of the note by one semitone. The chromatic notes are #1, #2, #4, #5, and #6.
+- **`'`**: The apostrophe, used as a prefix, decreases the pitch of a note by one octave.
+- **`'`**: The apostrophe, used as a suffix, increases the pitch of a note by one octave.
+
+Here is an example:
+```
+    [intro]
+    piano: '6 '7 1 2 | 3 4 #5 6 | 7 1' #2' 3'
+```
+or alternatively:
+```
+    [intro]
+    piano: 'A 'B C D | E F #G A | B C' #D' E'
+```
+*The vertical bar (`|`) acts as a measure separator. In the example, we have defined 3 measures.* 
+
+### 3.2 Drum notes
+The available drum notes are:
+- **`B`**: bass drum #1 (midi note is 36)
+- **`b`**: bass drum #2 (35)
+- **`S`**: snare drum #1 (38)
+- **`s`**: snare drum #2 (40)
+- **`1`**: floor-tom #1 (41)
+- **`2`**: floor-tom #2 (45)
+- **`3`**: tom-tom #1 (47)
+- **`4`**: tom-tom #2 (48)
+- **`h`**: closed hi-hat (42)
+- **`o`**: open hi-hat (46)
+- **`c`**: crash cymbal (49)
+- **`r`**: ride cymbal (51)
+- **`i`**: drumstick (37)
+
+Here is an example:
+```
+    [intro]
+    drum: i i i i | Bh h BSh h Bh h BSh h 
+```
+*In the example, some drum notes are concatenated, meaning that they will be played at the same time.*
+
+### 3.3 Notes duration and silence
+The duration of the notes in a measure depends on the time signature, the BPM, the number of notes in the measure, and on the use of time modifier operators. Those modifiers are:
+- **`( )`**: The notes within parentheses have their durations reduced by a factor of 2. Parentheses are used for eighth notes and sixteenth notes.
+- **`[ ]`**: The notes within square brackets have their durations reduced by a factor of 3. Square brackets are used for triplets.
+- **`-`**: A dash used as a note suffix increases its duration by one half (dotted note).
+- **`-`**: A dash used after a note increases its duration by one.
+- **`.`**: A dot is a silent note.
+
+Here are some examples, based on a 4/4 time signature:
+- `| F |` : a whole note
+- `| 5 7 |` : two half notes
+- `| 7 - 6 4 |` : a half note (7) and two quarter notes (6, 4)
+- `| A - - B |` : a dotted half note (A) and a quarter note (B)
+- `| (2 1) 3 4 5 |` : two eighth notes (2, 1) and three quarter notes
+- `| (C) D E F- |` : one eighth note (C), two quarter notes and one dotted quarter note
+- `| E . |` : a half note and a half rest
+- `| (.) E - F- |` : a eighth rest, a half note and a dotted quarter note
+- `| [1 2 3] 4 5 6 |` : a triplet (1, 2, 3) and three quarter notes
+
+### 3.4 Chords and intervals
+When notes are grouped together, they create a chord or interval. Optionally, you can separate the notes of a chord using the slash character. Here are some examples:
+- **`CEG`**: the C major chord 
+- **`ACE`**: the A minor chord
+- **`724`**: the B diminished chord
+- **`6#13`**: the A major chord
+- **`#C/E/#G/B`**: the C sharp minor seventh chord
+
+Many chord functions are provided to facilitate chord creation and identification. A chord function has the following format: 
+```
+name-extension(root,bass)
+```
+The chord extension and bass note are optional. The chord name can be one of the following:
+- **`maj`**: Major chord
+- **`min`**: Minor chord
+- **`dim`**: Diminished chord
+- **`aug`**: Augmented chord
+- **`sus2`**: Suspended second chord.
+- **`sus sus4`**: Suspended fourth chord.
+- **`dom7 dom9`**: Dominant seventh and ninth chords.
+- **`maj7 maj9`**: Major seventh and ninth chords.
+- **`min7 min9`**: Minor seventh and ninth chords.
+- **`dim7 dim9`**: Diminished seventh and ninth chords.
+- **`aug7 aug9`**: Augmented seventh and ninth chords.
+- **`sus7 sus9`**: Suspended seventh and ninth chords.
+
+The available chord extensions are:
+- **m7**: add a minor seventh to the chord.
+- **M7**: add a major seventh to the chord.
+- **m9**: add a minor ninth to the chord.
+- **M9**: add a major ninth to the chord.
+- **b5**: lower the fifth by one semitone (flat 5).
+
+Here are some examples:
+- **`maj(C)`**: the C major chord (CEG).
+- **`maj(C,E)`**: the C major chord with an E as a bass note (EGC).
+- **`'maj(4,5)`**: the F major chord with a G as a bass note ('GFAC).
+- **`min-M7(A)`**: the A minor-major seventh chord (ACE#G).
+- **`maj-M9(5)`**: the G major add9 chord (GBDA).
+
+### 3.5 Lyrics
+If you wish, it is possible to add lyrics to a composition. Here is an example: 
+```
+[A]
+lead: E | F E #D E | F | #F G - - | . A B C' | D' C' B A | G | . . C D | E E 
+bass: C G | C - 'B C | D A | #D E - G | F | - | E - F #F | G | C - C' B 
+drum: ds | ... 
+
+[A1]
+text: "Oh | quand j'en_ tends chan_ | ter | No_ ël - - | . J'aime a re_ |voir mes joies d'en_ |fant | . . Le sa_ | pin sin_"
+
+[A2]
+text: "Oh | quand j'en tends so_ | nner | au ciel - - | . L'heure où le  | bon vieill_ ard des_ | cend | . . Je re_ | vois tes"
+```
+All lyrics must be quoted, and lyric lines must be prefixed by `text:`. The same time modifiers that are used for notes are also valid for lyrics (parenthesis, dash, dot). 
+
+To indicate that a word is spread over two notes, you can use the underscore character at the end or beginning of a syllable, and it will be displayed as a dash in the music sheet ("quand j'en_ tends chan_" is displayed as "quand j'en - tends chan -").
+
+### 3.6 Chord progression
+A chord progression defines the harmonic structure of a composition. You can add a chord progression using lines that are prefixed by `chord:`. Here is an example:
+```
+    [verse]
+    chord: maj(C) | 'min(A) | maj(F,A) dom7(G) | maj(C)'
+``` 
+Once a chord progression has been defined, it is possible to access the notes of the current chord using three built-in functions:
+- **`root`**: returns the current root note.
+- **`bass`**: returns the current bass note.
+- **`chord`**: returns the current chord.
+- **`chord(n)`**: returns the first 'n' notes of the current chord. When `n` is higher than the chord notes count, the chord is extended.
+
+Here is an example of use:
+```
+    [verse]
+    chord:   min(A,C)  |     min(E)     |  maj(C) 
+    synth1: root  bass | chord chord(2) | chord(5)  
+    synth2:   A    C   |  EGB    EG     |  CEGCE     
+``` 
+*In the example, the synth1 and synth2 instruments play exactly the same notes.*
+
+### 3.7 Repetition
+Sometimes, in a composition, measures of music are repeated. Two built-in functions are provided to avoid repetition in a script:
+- **`*`**: The asterisk repeats the previous measure.
+- **`...`**: Three consecutive dots repeat the previous measures till the end of the section.
+Here is an example:
+```
+    [outro]
+    synth: 1 | 2 3 | 4 - 3 2 | * | 15
+    drum: B h B h | ... | B Sh B c
+``` 
+
+Here is a musical section that is equivalent to the previous example:
+```
+    [outro]
+    synth: 1 | 2 3 | 4 - 3 2 | 4 - 3 2 | 15
+    drum: B h B h | B h B h | B h B h | B h B h | B Sh B c
+```
+
+### 3.7 Unison
+If there are some parts of a composition that need to be played in unison, a specific notation can be used to avoid code duplication. You simply have to specify the name of the instrument, and its measure will be inserted.
+
+Here is an example:
+```
+    [outro]
+    winds: E' - (A B C' D') | E'- (C') E'- (C') | E' C' A E | C' A E C 
+    brass: winds | ...
+``` 
+
+Here is a musical section that is equivalent to the previous example:
+```
+    [outro]
+    winds: E' - (A B C' D') | E'- (C') E'- (C') | E' C' A E | C' A E C 
+    brass: E' - (A B C' D') | E'- (C') E'- (C') | E' C' A E | C' A E C
+```
+
+## 4. The sequences section
+The `[sequences]` section lists the sequences that can be inserted in musical sections. A sequence defines a few measures of music that can be parameterized and that are not bound to a specific instrument. The parameters of a sequence are accessed using the dollar sign symbol, followed by the parameter number (1 to 9). Here is an example:
+```
+[sequences]
+seq1: $1 $3 $2 $1
+seq2: 2 - 3 4 | 5- (4) 3 - | $1
+seq3: . 3 4 5 | 4 3 36 -
+
+[intro1]
+piano: seq1(3, 5, 7) | seq2(2 1) | seq3
+
+[intro2]
+piano: 3 7 5 3 | 2 - 3 4 | 5- (4) 3 - | 2 1 | . 3 4 5 | 4 3 36 -
+```
+In this example, the `[intro1]` and `[intro2]` musical sections are equivalent.
+
+## 5. The sounds section
+The `[sounds]` section contains the definition of new sounds that can be used in musical sections. The sounds are not bound to any specific instrument. There are 3 types of sound that can be added:
+
+- **midi**: a MIDI note number. Must be between 0 and 127. 
+- **arp**: an arpeggiated chord. It has 3 parameters: 
+    1. A concatenated list of note indexes (1 to 6), where 1 is the lowest note of the chord.
+    2. **step**: the length of a step. Must be between 2 and 24, where 12 is the length of a quarter note.
+    3. **duration**: the note duration. Must be between 2 and 24.
+- **strum**: a strummed chord. It has 3 parameters:
+    1. A concatenated list of note indexes.
+    2. **msec**: the duration between each note, in milliseconds. Must be between 3 and 15.
+    3. **vdec**: the percentage of velocity's decrease between each note. Must be between 0 and 10.
+
+Here is an example:
+```
+[sounds]
+kick: midi(35)
+hh: midi(44)
+dw: strum(54321, msec=5, vdec=3)
+up: strum(12345, msec=6, vdec=5)
+a1: arp(1112, step=3, duration=3)
+a2: arp(123432, step=5, duration=8)
+ 
+[exemple]
+guitar: a1/37 | - | dw/6135 up/'61351 | up/'57257 | a2/2461 | -
+drum: kick hh kick/hh hh | ...
+```
+
+## 6. The CC section
+The `[CC]` section contains the definition of the MIDI Control Change messages used in the composition. A CC definition can be specific to an instrument or apply to `all` instruments. The CC keywords defined here can then be referenced in the `[control]` section. Here is an example of a CC section:
+```
+[CC]
+synth: cutoff=74, resonance=42
+all: modw=1
+```
+
+## 7. The control section
+In the `[control]` section, you can modify the sound of the instruments during playback. Each line of the section can have the following format:
+```
+/instrument/section/measure: attribute=value, ... ,attribute=value
+```
+Where:
+- **instrument**: the instrument name.
+- **section**: is the name of the musical section. If no section is provided, then the change will be applied to the first section of the composition.
+- **measure**: is a measure number, or a decimal number indicating a specific position within the section. If no measure number is provided, then the change will be applied at the first measure of the section.
+
+There are 3 attributes that can be specified:
+- **program**: change the current program (patch) of an instrument. A program identifier has two parts separated by a dot: the bank number (1 to 128) and the program number (1 to 128). 
+- **velocity**: the note's velocity, a number between 0 and 127 or a percentage between 0% and 100%.
+- **CC**: a CC keyword, as defined in the CC section. The CC value must be a number between 0 and 127 or a percentage between 0% and 100%.
+
+Here is an example:
+```
+[control]
+/synth: program=8.2
+/synth/intro/2: modw=25%, reverb=40%
+/synth/intro/2.5: velocity=90
+```
+
+In the control section, it is also possible to programatically increase or decrease a CC or velocity attribute over a period of time. Here is an example:
+```
+[control]
+/synth/intro: change(velocity, from=20, to=80)
+/synth/main/1.5: change(cutoff, from=50%, to=25%, span=2.25, curve=-1)
+```
+
+The *change* function's arguments are:
+- **from**: the start value, a number between 0 and 127 or a percentage between 0% and 100%.
+- **to**: the end value, a number between 0 and 127 or a percentage between 0% and 100%.
+- **span**: the span of the change, in measures count. This parameter is optional. If not specified the change span till the end of the section. 
+- **curve**: the type of easing curve, a number between -2 and 2, where:
+    - **-2** is an **in-cubic** curve type
+    - **-1** is an **in-quad** curve type
+    - **0** is a linear progression (the default value)
+    - **1** is an **out-quad** curve type
+    - **2** is an **out-cubic** curve type 
+    
+![](assets/curves.jpg)
