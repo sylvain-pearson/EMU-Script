@@ -5,21 +5,19 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/6/w3.css">
 
-<style>
-body {font-family:"system-ui", serif}
-h1,h2,h3,h4,h5,h6 {font-family:cursive;letter-spacing:5px}
-</style>
+  <style>
+    body {
+      height:100%;
+      font-family:"Inconsolata",sans-serif;
+    }
 
-<body>
+  </style>
 
 <!-- Navbar (Sits on top) -->
 <div class="w3-flex w3-top w3-white w3-wide w3-padding w3-card">
-  <a href="#home" class="w3-button">MIDI Sequencer for MacOs</a>
+  <a href="#home" class="w3-button"><b>EMU-Script</b></a>
 
   <nav class="w3-flex w3-hide-small" style="margin-left:auto">
-    <a href="#about" class="w3-button">About</a>
-    <a href="#staves" class="w3-button">Staves</a>
-    <a href="#script" class="w3-button">Script</a>
     <a href="#download" class="w3-button">Download</a>
     <a href="#contact" class="w3-button">Contact</a>
   </nav>
@@ -29,8 +27,8 @@ h1,h2,h3,h4,h5,h6 {font-family:cursive;letter-spacing:5px}
 <header id="home" class="w3-display-container">
   <img src="header.jpeg"
   style="width:100%" alt="synth">
-  <div class="w3-display-bottomleft w3-padding w3-padding-16">
-    <img src="emu-icon.png"  style="width:12%" alt="Table">
+  <div class="w3-display-bottomleft w3-padding w3-padding-16 ">
+    <img src="emu-icon.png"  style="width:30%" alt="Table">
   </div>
 </header>
 
@@ -39,7 +37,7 @@ h1,h2,h3,h4,h5,h6 {font-family:cursive;letter-spacing:5px}
 
 <!-- About -->
 <section id="about" class="w3-grid w3-padding-64" 
-    style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+    style="grid-template-columns:repeat(auto-fit,minmax(400px,1fr))">
 
   <div class="w3-center">
     <img src="script1.png"  style="width:90%" alt="Table">
@@ -47,10 +45,10 @@ h1,h2,h3,h4,h5,h6 {font-family:cursive;letter-spacing:5px}
   
   <div class="w3-padding-large">
     <h2 class="w3-center">About</h2>
-    <p class="w3-medium">
+    <p class="w3-large">
       EMU-Script lets you write electronic music as text. You compose in a script 
       editor with syntax highlighting and error checking, and the app plays the result 
-      on a multi-track MIDI sequencer.
+      using its multi-track MIDI sequencer.
     </p>
   </div>
 </section>
@@ -58,15 +56,15 @@ h1,h2,h3,h4,h5,h6 {font-family:cursive;letter-spacing:5px}
   <hr>
 
   <!-- Staves -->
-  <section id="staves" class="w3-grid w3-padding-64" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+  <section id="staves" class="w3-grid w3-padding-64" style="grid-template-columns:repeat(auto-fit,minmax(400px,1fr))">
     
     <div class="w3-padding-large">
       <h2 class="w3-center">Staves</h2>
-      <p class="w3-medium">
+      <p class="w3-large">
         The EMU musical staff is as simple as can be. It has three horizontal lines per octave, 
         bound to the C, E, and G notes. A staff can span over one, two, or three octaves. 
         There are no flat or sharp symbols; each note has its position on the staff. <br/> <br/>
-        For more information please refer to the <a href="https://sylvain-pearson.github.io/EMU-Script/manuals/User-Manual.html" rel="nofollow">user manual</a>.</p>
+        For more information please refer to the <a href="https://sylvain-pearson.github.io/EMU-Script/manuals/User-Manual.html" rel="help">user manual</a>.</p>
     </div>
     
     <div class="w3-center">
@@ -78,7 +76,7 @@ h1,h2,h3,h4,h5,h6 {font-family:cursive;letter-spacing:5px}
   
   <!-- Script -->
   <section id="script" class="w3-grid w3-padding-64" 
-      style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+      style="grid-template-columns:repeat(auto-fit,minmax(400px,1fr))">
     
     <div class="w3-center">
       <img src="script2.png"  style="width:85%" alt="Table">
@@ -86,12 +84,12 @@ h1,h2,h3,h4,h5,h6 {font-family:cursive;letter-spacing:5px}
     
     <div class="w3-padding-large">
       <h2 class="w3-center">Script</h2>
-      <p class="w3-medium">
+      <p class="w3-large">
         The EMU language is a text-based musical notation language, geared towards electronic music creation. 
         It includes script-like functions for chords, sequences, arpeggios, strums, and MIDI control messages.
         A special notation exists for drum sounds, and it can be extended.
         <br/> <br/>
-        For more information please refer to the <a href="https://sylvain-pearson.github.io/EMU-Script/manuals/Reference-Manual.html" rel="nofollow">reference manual</a>.
+        For more information please refer to the <a href="https://sylvain-pearson.github.io/EMU-Script/manuals/Reference-Manual.html" rel="help">reference manual</a>.
       </p>
     </div>
   </section>
@@ -102,7 +100,7 @@ h1,h2,h3,h4,h5,h6 {font-family:cursive;letter-spacing:5px}
   <section id="download" class="w3-container w3-padding-64">
     
     <h1>Download</h1>
-    <p class="w3-medium">
+    <p class="w3-large">
       
       You can download the latest version of the application using this link: 
       <a href="https://github.com/sylvain-pearson/EMU-Script/releases/download/EMU_V1.1/EMU-Script.app.zip" rel="nofollow">EMU-Script version 1.1</a>
@@ -120,7 +118,7 @@ h1,h2,h3,h4,h5,h6 {font-family:cursive;letter-spacing:5px}
 <section id="contact" class="w3-container w3-padding-64">
 
 <h1>Contact</h1>
-<p class="w3-medium">
+<p class="w3-large">
     To report any bug or submit an improvement request, please send an email to 
     <a href= "mailto:emuscript@gmail.com">emuscript@gmail.com</a>.
   </p>
