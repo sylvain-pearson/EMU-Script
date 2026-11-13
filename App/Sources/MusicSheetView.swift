@@ -88,7 +88,8 @@ struct MusicSheetView : View {
     // Calculate the view height
     // ---------------------------------
     static func getViewHeight(document: EmuScriptDocument) -> Double {
-        var height = 10
+        let margin = 10
+        var height = margin
         var n = 0
         
         for instrument in document.instruments {
@@ -111,12 +112,21 @@ struct MusicSheetView : View {
                 
                 let noteRange = (octaveRange * 7) + 2
                 height += (noteRange * 10)
-                height += 30
+                height += margin
                 
                 document.instruments[n].octaveRange = octaveRange
             }
             n += 1
         }
+        
+        if (document.composition.hasLyrics()) {
+            height += 25
+        }
+        if (document.composition.hasChordProgression()) {
+            height += 50
+        }
+        
+        height += (margin * 2)
         
         return Double(height)
     }
@@ -155,7 +165,6 @@ struct MusicSheetView : View {
                         y = y + staffHeight
                         
                         if (isDrum) {
-                            
                             drawCompactStaff(context: context, x0: x, y0: y, width: width)
                         }
                         else {
@@ -171,13 +180,15 @@ struct MusicSheetView : View {
                             drawNotes(context: context, x0: x, y0: y0, measures: measures, measureNumber: measureNumber, isCompact: isDrum)
                         }
                         
-                        if (lyricsDone == false && !isDrum) {
-                            // Draw lyrics
-                            lyricsDone = true
-                            if let measures = document.composition.getSection(name: item.name).measures["text"] {
-                                drawLyrics(context: context, x0: x, y0: y, measures: measures)
+                        if (lyricsDone == false && isDrum == false) {
+                            if (document.composition.hasLyrics()) {
+                                // Draw lyrics
+                                if let measures = document.composition.getSection(name: item.name).measures["text"] {
+                                    drawLyrics(context: context, x0: x, y0: y, measures: measures)
+                                }
                                 y = y + 15
                             }
+                            lyricsDone = true
                         }
                         
                         y = y + 10

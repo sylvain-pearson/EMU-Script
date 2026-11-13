@@ -8,13 +8,16 @@
 - [x] Insert the measure of another instrument (unison)
 - [x] Music sheet with a clear background, even in dark mode
 - [x] New syntax for sequence parameter
+- [ ] Crash when playing: C- C (C D)
+- [ ] Bug with triolets: [1 2 3] [3 4 5]
+- [x] Chord indications does not always appears in the sheet music view
+- [ ] Documentation: replace "staffs" with "staves" and "music sheet" with "sheet music"
+- [ ] Header of web site is cropped on an iphone
 - [ ] Documentation update for release 1.2
-- [ ] Create screen captures for app store (2880 × 1800px)
 
 ## Issues
 - [ ] Undo/redo not functional ipad
 - [ ] Incorect note head for notes that continue on the next measure
-- [ ] Bug with triolets: [1 2 3] [3 4 5]
 
 ## Wishlist
 - [ ] Staff shared between 2 instruments (grand staff)

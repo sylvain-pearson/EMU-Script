@@ -1,0 +1,17 @@
+[composition]
+title: "Octaves"
+by: "Sylvain Pearson"
+time: 4/4
+BPM: 100
+transposition: 0
+playlist: intro
+
+[instruments]
+synth1: "MIDI Input", channel=1, octave=4, velocity=80
+synth2: "MIDI Input", channel=1, octave=3, velocity=80
+synth3: "MIDI Input", channel=1, octave=1, velocity=80
+
+[intro]
+synth1: . 'C 'D 'E 'F 'G 'A 'B | C D E F G A #A B | C' D' E' F' G' . . .
+synth2: . . . . . . 'A 'B | C D E F G A #A B | C' D' E' F' G' A' B' .
+synth3: . C D E F G 'A 'B | C D E F G A #'A 'B | C D E F G A B .

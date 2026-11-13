@@ -22,6 +22,10 @@ struct MusicalComposition {
     var transposition: Int8
     var sections: [MusicalSection] = [ ]
     var playlist: [String] = [ ]
+    
+    private var instrumentRanges : [String: (Int, Int)]
+    private var hasChord : Bool?
+    private var hasText : Bool?
   
     // -----------------------------------
     // The default structure initializer
@@ -34,6 +38,7 @@ struct MusicalComposition {
         self.beatsPerMeasure = 4
         self.stepsPerBeat = 4
         self.transposition = 0
+        self.instrumentRanges = [:]
     }
     
     // -----------------------------------
@@ -89,26 +94,68 @@ struct MusicalComposition {
     // Get the lowest and higest staff position of an instrument.
     // The staff positions are from 0 to 20, covering 3 octaves.
     // ------------------------------------------------------------
-    func getInstrumentRange(instrumentName: String) -> (Int,Int) {
-        var lowestPos = 7
-        var highestPos = 13
+    mutating func getInstrumentRange(instrumentName: String) -> (Int,Int) {
         
-        for section in sections {
-            for measure in section.getMeasures(instrumentName: instrumentName) {
-                for step in measure.steps {
-                    for pos in step.positions {
-                        if (pos < lowestPos) {
-                            lowestPos = pos
-                        }
-                        else if (pos > highestPos) {
-                            highestPos = pos
+        if (instrumentRanges[instrumentName] == nil) {
+            var lowestPos = 7
+            var highestPos = 13
+            
+            for section in sections {
+                for measure in section.getMeasures(instrumentName: instrumentName) {
+                    for step in measure.steps {
+                        for pos in step.positions {
+                            if (pos < lowestPos) {
+                                lowestPos = pos
+                            }
+                            else if (pos > highestPos) {
+                                highestPos = pos
+                            }
                         }
                     }
+                } 
+            }
+            self.instrumentRanges[instrumentName] = (lowestPos, highestPos)
+        }
+        
+        return instrumentRanges[instrumentName]!
+    }
+    
+    // ----------------------------------------------------------
+    // Check if the composition has a chord progression defined
+    // ----------------------------------------------------------
+    mutating func hasChordProgression() -> Bool {
+      
+        if (self.hasChord == nil) {
+            self.hasChord = false
+            for section in sections {
+                if let m = section.measures["chord"] {
+                    if (m.count > 0) {
+                        self.hasChord = true
+                    }
+                    break
                 }
             }
         }
         
-        return (lowestPos, highestPos)
+        return self.hasChord!
+    }
+    
+    // ----------------------------------------------
+    // Check if the composition has lyrics defined
+    // ----------------------------------------------
+    mutating func hasLyrics() -> Bool {
+
+        if (self.hasText == nil) {
+            self.hasText = false
+            for section in sections {
+                if (section.getMeasures(instrumentName: "text").count > 0) {
+                    self.hasText = true
+                    break
+                }
+            }
+        }
+        
+        return hasText!
     }
     
     // -------------------------------------------
