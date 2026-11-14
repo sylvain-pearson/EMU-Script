@@ -19,8 +19,9 @@ struct EmuScriptApp: App {
 #if os(macOS)
         .commands {
             CommandGroup(replacing: .help) {
-                Link("Online User Manual", destination: URL(string: "https://sylvain-pearson.github.io/EMU-Script/Doc/User-Manual.html")!)
-                Link("Online Reference Manual", destination: URL(string: "https://sylvain-pearson.github.io/EMU-Script/Doc/Reference-Manual.html")!)
+                Link("Online User Manual", destination: URL(string: "https://sylvain-pearson.github.io/EMU-Script/manuals/User-Manual.html")!)
+                Link("Online Reference Manual", destination: URL(string: "https://sylvain-pearson.github.io/EMU-Script/manuals/Reference-Manual.html")!)
+                Link("EMU-Script website", destination: URL(string: "https://sylvain-pearson.github.io/EMU-Script")!)
             }
         }
 #endif
