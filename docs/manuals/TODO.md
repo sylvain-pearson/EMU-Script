@@ -8,6 +8,9 @@
 - [x] Insert the measure of another instrument (unison)
 - [x] Music sheet with a clear background, even in dark mode
 - [x] New syntax for sequence parameter
+- [x] Fixed broken links to manual
+- [ ] Add version number to manuals
+- [ ] Cannot select notes of third octave
 - [ ] Crash when playing: C- C (C D)
 - [ ] Bug with triolets: [1 2 3] [3 4 5]
 - [x] Chord indications does not always appears in the sheet music view
@@ -21,13 +24,14 @@
 
 ## Wishlist
 - [ ] Staff shared between 2 instruments (grand staff)
+- [ ] Show line numbers in script editor
+- [ ] Find and replace (script editor)
 - [ ] Export to PDF with a standard staff. *(ImageRenderer class)*
 - [ ] Modulate a CC.
 - [ ] Change a CC or the velocity within a random range.
 - [ ] Legato and swing support
 - [ ] Per section setting of BPM
 - [ ] Add menu items for toolbar functions
-- [ ] Find and replace (script editor)
 - [ ] Export to MIDI file (using MIDIKit SwiftMIDIFile)
 - [ ] Show the notes played on MIDI keyboard after playback
 - [ ] Record mode (insert notes played by the user)
