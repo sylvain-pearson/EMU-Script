@@ -851,12 +851,21 @@ final public class EmuScriptDocument: FileDocument  {
                     }
                 }
                 
+                let stepsPerMeasure = composition.stepsPerBeat * composition.beatsPerMeasure
+                if (measureStepsLength < stepsPerMeasure) {
+                    // Add a silence to fill the gap
+                    let silence = Step(transposition: composition.transposition)
+                    silence.length = stepsPerMeasure - measureStepsLength
+                    measure.steps.append(silence)
+                }
+                
                 if (tokens.count > 0)
                 {
                     measures.append(measure)
                 }
+                
             }
-
+      
             measureNumbers[line.key] = measureNumber
             
             if (musicalSection.measures[instrumentName] == nil) {
@@ -899,7 +908,8 @@ final public class EmuScriptDocument: FileDocument  {
         }
 
         if (Int(timeCount) > 0) {
-            return composition.stepsPerBeat * composition.beatsPerMeasure / Int(timeCount)
+            let result = Double(composition.stepsPerBeat * composition.beatsPerMeasure) / timeCount
+            return Int(result)
         }
         else {
             return 0
