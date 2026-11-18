@@ -1,7 +1,8 @@
-![emu-icon](assets/emu-icon.png)
+![emu-icon](assets/emu-icon.png) 
+*Version 1.2*
 
 # User Manual
-EMU-Script is a programmable MIDI sequencer and music sheet viewer. It proposes an innovative approach to electronic music creation. I hope you will enjoy using it!
+EMU-Script is a programmable MIDI sequencer and a sheet music viewer. It proposes an innovative approach to electronic music creation. I hope you will enjoy using it!
 
 ## 1. Installation and Configuration
 
@@ -24,41 +25,41 @@ Here is the main view of the application after the creation of a new document:
 ![main-view](assets/script-editor.png)
 The user interface has four distinct parts:
 - **The sidebar** (on the left) lists the musical sections and instruments of the composition. The mute button, at the right of an instrument, is used to mute or unmute the instrument. At the bottom of the sidebar, you can view information about the composition or about the selected note or chord.
-- **The toolbar** (top right) has a button to toggle between the script editor and the music sheet, a play button, a stop button, a metronome button, and the scroll buttons.
-- **The script editor** (on the right) is displayed by default. You can click on the *staff+note* icon to switch to the music sheet.
-- **The music sheet** displays the measures of the selected musical instruments and musical sections.
+- **The toolbar** (top right) has a button to toggle between the script editor and the sheet music view, a play button, a stop button, a zoom button, a metronome button, and the scroll buttons.
+- **The script editor** (on the right) is displayed by default. You can click on the *staff+note* icon to switch to the sheet music view.
+- **The sheet music view** displays the measures of the selected musical instruments and musical sections.
 
 ![script-editor](assets/main-view.png)
 The following keyboard shortcuts are available:
 - **ENTER**: start playback
 - **ESC**: stop the current playback
-- **Right arrow**: scroll the music sheet to the right.
-- **Left arrow**: scroll the music sheet to the left.
+- **Right arrow**: scroll the sheet music to the right.
+- **Left arrow**: scroll the sheet music view to the left.
 
-## 2. The Music Sheet
-The music sheet is a visual representation of the composition. From left to right, it displays the measures of the compositions. From top to bottom, it displays the following:
+## 2. The Sheet Music
+The sheet music is a visual representation of the composition. From left to right, it displays the measures of the compositions. From top to bottom, it displays the following:
 - The measure numbers and section names
 - The musical staff of the first instrument and its lyrics (if any).
-- The musical staffs of the other instruments.
+- The staves of the other instruments.
 - The chord progression (if any)
 
-![music-sheet](assets/music-sheet.png)
+![sheet-music](assets/sheet-music.png)
 
 
-### 2.1 Staffs
-A staff has a range of two octaves (+ 2 whole tones). Here are the notes of the C major scale:
+### 2.1 Staves
+A staff has a range one, two or three octaves. Here are the notes of the C major scale:
 
 ![c-major-scale](assets/c-major-scale.png)
 
-The chromatic notes (sharp notes) have an outlined shape. Here are all the chromatic notes of a 6/8 staff in C major:
+The chromatic notes (sharp notes) have an outlined shape. Here are some chromatic notes:
 
 ![chromatic-notes](assets/chromatic-notes.png)
 
-The color used for the horizontal line of the note is an indicator of the note pitch. The color has a gradient ranging from red (low pitches), orange (mid pitches), and yellow (high pitches). Here is the C major scale of a bass instrument:
+The color used for the horizontal line of the note is an indicator of the note pitch. The color has a gradient ranging from red (low pitches), orange (mid pitches), and yellow (high pitches). Here is a 3 three octaves staff:
 
-![c-major-scale-bass](assets/c-major-scale-bass.png)
+![colored-staff](assets/colored-staff.png)
 
-### 2.2 Drum Staffs
+### 2.2 Drum Staves
 A drum staff has only one line, and it displays the notes as plain text:
 
 ![drum-staff](assets/drum-staff.png)

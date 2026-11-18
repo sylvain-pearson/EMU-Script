@@ -1,4 +1,5 @@
 ![emu-icon](assets/emu-icon.png) 
+*Version 1.2*
 
 # Reference Manual
 An EMU-Script must contain at least 3 sections: the `[composition]` section, the `[instruments]` section, and at least one musical section. The other types of sections are optional. All sections of a script share the same structure:
@@ -177,7 +178,7 @@ text: "Oh | quand j'en tends so_ | nner | au ciel - - | . L'heure où le  | bon 
 ```
 All lyrics must be quoted, and lyric lines must be prefixed by `text:`. The same time modifiers that are used for notes are also valid for lyrics (parenthesis, dash, dot). 
 
-To indicate that a word is spread over two notes, you can use the underscore character at the end or beginning of a syllable, and it will be displayed as a dash in the music sheet ("quand j'en_ tends chan_" is displayed as "quand j'en - tends chan -").
+To indicate that a word is spread over two notes, you can use the underscore character at the end or beginning of a syllable, and it will be displayed as a dash in the sheet music ("quand j'en_ tends chan_" is displayed as "quand j'en - tends chan -").
 
 ### 3.6 Chord progression
 A chord progression defines the harmonic structure of a composition. You can add a chord progression using lines that are prefixed by `chord:`. Here is an example:

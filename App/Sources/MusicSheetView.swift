@@ -247,8 +247,14 @@ struct MusicSheetView : View {
         
         // Draw the vertical lines
         var x = x0
-        let top = y0 - (octaveRange * octaveHeight) + 10
-        let bottom = y0 - 20
+        var top = y0 - (octaveRange * octaveHeight) + 10
+        var bottom = y0 - 20
+        
+        if (octaveRange == 1) {
+            top -= 20
+            bottom += 20
+        }
+        
         while (x <= x0 + width)
         {
             var path = Path()

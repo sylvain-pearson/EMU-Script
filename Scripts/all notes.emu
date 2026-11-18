@@ -15,7 +15,7 @@ piano-1: "piano", channel=4, octave=1, velocity=80
 [sequences]
 low: '1 '2 '3 '4 '5 '6 '7
 mid: 1 2 3 4 5 6 7
-high: 1' 2' 3' 4' 5' 6' .
+high: 1' 2' 3' 4' 5' 6' 7'
 chromatic: '#1 '#2 - '#4 '#5 '#6 - | #1 #2 - #4 #5 #6 - | #1' #2' - #4' #5' #6' -
 
 [diatonic]
