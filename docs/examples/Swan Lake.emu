@@ -1,0 +1,69 @@
+[composition] 
+title: "Swan Lake"
+by: "Tchaikovsky"
+BPM: 80
+transposition: +2	 
+time: 4/4
+playlist: part_A1, part_A2, part_B1, part_B2, bridge, reprise, outro
+
+[instruments]
+winds: "woodwinds", channel=1, octave=3, velocity=80, info="Arturia Aw - Wind Concerto"
+brass: "brass", channel=1, octave=2, velocity=90, info="Arturia Ab - True Phaze"
+string: "strings", channel=5, octave=2, velocity=70, info="Arturia As - Coerilla"
+
+[control]
+/string/part_A2: velocity=65
+/string/reprise: velocity=75
+/string/outro: velocity=75
+
+[part_A]
+winds: E' - (A B C' D') | E'- (C') E'- (C')   | E'- (A) (C' A F C') | A- - (D' C' B) 
+       E' - (A B C' D') | E'- (C') E'- (C')   | E'- (A) (C' A F C') | A - . A 
+       B C' D' (E' F')  | G'- (F') E' (F' G') | A'- (G') F' (G' A') | B'- (A') (E' C' B A)  
+       B C' D' (F' G')  | G'- (F') E' (F' G') | A'- (G') F' (G' A')
+
+chord: min(A) min(D,F) | min(A) | - - maj(#F) maj(F) | min(A) 
+       min7(A) - maj(#F) maj(F) | min(A) maj7(E,G) | min(A) - maj(#F) maj(F) | min(A) 
+       maj(G) maj7(G) | maj(C)' | min(D)' | maj(B) - maj(E,G) min(A) 
+       maj(G) maj7(G) | maj(C)' | min(D)' maj7(F,C)'
+
+[part_A1]
+winds: #A'- (F') D' (F' #A') | B'- (#F') B' E'
+string: chord(2) - bass bass | ...
+chord: maj7(#A) | maj(A) maj7(E,G)
+
+[part_A2]
+winds: #A#A FF #A#A AA . AA
+brass: winds | ... | . 
+string: chord(3) - chord(2) chord(2) | ... | bass - bass bass bass -
+chord: maj(#A) min(D)'
+
+[part_B]
+chord: maj(#A) min(D)' | maj(E)' min(D)' | maj(#A) min(D)' | maj(E)' min(D)' | maj(#A)
+
+[part_B1]
+winds: #G#G EE GG AA . AA | #G#G EE GG AA . AA  | #A#A FF #A#A AA . AA 
+       #G#G EE FF AA . AA | #A#A FF BB BB FF BB | F' E'
+string: bass - - bass bass - | ... | bass bass
+chord: min(D)' maj7(E)'
+
+[part_B2] 
+winds: #G' E' G' A' . A' | #G' E' G' A' . A'  | #A' F' #A' A' . A' 
+       #G' E' F' A' . A' | #A' F' B' B' F' B' | B' | E' B E' E' B E'
+brass: winds | ... | B' | E' B E' E' B E'  
+string: bass - - bass bass - | ... | . | . | .  
+chord: min(D)' | maj7(E)' 
+
+[bridge]
+winds: B' - - #G' | E' D' B #G | E D C 'B
+brass: winds | ...
+
+[reprise]
+winds: E' - (A B C' D') | E'- (C') E'- (C') | E' C' A E | C' A E C 
+       E' - (A B C' D') | E'- (C') E'- (C')  
+brass:  winds | ... 
+string: winds | ... 
+
+[outro]
+brass: E' - (A B C' D') | E'- (C') E'- (C') | A . . . | .
+string: EE - ('AA 'BB CC DD) | EE- (CC) EE- (CC) | 'AA . AA AA | AA . . .
