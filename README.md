@@ -20,6 +20,7 @@
 
 ## Release
 You can download the latest version of the application using this link: [version 1.2](https://github.com/sylvain-pearson/EMU-Script/releases/download/EMU_V1.2/EMU-Script.app.zip)
+
 What's new in this version:
  - Zoom-in and zoom-out in sheet music.
  - Staff with 1, 2, or 3 octaves.
