@@ -42,19 +42,21 @@ class MidiRecorder {
                 receiver: .events { /*[weak self]*/ events, timeStamp, source in
                     Task { @MainActor in
                         for event in events {
-                            if (event.isChannelVoice(ofType: .noteOn)) {
-                                let chrono = Double(timeStamp - self.startTimestamp)
-                                let time = chrono / Double(self.stepTickCount)
-                                let note = event.midi1RawDataBytes()?.data1 ?? 0
-                                self.notesOnTimeMap[note] = time
-                            }
-                            else if (event.isChannelVoice(ofType: .noteOff))  {
-                                let chrono = Double(timeStamp - self.startTimestamp)
-                                let endTime = chrono / Double(self.stepTickCount)
-                                let note = event.midi1RawDataBytes()?.data1 ?? 0
-                                let startTime = self.notesOnTimeMap[note] ?? endTime
-                                let event = KeyboardEvent(startTime: startTime, endTime: endTime, note: note)
-                                self.receivedEvents.append(event)
+                            if (timeStamp > self.startTimestamp) {
+                                if (event.isChannelVoice(ofType: .noteOn)) {
+                                    let chrono = Double(timeStamp - self.startTimestamp)
+                                    let time = chrono / Double(self.stepTickCount)
+                                    let note = event.midi1RawDataBytes()?.data1 ?? 0
+                                    self.notesOnTimeMap[note] = time
+                                }
+                                else if (event.isChannelVoice(ofType: .noteOff))  {
+                                    let chrono = Double(timeStamp - self.startTimestamp)
+                                    let endTime = chrono / Double(self.stepTickCount)
+                                    let note = event.midi1RawDataBytes()?.data1 ?? 0
+                                    let startTime = self.notesOnTimeMap[note] ?? endTime
+                                    let event = KeyboardEvent(startTime: startTime, endTime: endTime, note: note)
+                                    self.receivedEvents.append(event)
+                                }
                             }
                         }
                     }
