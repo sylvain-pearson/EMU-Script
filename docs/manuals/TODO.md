@@ -1,7 +1,7 @@
 # EMU-Script
 
 ## TODO
-- [x] Zoom-in music sheet
+- [x] Zoom-in sheet music
 - [x] Staff with 1, 2 or 3 octaves of range
 - [x] Improved error display
 - [x] Per instrument CC definitions
@@ -9,21 +9,20 @@
 - [x] Music sheet with a clear background, even in dark mode
 - [x] New syntax for sequence parameter
 - [x] Fixed broken links to manual
-- [ ] Add version number to manuals
-- [ ] Cannot select notes of third octave
-- [ ] Crash when playing: C- C (C D)
-- [ ] Bug with triolets: [1 2 3] [3 4 5]
+- [x] Add version number to manuals
+- [x] Crash when playing: C- C (C D)
+- [x] Bug with triolets: [1 2 3] [3 4 5]
 - [x] Chord indications does not always appears in the sheet music view
-- [ ] Documentation: replace "staffs" with "staves" and "music sheet" with "sheet music"
-- [ ] Header of web site is cropped on an iphone
-- [ ] Documentation update for release 1.2
+- [x] Documentation: replace "staffs" with "staves" and "music sheet" with "sheet music"
+- [x] Header of web site is cropped on an iphone
+- [x] Create release notes and a web page with examples
+- [x] Documentation update for release 1.2
 
 ## Issues
 - [ ] Undo/redo not functional ipad
 - [ ] Incorect note head for notes that continue on the next measure
 
 ## Wishlist
-- [ ] Staff shared between 2 instruments (grand staff)
 - [ ] Show line numbers in script editor
 - [ ] Find and replace (script editor)
 - [ ] Export to PDF with a standard staff. *(ImageRenderer class)*
