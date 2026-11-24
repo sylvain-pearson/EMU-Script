@@ -152,9 +152,14 @@ class MidiSequencer: Thread {
                 break
             }
         }
-        
+
         let duration = String(format: "%.2f", startTime.distance(to: Date.now))
         print("Playback duration: \(duration) seconds")
+        
+        if (!isCancelled) {
+            // Give some time for the last measure to end
+            Thread.sleep(until: Date.now + (stepDuration * Double(stepsAhead)))
+        }
         
         midiManager.removeAll()
         
